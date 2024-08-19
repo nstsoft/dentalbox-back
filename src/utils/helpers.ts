@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ObjectId } from 'mongodb';
 
 const isObjectId = (value: unknown) => {
   return typeof value === 'object' && value !== null && value.constructor && value.constructor.name === 'ObjectId';
 };
 
-export const removeUndefinedProps = (obj: object) => {
+export const removeUndefinedProps = (obj: any) => {
   if (Array.isArray(obj)) {
+    // Process arrays
     for (let i = 0; i < obj.length; i++) {
       obj[i] = removeUndefinedProps(obj[i]);
     }
@@ -32,7 +34,7 @@ export const removeUndefinedProps = (obj: object) => {
   return obj;
 };
 
-export const deepParseObjectId = (obj: object) => {
+export const deepParseObjectId = (obj: any): any => {
   if (Array.isArray(obj)) {
     // Process arrays
     for (let i = 0; i < obj.length; i++) {
