@@ -1,0 +1,37 @@
+export class Base {
+  constructor(data?: unknown) {
+    if (data) {
+      Object.assign(this, data);
+    }
+  }
+
+  toObject() {
+    return this.properties() as this;
+  }
+
+  toJson() {
+    return JSON.stringify(this.properties());
+  }
+
+  toRaw() {
+    return this.toObject();
+  }
+
+  properties(): Record<string, unknown> {
+    const ownProperties: Record<string, unknown> = {};
+    for (const key of Object.keys(this)) {
+      ownProperties[key] = (this as unknown)[key];
+    }
+    return ownProperties;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static toDomain<T extends typeof Base>(this: T, data?: Partial<InstanceType<T> & { _id?: any }>) {
+    return new this({ ...data, _id: data?._id?.toString() }) as InstanceType<T>;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static toBatchDomain<T extends typeof Base>(this: T, data: Partial<InstanceType<T> & { _id?: any }>[]) {
+    return data.map((item) => Base.toDomain({ ...item, _id: item?._id?.toString() })) as InstanceType<T>[];
+  }
+}
