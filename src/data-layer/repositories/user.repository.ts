@@ -1,5 +1,5 @@
 import { User, UserType } from '@domains';
-import { UserModel } from '@repositories';
+import { UserModel } from '@src/data-layer/repositories';
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
 import { FindOptionsOrder, MongoRepository } from 'typeorm';
@@ -46,7 +46,10 @@ export class UsetRepository implements IUserRepository {
     return { count, data: User.toBatchDomain(data) };
   }
 
-  async findOne(criteria: UserType) {
+  async findOneOrFail(criteria: UserType & { _id?: string }) {
+    if (criteria._id) {
+      Object.assign(criteria, { _id: new ObjectId(criteria._id) });
+    }
     const event = await this.repository.findOneByOrFail(criteria);
     return User.toDomain(event);
   }

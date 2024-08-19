@@ -18,8 +18,8 @@ export class UserDataSource implements IUserSource {
     return this.repository.findOneById(id);
   }
 
-  findOne(criteria: Partial<UserType>) {
-    return this.repository.findOne(criteria);
+  findOneOrFail(criteria: Partial<UserType & { _id: string }>) {
+    return this.repository.findOneOrFail(criteria);
   }
 
   create(data: UserType): Promise<UserEntity> {

@@ -13,8 +13,8 @@ export type UserType = {
   // secondName: string;
   email: string;
   // phone: string;
-  // address?: string;
-  // notes: string;
+  address?: string;
+  notes?: string;
   // createdAt?: Date;
   // updatedAt?: Date;
   role: UserRole;

@@ -1,23 +1,28 @@
-import { createUser, UserDto } from '@domains';
+import { createUser, login, UserDto } from '@domains';
 import { BaseController, Controller, Get, Post, ValidateBody } from '@utils';
 import { Request } from 'express';
 
-@Controller('/user')
+import { authenticateToken } from '../middlewares';
+
+@Controller('/user', [authenticateToken])
 export class UserController extends BaseController {
   constructor() {
     super();
   }
 
-  @Get('/')
-  async get() {
-    console.log('Hello World!');
-    return 'body';
+  @Get('/:id')
+  async get(req: Request) {
+    return req.user;
+  }
+
+  @Post('/login')
+  async login(req: Request) {
+    return login(req.body.login, req.body.password);
   }
 
   @Post('/')
   @ValidateBody(UserDto)
   async create(req: Request<unknown, UserDto>) {
-    console.log('body', req.body);
     return createUser(req.body);
   }
 }

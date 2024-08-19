@@ -8,7 +8,6 @@ export type BaseEntity<T> = {
 } & {
   toRaw(): T;
   toObject(): T;
-  toRaw(): T;
   toJson(): string;
   properties(): Record<string, unknown>;
 };

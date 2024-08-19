@@ -1,12 +1,12 @@
+type ClassProperties<T> = {
+  [K in keyof T]: T[K] extends Function ? never : T[K];
+};
+
 export class Base {
   constructor(data?: unknown) {
     if (data) {
       Object.assign(this, data);
     }
-  }
-
-  toObject() {
-    return this.properties() as this;
   }
 
   toJson() {
@@ -15,6 +15,10 @@ export class Base {
 
   toRaw() {
     return this.toObject();
+  }
+
+  toObject() {
+    return this.properties() as any;
   }
 
   properties(): Record<string, unknown> {
