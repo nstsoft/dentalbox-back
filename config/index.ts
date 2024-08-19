@@ -6,6 +6,7 @@ type Config = {
   DATABASE_USER: string;
   DATABASE: string;
   BCRYPT_SALT: string;
+  PORT: number;
 };
 
 export const config: Config = {
@@ -14,4 +15,5 @@ export const config: Config = {
   DATABASE_USER: process.env.DATABASE_USER ?? '',
   DATABASE: process.env.DATABASE ?? 'dentalbox-development',
   BCRYPT_SALT: process.env.BCRYPT_SALT ?? '',
+  PORT: +(process.env.PORT ?? 3001),
 };

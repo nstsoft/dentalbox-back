@@ -1,9 +1,18 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
+type Methods = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 type RouteMiddleWare = (req: Request, res: Response, next: NextFunction) => Promise<unknown> | void;
 
+type RouterData = {
+  route: string;
+  method: Methods;
+  routeMiddlewares: RouteMiddleWare[];
+  preBuildMiddlewares: RouteMiddleWare[];
+};
+
 export function Controller(routePrefix: string, middlewares?: RouteMiddleWare[]): ClassDecorator {
   const controllerMiddlewares = Array.isArray(middlewares) ? middlewares : [];
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     // Using `Function` type for class constructor
     Reflect.defineMetadata('routePrefix', { routePrefix, controllerMiddlewares }, target);
@@ -85,11 +94,14 @@ export abstract class BaseController {
 
     const prototype = Object.getPrototypeOf(this);
 
-    Object.getOwnPropertyNames(prototype).forEach((methodName) => {
-      const routeData = Reflect.getMetadata('route', prototype, methodName);
+    Object.getOwnPropertyNames(prototype).forEach((methodName: string) => {
+      const routeData: RouterData = Reflect.getMetadata('route', prototype, methodName);
+
       if (routeData) {
         const { route, method, routeMiddlewares, preBuildMiddlewares } = routeData;
-        const handler = this[methodName].bind(this);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const handler = (this as any)[methodName].bind(this);
 
         // Combine middlewares: preBuildMiddlewares -> controllerMiddlewares -> routeMiddlewares
         const combinedMiddlewares = [...preBuildMiddlewares, ...controllerMiddlewares, ...routeMiddlewares];

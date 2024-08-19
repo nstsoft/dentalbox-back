@@ -2,12 +2,13 @@ import { UserRole, UserType } from '@domains';
 import { removeUndefinedProps } from '@utils';
 import bcryptjs from 'bcryptjs';
 import { config } from 'config';
-import { BeforeInsert, Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
+import { BeforeInsert, Column, Entity, ObjectIdColumn } from 'typeorm';
 
 @Entity('user')
 export class UserModel {
   @ObjectIdColumn()
-  _id: ObjectId = new ObjectId();
+  _id: ObjectId;
   @Column({ unique: true, type: 'text' })
   email: string;
   @Column({ unique: false, type: 'text' })
@@ -27,6 +28,7 @@ export class UserModel {
     this.name = user?.name;
     this.password = user?.password;
     this.role = user?.role;
+    this._id = new ObjectId();
   }
 
   toPlain() {

@@ -19,8 +19,8 @@ export class Base {
 
   properties(): Record<string, unknown> {
     const ownProperties: Record<string, unknown> = {};
-    for (const key of Object.keys(this)) {
-      ownProperties[key] = (this as unknown)[key];
+    for (const entrie of Object.entries(this)) {
+      ownProperties[entrie[0]] = entrie[1];
     }
     return ownProperties;
   }

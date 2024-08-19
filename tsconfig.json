@@ -15,7 +15,9 @@
       "@sources": ["src/data/sources"],
       "@utils": ["src/utils/index.ts"],
       "@domains": ["src/domains/index.ts"],
-      "@repositories": ["src/data/repositories/index.ts"]
+      "@repositories": ["src/data/repositories/index.ts"],
+      "@controllers": ["src/presenters/controllers"],
+      "@data": ["src/data/index.ts"]
     }
   }
 }

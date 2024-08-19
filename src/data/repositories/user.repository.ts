@@ -11,6 +11,7 @@ export class UsetRepository implements IUserRepository {
   repository: MongoRepository<UserModel>;
 
   constructor() {
+    console.log('------------');
     this.repository = MongoSource.getMongoRepository(UserModel);
   }
 
