@@ -1,4 +1,7 @@
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+import { join } from 'path';
+
+dotenv.config({ path: join(__dirname + '/../.env') });
 
 type Config = {
   DATABASE_URL: string;
@@ -8,6 +11,9 @@ type Config = {
   BCRYPT_SALT: number;
   PORT: number;
   SECRET_KEY: string;
+  REGION: string;
+  ACCOUNT: string;
+  NODE_ENV: string;
 };
 
 export const config: Config = {
@@ -18,4 +24,7 @@ export const config: Config = {
   SECRET_KEY: process.env.SECRET_KEY ?? '',
   BCRYPT_SALT: +(process.env.BCRYPT_SALT ?? 10),
   PORT: +(process.env.PORT ?? 3001),
+  REGION: process.env.REGION ?? '',
+  ACCOUNT: process.env.ACCOUNT ?? '',
+  NODE_ENV: process.env.NODE_ENV ?? '',
 };

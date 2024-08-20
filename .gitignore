@@ -1,4 +1,6 @@
 node_modules
+cdk/node_modules
+cdk/cdk_out
 dist
 package-lock.json
 .env

@@ -1,5 +1,5 @@
 import { Duration } from 'aws-cdk-lib';
-import { FunctionOptions } from 'aws-cdk-lib/aws-lambda';
+import { FunctionOptions, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 
@@ -29,7 +29,7 @@ export const LambdaConstruct = (scope: Construct, id: string, props: Partial<Pro
     timeout: Duration.minutes(15),
     memorySize: 300,
     retryAttempts: 0,
-    runtime: 'nodejs20.x',
+    runtime: Runtime.NODEJS_20_X,
     environment: {
       DATABASE_URL: config.DATABASE_URL,
       DATABASE_PASSWORD: config.DATABASE_PASSWORD,
