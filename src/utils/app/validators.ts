@@ -9,11 +9,24 @@ export function ValidateBody<T>(classType: new (...args: any[]) => T): MethodDec
 
     descriptor.value = async function (req: Request, res: Response, next: NextFunction) {
       try {
+        // Transform and validate the body against the given DTO class
         const instance = plainToClass(classType, req.body);
-        const errors: ValidationError[] = await validate(instance as object);
+        const errors: ValidationError[] = await validate(instance as object, {
+          whitelist: true,
+          forbidNonWhitelisted: true,
+          forbidUnknownValues: true,
+        });
 
         if (errors.length > 0) {
-          return res.status(400).json({ errors: errors.map((error) => Object.values(error.constraints || {})).flat() });
+          const formattedErrors = errors.map((error) => {
+            return {
+              property: error.property,
+              constraints: Object.values(error.constraints || {}),
+              children: error.children,
+            };
+          });
+
+          return res.status(400).json({ errors: formattedErrors });
         }
 
         return originalMethod.call(this, req, res, next);

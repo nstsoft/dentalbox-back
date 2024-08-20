@@ -11,8 +11,11 @@ export class User extends Base {
   address?: string | undefined;
   notes?: string | undefined;
   _id?: string;
+  workspace?: string;
 
-  constructor({ email, password, role, _id, name, address, notes }: RawUser) {
+  constructor(data: RawUser) {
+    const { email, password, role, _id, name, address, notes, workspace } = data;
+
     super();
     this.email = email;
     this.password = password;
@@ -21,6 +24,7 @@ export class User extends Base {
     this.name = name;
     this.address = address;
     this.notes = notes;
+    this.workspace = workspace;
   }
 
   comparePassword(password: string): Promise<boolean> {

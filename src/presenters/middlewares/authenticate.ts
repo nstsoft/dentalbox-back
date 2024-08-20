@@ -16,8 +16,9 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     Object.assign(req, { user: user.toObject() });
 
     return next();
-  } catch (err: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
     console.log(err);
-    return next(new Forbidden('Invalid token'));
+    return next(new Forbidden(err.name ?? 'Invalid token'));
   }
 };

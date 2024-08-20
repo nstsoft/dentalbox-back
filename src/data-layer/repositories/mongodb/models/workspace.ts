@@ -1,10 +1,11 @@
 import { WorkspaceType } from '@domains';
 import { removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
 
 @Entity('workspaces')
 export class WorkspaceModel {
+  @PrimaryColumn()
   @ObjectIdColumn()
   _id: ObjectId;
   @Column({ unique: true, type: 'text' })

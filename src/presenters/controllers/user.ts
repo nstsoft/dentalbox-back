@@ -1,23 +1,24 @@
-import { createUser, login, UserDto } from '@domains';
+import { createUser, getWorkspaceById, UserDto } from '@domains';
 import { BaseController, Controller, Get, Post, ValidateBody } from '@utils';
 import { Request } from 'express';
 
 import { authenticateToken } from '../middlewares';
 
-@Controller('/user', [authenticateToken])
+@Controller('/user')
 export class UserController extends BaseController {
   constructor() {
     super();
   }
 
-  @Get('/:id')
-  async get(req: Request) {
-    return req.user;
+  @Get('/me', [authenticateToken])
+  async me(req: Express.Request<true>) {
+    const workspace = await getWorkspaceById(req.user?.workspace);
+    return { user: req.user, workspace };
   }
 
-  @Post('/login')
-  async login(req: Request) {
-    return login(req.body.login, req.body.password);
+  @Get('/:id', [authenticateToken])
+  async get(req: Request) {
+    return req.user;
   }
 
   @Post('/')

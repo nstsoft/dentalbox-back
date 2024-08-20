@@ -1,7 +1,3 @@
-type ClassProperties<T> = {
-  [K in keyof T]: T[K] extends Function ? never : T[K];
-};
-
 export class Base {
   constructor(data?: unknown) {
     if (data) {
@@ -26,6 +22,7 @@ export class Base {
     for (const entrie of Object.entries(this)) {
       ownProperties[entrie[0]] = entrie[1];
     }
+
     return ownProperties;
   }
 

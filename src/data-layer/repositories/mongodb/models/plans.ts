@@ -1,9 +1,10 @@
 import { PlanPeriod } from '@domains';
 import { ObjectId } from 'mongodb';
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
 
 @Entity('plans')
 export class PlanModel {
+  @PrimaryColumn()
   @ObjectIdColumn()
   _id: ObjectId;
   @Column({ unique: false, type: 'string' })

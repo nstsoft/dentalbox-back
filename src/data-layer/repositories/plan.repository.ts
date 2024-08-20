@@ -1,21 +1,16 @@
-import { Plan } from '@domains';
-import { ObjectId } from 'mongodb';
+import { Plan, PlanType } from '@domains';
 import { MongoRepository } from 'typeorm';
 
 import { IPlanRepository } from '../interfaces';
+import { Repository } from './base';
 import { MongoSource, PlanModel } from './mongodb';
 
-export class PlanRepository implements IPlanRepository {
+export class PlanRepository extends Repository<PlanModel, Plan, PlanType> implements IPlanRepository {
   repository: MongoRepository<PlanModel>;
 
   constructor() {
+    super(PlanModel, Plan);
     this.repository = MongoSource.getMongoRepository(PlanModel);
-  }
-
-  async findOneById(id: string) {
-    const query = { _id: new ObjectId(id) };
-    const data = await this.repository.findOneBy(query);
-    return data && Plan.toDomain({ ...data, _id: data._id.toString() });
   }
 
   async findAll() {

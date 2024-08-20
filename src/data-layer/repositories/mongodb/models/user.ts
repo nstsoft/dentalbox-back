@@ -3,12 +3,11 @@ import { removeUndefinedProps } from '@utils';
 import bcryptjs from 'bcryptjs';
 import { config } from 'config';
 import { ObjectId } from 'mongodb';
-import { BeforeInsert, Column, Entity, ObjectIdColumn } from 'typeorm';
-
-import { WorkspaceModel } from './workspace';
+import { BeforeInsert, Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
 
 @Entity('users')
 export class UserModel {
+  @PrimaryColumn()
   @ObjectIdColumn()
   _id: ObjectId;
   @Column({ unique: true, type: 'text' })
@@ -19,8 +18,8 @@ export class UserModel {
   password: string;
   @Column({ type: 'enum', enum: UserRole, default: UserRole.doctor, array: false })
   role: UserRole;
-  @Column((type) => WorkspaceModel)
-  workspace: WorkspaceModel;
+  @Column()
+  workspace: ObjectId;
 
   @BeforeInsert()
   async hashPassword() {
@@ -32,6 +31,10 @@ export class UserModel {
     this.name = user?.name;
     this.password = user?.password;
     this.role = user?.role;
+    // if (user?.workspace) {
+    //   this.workspace = new ObjectId(user?.workspace);
+    // }
+
     this._id = new ObjectId();
   }
 

@@ -22,7 +22,7 @@ export class UserDataSource implements IUserSource {
     return this.repository.findOneOrFail(criteria);
   }
 
-  create(data: UserType): Promise<UserEntity> {
+  create(data: UserType & { workspace?: string }): Promise<UserEntity> {
     return this.repository.create(data);
   }
 

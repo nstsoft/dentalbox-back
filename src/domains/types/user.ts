@@ -15,10 +15,10 @@ export type UserType = {
   // phone: string;
   address?: string;
   notes?: string;
-  // createdAt?: Date;
-  // updatedAt?: Date;
+
   role: UserRole;
   password: string;
+  workspace?: string;
 };
 
 export type RawUser = UserType & {

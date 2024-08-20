@@ -2,9 +2,11 @@ import '@config';
 
 import { AuthenticationController, PlanController, UserController } from '@controllers';
 import { mongoErrorInterceptor } from '@src/presenters/middlewares';
+import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 const app = express();
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
