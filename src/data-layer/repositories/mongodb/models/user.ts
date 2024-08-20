@@ -5,7 +5,9 @@ import { config } from 'config';
 import { ObjectId } from 'mongodb';
 import { BeforeInsert, Column, Entity, ObjectIdColumn } from 'typeorm';
 
-@Entity('user')
+import { WorkspaceModel } from './workspace';
+
+@Entity('users')
 export class UserModel {
   @ObjectIdColumn()
   _id: ObjectId;
@@ -17,6 +19,8 @@ export class UserModel {
   password: string;
   @Column({ type: 'enum', enum: UserRole, default: UserRole.doctor, array: false })
   role: UserRole;
+  @Column((type) => WorkspaceModel)
+  workspace: WorkspaceModel;
 
   @BeforeInsert()
   async hashPassword() {

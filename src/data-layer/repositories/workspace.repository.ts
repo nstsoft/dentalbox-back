@@ -1,39 +1,39 @@
-import { User, UserType } from '@domains';
+import { Workspace, WorkspaceType } from '@domains';
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
 import { FindOptionsOrder, MongoRepository } from 'typeorm';
 
-import { IUserRepository } from '../interfaces';
-import { MongoSource, UserModel } from './mongodb';
+import { IWorkspaceRepository } from '../interfaces';
+import { MongoSource, WorkspaceModel } from './mongodb';
 
-export class UserRepository implements IUserRepository {
-  repository: MongoRepository<UserModel>;
+export class WorkspaceRepository implements IWorkspaceRepository {
+  repository: MongoRepository<WorkspaceModel>;
 
   constructor() {
-    this.repository = MongoSource.getMongoRepository(UserModel);
+    this.repository = MongoSource.getMongoRepository(WorkspaceModel);
   }
 
   async findOneById(id: string) {
     const query = { _id: new ObjectId(id) };
     const data = await this.repository.findOneBy(query);
-    return data && User.toDomain({ ...data, _id: data._id.toString() });
+    return data && Workspace.toDomain({ ...data, _id: data._id.toString() });
   }
 
-  async create(data: UserType) {
-    const created = new UserModel(data);
+  async create(data: WorkspaceType) {
+    const created = new WorkspaceModel(data);
     const saved = await this.repository.save(created);
-    return User.toDomain(saved);
+    return Workspace.toDomain(saved);
   }
 
   async delete(id: string | string[]) {
     return this.repository.delete(id);
   }
 
-  async findAll(criteria: Partial<UserType>, pagination?: Pagination) {
+  async findAll(criteria: Partial<WorkspaceType>, pagination?: Pagination) {
     const plain = deepParseObjectId(removeUndefinedProps(criteria));
 
     const params = Object.keys(plain).length ? { where: plain } : {};
-    const order: FindOptionsOrder<UserModel> = { _id: 'DESC' };
+    const order: FindOptionsOrder<WorkspaceModel> = { _id: 'DESC' };
 
     const [data, count] = await this.repository.findAndCount({
       ...params,
@@ -42,18 +42,18 @@ export class UserRepository implements IUserRepository {
       skip: pagination?.skip ?? 0,
     });
 
-    return { count, data: User.toBatchDomain(data) };
+    return { count, data: Workspace.toBatchDomain(data) };
   }
 
-  async findOneOrFail(criteria: UserType & { _id?: string }) {
+  async findOneOrFail(criteria: WorkspaceType & { _id?: string }) {
     if (criteria._id) {
       Object.assign(criteria, { _id: new ObjectId(criteria._id) });
     }
     const event = await this.repository.findOneByOrFail(criteria);
-    return User.toDomain(event);
+    return Workspace.toDomain(event);
   }
 
-  async updateOne(_id: string, data: Partial<UserType>) {
+  async updateOne(_id: string, data: Partial<WorkspaceType>) {
     return this.repository.update(_id, data);
   }
 }

@@ -1,5 +1,5 @@
-import { userSource } from '@src/data-layer';
 import { UserDto } from '@domains';
+import { userSource } from '@src/data-layer';
 import { generateToken } from '@utils';
 import { Unauthorized } from 'http-errors';
 

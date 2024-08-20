@@ -1,5 +1,5 @@
-import { UserEntity, UserType } from '@src/domains';
-import { Pagination } from '@src/utils';
+import { UserEntity, UserType } from '@domains';
+import { Pagination } from '@utils';
 
 import { IUserRepository, IUserSource } from '../interfaces';
 

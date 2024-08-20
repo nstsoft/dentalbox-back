@@ -1,6 +1,6 @@
 import '@config';
 
-import { AuthenticationController, UserController } from '@controllers';
+import { AuthenticationController, PlanController, UserController } from '@controllers';
 import { mongoErrorInterceptor } from '@src/presenters/middlewares';
 import express, { Request, Response } from 'express';
 
@@ -29,6 +29,7 @@ const apiRouter = express.Router();
 
 apiRouter.use(new UserController().route);
 apiRouter.use(new AuthenticationController().route);
+apiRouter.use(new PlanController().route);
 
 app.use('/api/v1', apiRouter);
 

@@ -1,22 +1,14 @@
 import bcryptjs from 'bcryptjs';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 import { RawUser, UserRole } from '../types';
 import { Base } from './Base';
 
 export class User extends Base {
-  @IsEmail()
-  @IsNotEmpty()
   email: string;
-  @IsString()
   name: string;
-  @IsString()
   password: string;
-  @IsString()
   role: UserRole;
-  @IsString()
   address?: string | undefined;
-  @IsString()
   notes?: string | undefined;
   _id?: string;
 
