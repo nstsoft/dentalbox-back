@@ -13,7 +13,7 @@ export class ApiGateway extends Construct {
     super(scope, id);
 
     this.restApi = new RestApi(this, 'dentalbox', {
-      restApiName: `dentalbox-${NODE_ENV}`,
+      restApiName: `dentalbox`,
       deployOptions: { stageName: NODE_ENV },
     });
 

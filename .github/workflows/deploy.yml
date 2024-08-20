@@ -1,0 +1,74 @@
+name: CDK Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - development
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Configures vars
+        run: |
+          echo "BCRYPT_SALT=${{vars.BCRYPT_SALT}}" >> $GITHUB_ENV
+          echo "REGION=${{vars.REGION}}" >> $GITHUB_ENV
+          echo "ACCOUNT=${{vars.ACCOUNT}}" >> $GITHUB_ENV
+          echo "DATABASE_URL=${{vars.DATABASE_URL}}" >> $GITHUB_ENV
+
+      - name: Set environment variable
+        run: |
+          if [[ "${GITHUB_REF}" == "refs/heads/master" ]]; then
+            echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD_PRODUCTION }}" >> $GITHUB_ENV
+            echo "NODE_ENV=production" >> $GITHUB_ENV
+            echo "DATABASE_USER=production" >> $GITHUB_ENV
+            echo "DATABASE=dentalbox-production" >> $GITHUB_ENV
+            echo "NODE_ENV=production" >> $GITHUB_ENV
+            echo "SECRET_KEY=${{secrets.SECRET_KEY_PRODUCTION}}" >> $GITHUB_ENV
+
+          elif [[ "${GITHUB_REF}" == "refs/heads/staging" ]]; then
+            echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD_DEVELOPMENT }}" >> $GITHUB_ENV
+            echo "NODE_ENV=staging" >> $GITHUB_ENV
+            echo "DATABASE_USER=development" >> $GITHUB_ENV
+            echo "DATABASE=dentalbox-development" >> $GITHUB_ENV
+            echo "NODE_ENV=staging" >> $GITHUB_ENV
+            echo "SECRET_KEY=${{secrets.SECRET_KEY_STAGING}}" >> $GITHUB_ENV
+          else
+            echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD_DEVELOPMENT }}" >> $GITHUB_ENV
+            echo "NODE_ENV=development" >> $GITHUB_ENV
+            echo "DATABASE_USER=development" >> $GITHUB_ENV
+            echo "DATABASE=dentalbox-development" >> $GITHUB_ENV
+            echo "NODE_ENV=development" >> $GITHUB_ENV
+            echo "SECRET_KEY=${{secrets.SECRET_KEY_DEVELOPMENT}}" >> $GITHUB_ENV
+          fi
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install AWS CDK
+        run: yarn global add aws-cdk
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{vars.REGION}}
+
+      - name: Deploy CDK Stack
+        run: cd ./aws && yarn install && cdk deploy --require-approval never
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
