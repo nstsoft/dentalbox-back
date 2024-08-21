@@ -12,21 +12,27 @@ export class User extends Base {
   _id: string;
   workspaces: string[] = [];
   roles: { workspace: string; role: UserRole }[] = [];
+  surname: string;
+  secondName: string;
+  phone?: string;
 
   constructor(data: RawUser) {
-    const { email, password, roles, _id, name, address, notes, workspaces } = data;
-
     super();
-    this.email = email;
-    this.password = password;
+    this._id = data._id;
+    this.email = data.email;
+    this.password = data.password;
 
-    this._id = _id;
-    this.name = name;
-    this.address = address;
-    this.notes = notes;
+    this.name = data.name;
+    this.address = data.address;
+    this.notes = data.notes;
+    this.surname = data.surname;
+    this.secondName = data.secondName;
+    this.phone = data.phone;
 
-    this.workspaces = workspaces;
-    this.roles = roles;
+    if (data.workspaces) {
+      this.workspaces = data.workspaces;
+      this.roles = data.roles;
+    }
   }
 
   comparePassword(password: string): Promise<boolean> {

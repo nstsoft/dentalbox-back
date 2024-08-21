@@ -9,10 +9,10 @@ export enum UserRole {
 
 export type UserType = {
   name: string;
-  // surname: string;
-  // secondName: string;
+  surname: string;
+  secondName: string;
   email: string;
-  // phone: string;
+  phone?: string;
   address?: string;
   notes?: string;
 

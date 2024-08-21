@@ -14,4 +14,8 @@ export class UserDto {
   @IsEnum(UserRole)
   role: UserRole;
   _id?: string;
+  @IsString()
+  surname: string;
+  @IsString()
+  secondName: string;
 }

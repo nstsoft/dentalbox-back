@@ -8,3 +8,9 @@ export function generateToken(payload: object, expires?: string | number): strin
 export function verifyToken(token: string): object | string {
   return jwt.verify(token, config.SECRET_KEY);
 }
+
+export const getAuthTokens = async (_id: string) => {
+  const [authToken, refreshToken] = await Promise.all([generateToken({ _id }), generateToken({ _id }, '10d')]);
+
+  return { authToken, refreshToken };
+};

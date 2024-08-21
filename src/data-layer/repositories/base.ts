@@ -68,7 +68,6 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
       Object.assign(criteria, { _id: new ObjectId(criteria._id) });
     }
     const found = await this.repository.findOneByOrFail(criteria);
-    console.log('----------------', JSON.stringify(found, null, 2));
     return this.domain.toDomain(found);
   }
 }

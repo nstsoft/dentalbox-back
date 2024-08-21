@@ -10,14 +10,17 @@ export class UserController extends BaseController {
     super();
   }
 
-  @Get('/me', [authenticateToken])
-  async me(req: Express.Request<true>) {
-    const workspace = await getWorkspaceById(req.user?.workspace);
-    return { user: req.user, workspace };
+  @Get('/me/:workspace', [authenticateToken])
+  async me(req: Express.AuthenticatedRequest<{ workspace: string }>) {
+    const { workspace } = req.params;
+    if (req.user.workspaces.includes(workspace)) {
+      const workspaceData = await getWorkspaceById(workspace);
+      return { user: req.user, workspace: workspaceData };
+    }
   }
 
   @Get('/:id', [authenticateToken])
-  async get(req: Request) {
+  async get(req: Express.AuthenticatedRequest) {
     return req.user;
   }
 

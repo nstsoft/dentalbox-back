@@ -41,6 +41,12 @@ export default [
       'import/first': 'error',
       'import/no-duplicates': 'error',
       '@typescript-eslint/no-empty-object-type': 'warn',
+      '@typescript-eslint/no-explicit-any': [
+        'error',
+        {
+          ignoreRestArgs: true,
+        },
+      ],
       'lines-between-class-members': [
         'error',
         {

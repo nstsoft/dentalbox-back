@@ -14,6 +14,10 @@ type Config = {
   REGION: string;
   ACCOUNT: string;
   NODE_ENV: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  GOOGLE_REDIRECT_URI: string;
+  AUTH_REDIRECT_URL: string;
 };
 
 export const config: Config = {
@@ -27,4 +31,8 @@ export const config: Config = {
   REGION: process.env.REGION ?? '',
   ACCOUNT: process.env.ACCOUNT ?? '',
   NODE_ENV: process.env.NODE_ENV ?? '',
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ?? '',
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ?? '',
+  GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI ?? '',
+  AUTH_REDIRECT_URL: process.env.AUTH_REDIRECT_URL ?? '',
 };
