@@ -7,24 +7,26 @@ export class User extends Base {
   email: string;
   name: string;
   password: string;
-  role: UserRole;
   address?: string | undefined;
   notes?: string | undefined;
-  _id?: string;
-  workspace?: string;
+  _id: string;
+  workspaces: string[] = [];
+  roles: { workspace: string; role: UserRole }[] = [];
 
   constructor(data: RawUser) {
-    const { email, password, role, _id, name, address, notes, workspace } = data;
+    const { email, password, roles, _id, name, address, notes, workspaces } = data;
 
     super();
     this.email = email;
     this.password = password;
-    this.role = role;
+
     this._id = _id;
     this.name = name;
     this.address = address;
     this.notes = notes;
-    this.workspace = workspace;
+
+    this.workspaces = workspaces;
+    this.roles = roles;
   }
 
   comparePassword(password: string): Promise<boolean> {

@@ -14,7 +14,7 @@ export type PlanType = {
 };
 
 export type RawPlan = PlanType & {
-  _id?: string;
+  _id: string;
 };
 
 export type PlanEntity = BaseEntity<RawPlan>;

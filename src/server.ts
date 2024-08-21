@@ -41,11 +41,9 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use(mongoErrorInterceptor);
 
-app.use(function clientErrorHandler(err: any, req: Request, res: Response, _: unknown) {
-  return res.status(err.status || 500).json({
-    message: err.message,
-    errror: { ...err },
-  });
+app.use(function clientErrorHandler(error: any, req: Request, res: Response, _: unknown) {
+  console.log(error);
+  return res.status(error.status || 500).json({ message: error.message, error });
 });
 
 export { app };

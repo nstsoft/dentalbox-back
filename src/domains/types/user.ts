@@ -16,13 +16,13 @@ export type UserType = {
   address?: string;
   notes?: string;
 
-  role: UserRole;
+  roles: { workspace: string; role: UserRole }[];
   password: string;
-  workspace?: string;
+  workspaces: string[];
 };
 
 export type RawUser = UserType & {
-  _id?: string;
+  _id: string;
 };
 
 export type UserEntity = BaseEntity<RawUser> & {

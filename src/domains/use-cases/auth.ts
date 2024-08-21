@@ -21,7 +21,11 @@ export const login = async (email: string, password: string) => {
 export const register = async (data: RegistrationDto) => {
   const workspace = await workspaceSource.create({ ...data.workspace, image: '' });
 
-  const user = await userSource.create({ ...data.user, workspace: workspace._id });
+  const user = await userSource.create({
+    ...data.user,
+    workspaces: [workspace._id],
+    roles: [{ workspace: workspace._id, role: data.user.role }],
+  });
 
   return { workspace, user };
 };

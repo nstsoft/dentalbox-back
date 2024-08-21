@@ -6,7 +6,7 @@ export class Plan extends Base {
   totalMembers: number;
   price: number;
   type: PlanPeriod;
-  _id?: string;
+  _id: string;
 
   constructor({ totalMembers, name, price, _id, type }: RawPlan) {
     super();

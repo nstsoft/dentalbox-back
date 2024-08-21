@@ -28,7 +28,7 @@ export class Base {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static toDomain<T extends typeof Base>(this: T, data?: Partial<InstanceType<T> & { _id?: any }>) {
-    return new this({ ...data, _id: data?._id?.toString() }) as InstanceType<T>;
+    return new this(JSON.parse(JSON.stringify(data))) as InstanceType<T>;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

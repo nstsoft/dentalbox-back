@@ -23,6 +23,7 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
   async findOneById(id: string) {
     const query = { _id: new ObjectId(id) };
     const data = await this.repository.findOneBy(query);
+
     return data && this.domain.toDomain({ ...data, _id: data._id.toString() });
   }
 
@@ -67,7 +68,7 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
       Object.assign(criteria, { _id: new ObjectId(criteria._id) });
     }
     const found = await this.repository.findOneByOrFail(criteria);
-
+    console.log('----------------', JSON.stringify(found, null, 2));
     return this.domain.toDomain(found);
   }
 }

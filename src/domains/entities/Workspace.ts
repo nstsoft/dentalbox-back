@@ -5,7 +5,7 @@ export class Workspace extends Base {
   name: string;
   image: string;
   description: string;
-  _id?: string;
+  _id: string;
 
   constructor({ name, image, description, _id }: RawWorkspace) {
     super();

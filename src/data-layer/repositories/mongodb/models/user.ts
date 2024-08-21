@@ -5,6 +5,13 @@ import { config } from 'config';
 import { ObjectId } from 'mongodb';
 import { BeforeInsert, Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
 
+export class Role {
+  @Column()
+  workspace: ObjectId;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.doctor, array: true })
+  role: UserRole;
+}
+
 @Entity('users')
 export class UserModel {
   @PrimaryColumn()
@@ -16,10 +23,10 @@ export class UserModel {
   name: string;
   @Column({ unique: false, type: 'text' })
   password: string;
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.doctor, array: false })
-  role: UserRole;
-  @Column()
-  workspace: ObjectId;
+  @Column({ array: true })
+  roles: Role[];
+  @Column({ array: true })
+  workspaces?: ObjectId[];
 
   @BeforeInsert()
   async hashPassword() {
@@ -30,10 +37,10 @@ export class UserModel {
     this.email = user?.email;
     this.name = user?.name;
     this.password = user?.password;
-    this.role = user?.role;
-    // if (user?.workspace) {
-    //   this.workspace = new ObjectId(user?.workspace);
-    // }
+    if (user?.workspaces) {
+      this.roles = user.roles.map(({ workspace, role }) => ({ workspace: new ObjectId(workspace), role }));
+      this.workspaces = user.workspaces.map((id) => new ObjectId(id));
+    }
 
     this._id = new ObjectId();
   }
