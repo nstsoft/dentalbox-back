@@ -3,7 +3,7 @@ import { removeUndefinedProps } from '@utils';
 import bcryptjs from 'bcryptjs';
 import { config } from 'config';
 import { ObjectId } from 'mongodb';
-import { BeforeInsert, BeforeUpdate, Column, Entity, Index, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
 
 export class Role {
   @Column()
@@ -36,7 +36,6 @@ export class UserModel {
   @Column({ array: true })
   roles: Role[];
   @Column({ array: true })
-  @Index()
   workspaces?: ObjectId[];
   @Column()
   createdAt: Date;
@@ -60,6 +59,7 @@ export class UserModel {
   }
 
   constructor(user: UserType) {
+    this._id = new ObjectId();
     this.email = user?.email;
     this.name = user?.name;
     this.secondName = user?.secondName;
@@ -72,8 +72,6 @@ export class UserModel {
       this.roles = user.roles.map(({ workspace, role }) => ({ workspace: new ObjectId(workspace), role }));
       this.workspaces = user.workspaces.map((id) => new ObjectId(id));
     }
-
-    this._id = new ObjectId();
   }
 
   toPlain() {

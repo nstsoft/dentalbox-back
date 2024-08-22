@@ -1,4 +1,4 @@
-import { User, UserType } from '@domains';
+import { User, type UserType } from '@domains';
 
 import { IUserRepository } from '../interfaces';
 import { Repository } from './base';

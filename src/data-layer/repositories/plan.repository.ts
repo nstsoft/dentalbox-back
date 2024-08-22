@@ -1,4 +1,4 @@
-import { Plan, PlanType } from '@domains';
+import { Plan, type PlanType } from '@domains';
 import { MongoRepository } from 'typeorm';
 
 import { IPlanRepository } from '../interfaces';

@@ -1,0 +1,9 @@
+import { type CabinetEntity, type CabinetType } from '../../domains/types';
+import { IDataSource } from './base.source';
+
+export interface ICabinetRepository extends IDataSource<CabinetEntity, CabinetType> {
+  findByUserId(id: string): Promise<CabinetEntity[]>;
+}
+export interface ICabinetSource extends IDataSource<CabinetEntity, CabinetType> {
+  findByUserId(id: string): Promise<CabinetEntity[]>;
+}
