@@ -13,6 +13,6 @@ export class PlanModel {
   totalMembers: number;
   @Column({ unique: false, type: 'number' })
   price: number;
-  @Column({ type: 'enum', enum: PlanPeriod, default: PlanPeriod.monthly, array: false })
+  @Column({ type: 'enum', enum: PlanPeriod, default: PlanPeriod.m, array: false })
   type: PlanPeriod;
 }

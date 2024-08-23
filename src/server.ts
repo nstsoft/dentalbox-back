@@ -42,8 +42,8 @@ app.get('/', (req: Request, res: Response) => {
 app.use(mongoErrorInterceptor);
 
 app.use(function clientErrorHandler(error: any, req: Request, res: Response, _: unknown) {
-  console.log(error.message);
-  return res.status(error.status || 500).json({ message: error.message, error });
+  console.log(error);
+  return res.status(error.statusCode ?? error.status ?? 500).json({ message: error.message, error });
 });
 
 export { app };

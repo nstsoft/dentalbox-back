@@ -27,7 +27,6 @@ export class AuthenticationController extends BaseController {
   @Get('/google/callback')
   async googleCallback(req: Request, res: Response) {
     const code = req.query.code as string;
-    console.log('dddd', req.query);
     const url = await authenticateWithGoogle(code);
     res.redirect(url);
   }

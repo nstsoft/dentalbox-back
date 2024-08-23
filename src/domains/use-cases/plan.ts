@@ -5,5 +5,5 @@ export const getPlanById = (id: string) => {
 };
 
 export const getAllPlans = async () => {
-  return planSource.findAll();
+  return planSource.getAll();
 };

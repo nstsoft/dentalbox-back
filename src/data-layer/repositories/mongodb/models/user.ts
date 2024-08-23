@@ -41,6 +41,12 @@ export class UserModel {
   createdAt: Date;
   @Column()
   updatedAt: Date;
+  @Column({ unique: false, type: 'boolean', default: false })
+  isVerified: boolean;
+  @Column({ unique: false, type: 'boolean', default: true })
+  enableNotifications: boolean;
+  @Column({ unique: false, type: 'number' })
+  otp: number;
 
   @BeforeInsert()
   async hashPassword() {
@@ -68,6 +74,9 @@ export class UserModel {
     this.address = user?.address;
     this.notes = user?.notes;
     this.password = user?.password;
+    this.otp = user?.otp;
+    this.isVerified = user?.isVerified;
+    this.enableNotifications = user?.enableNotifications;
     if (user?.workspaces) {
       this.roles = user.roles.map(({ workspace, role }) => ({ workspace: new ObjectId(workspace), role }));
       this.workspaces = user.workspaces.map((id) => new ObjectId(id));

@@ -1,17 +1,16 @@
-import { IPlanRepository, IPlanSource } from '../interfaces';
+import type { PlanEntity, PlanType } from '@domains';
 
-export class PlanDataSource implements IPlanSource {
-  private repository: IPlanRepository;
+import { IPlanRepository, IPlanSource } from '../interfaces';
+import { BaseSource } from './Base';
+
+export class PlanDataSource extends BaseSource<PlanEntity, PlanType> implements IPlanSource {
+  protected repository: IPlanRepository;
 
   constructor(repository: IPlanRepository) {
-    this.repository = repository;
+    super(repository);
   }
 
-  findAll() {
-    return this.repository.findAll();
-  }
-
-  findOneById(id: string) {
-    return this.repository.findOneById(id);
+  getAll() {
+    return this.repository.getAll();
   }
 }

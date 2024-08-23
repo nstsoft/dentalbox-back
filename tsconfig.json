@@ -20,7 +20,8 @@
       "@repositories": ["src/data-layer/repositories/index.ts"],
       "@controllers": ["src/presenters/controllers"],
       "@data": ["src/data-layer/index.ts"],
-      "@middlewares": ["src/presenters/middlewares/index.ts"]
+      "@middlewares": ["src/presenters/middlewares/index.ts"],
+      "@errors": ["src/errors/index.ts"]
     }
   }
 }

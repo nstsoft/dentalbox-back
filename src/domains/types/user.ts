@@ -15,16 +15,17 @@ export type UserType = {
   phone?: string;
   address?: string;
   notes?: string;
-
   roles: { workspace: string; role: UserRole }[];
   password: string;
   workspaces: string[];
+  isVerified: boolean;
+  enableNotifications: boolean;
+  otp: number;
 };
 
-export type RawUser = UserType & {
-  _id: string;
-};
+export type RawUser = UserType & { _id: string };
 
 export type UserEntity = BaseEntity<RawUser> & {
   comparePassword(password: string): Promise<boolean>;
+  excludeWorkspaces(currentWorkspace: string): void;
 };

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PlanType, UserType, WorkspaceType } from '@domains';
+import { PlanType, SubscriptionType, UserType, WorkspaceType } from '@domains';
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
 import { type FindManyOptions, type FindOptionsOrder, MongoRepository } from 'typeorm';
 
-import { MongoSource, PlanModel, UserModel, WorkspaceModel } from './mongodb';
+import { MongoSource, PlanModel, SubscriptionModel, UserModel, WorkspaceModel } from './mongodb';
 
-type Models = UserModel | PlanModel | WorkspaceModel;
-type EntityData = UserType | WorkspaceType | PlanType;
+type Models = UserModel | PlanModel | WorkspaceModel | SubscriptionModel;
+type EntityData = UserType | WorkspaceType | PlanType | SubscriptionType;
 
 export abstract class Repository<M extends Models, Domain, Data extends EntityData> {
   repository: MongoRepository<M>;

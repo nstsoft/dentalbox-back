@@ -57,6 +57,16 @@ export default [
           ],
         },
       ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '_[a-z-A-Z]',
+          caughtErrorsIgnorePattern: '_[a-z-A-Z]',
+          destructuredArrayIgnorePattern: '_[a-z-A-Z]',
+          varsIgnorePattern: '_[a-z-A-Z]',
+          // ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 ];

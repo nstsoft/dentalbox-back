@@ -10,8 +10,6 @@ export type CabinetType = {
   workspace: string;
 };
 
-export type RawCabinet = CabinetType & {
-  _id: string;
-};
+export type RawCabinet = CabinetType & { _id: string };
 
 export type CabinetEntity = BaseEntity<RawCabinet>;

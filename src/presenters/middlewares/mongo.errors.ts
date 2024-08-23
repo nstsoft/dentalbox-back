@@ -1,38 +1,26 @@
 import { NextFunction, Request, Response } from 'express';
-import { MongoError } from 'mongodb'; // Import MongoDB error types if using MongoDB native driver
 
-// Define a type for custom error handling
 interface CustomError extends Error {
   status?: number;
   details?: unknown;
 }
 
 export function mongoErrorInterceptor(err: CustomError, req: Request, res: Response, next: NextFunction) {
-  if (err instanceof MongoError) {
-    console.error('MongoDB Error:', err.message); // Log the error details
+  let { status = 500, message } = err;
+  let isMongoError = false;
 
-    // Customize the response based on error type
-    let status = 500;
-    let message = 'An unexpected error occurred.';
-
-    if (err.code === 11000) {
-      // Duplicate key error
-      status = 400;
-      message = 'Duplicate key error.';
-    } else if (err.name === 'ValidationError') {
-      status = 400;
-      message = 'Validation error.';
-    }
-
-    const mongoErr: CustomError = err;
-
+  if (err.name === 'EntityNotFoundError') {
+    status = 404;
+    message = 'Entity not found.';
+    isMongoError = true;
+  }
+  if (isMongoError) {
     res.status(status).json({
       status,
       message,
-      details: mongoErr.details || mongoErr.message,
+      details: err.details || err.message,
     });
   } else {
-    // For other types of errors, pass them to the default error handler
     next(err);
   }
 }

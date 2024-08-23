@@ -6,8 +6,6 @@ export type WorkspaceType = {
   description: string;
 };
 
-export type RawWorkspace = WorkspaceType & {
-  _id: string;
-};
+export type RawWorkspace = WorkspaceType & { _id: string };
 
 export type WorkspaceEntity = BaseEntity<RawWorkspace>;

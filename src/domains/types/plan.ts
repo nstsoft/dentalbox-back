@@ -1,9 +1,9 @@
 import { BaseEntity } from '@utils';
 
 export enum PlanPeriod {
-  weekly = 'weekly',
-  monthly = 'monthly',
-  annual = 'annual',
+  w = 'w',
+  m = 'm',
+  y = 'y',
 }
 
 export type PlanType = {
@@ -13,8 +13,6 @@ export type PlanType = {
   type: PlanPeriod;
 };
 
-export type RawPlan = PlanType & {
-  _id: string;
-};
+export type RawPlan = PlanType & { _id: string };
 
 export type PlanEntity = BaseEntity<RawPlan>;

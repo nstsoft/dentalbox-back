@@ -15,19 +15,23 @@ export class User extends Base {
   surname: string;
   secondName: string;
   phone?: string;
+  enableNotifications: boolean = true;
+  otp: number;
+  isVerified: boolean = false;
 
   constructor(data: RawUser) {
     super();
     this._id = data._id;
     this.email = data.email;
     this.password = data.password;
-
     this.name = data.name;
     this.address = data.address;
     this.notes = data.notes;
     this.surname = data.surname;
     this.secondName = data.secondName;
     this.phone = data.phone;
+    this.otp = data?.otp;
+    this.isVerified = data?.isVerified;
 
     if (data.workspaces) {
       this.workspaces = data.workspaces;
@@ -40,6 +44,10 @@ export class User extends Base {
   }
 
   toObject() {
-    return { ...this.properties(), password: '******' } as RawUser;
+    return { ...this.properties(), password: '******', otp: 0 } as RawUser;
+  }
+
+  excludeWorkspaces(currentWorkspace: string) {
+    this.workspaces = this.workspaces.includes(currentWorkspace) ? [currentWorkspace] : [];
   }
 }

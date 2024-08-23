@@ -1,31 +1,56 @@
-import { userSource, workspaceSource } from '@data';
-import { RegistrationDto } from '@domains';
-import { getAuthTokens } from '@utils';
+import { planSource, subscriptionSource, userSource, workspaceSource } from '@data';
+import { RegistrationDto, SubscriptionStatus } from '@domains';
+import { AuthError } from '@errors';
+import { generateOTP, getAuthTokens } from '@utils';
 import axios, { AxiosError } from 'axios';
 import { config } from 'config';
-import { Unauthorized } from 'http-errors';
+import moment from 'moment';
 import querystring from 'querystring';
 
 export const login = async (email: string, password: string) => {
-  const user = await userSource.findOneOrFail({ email });
+  try {
+    const user = await userSource.findOneOrFail({ email });
 
-  if (!(await user.comparePassword(password))) {
-    throw new Unauthorized('Invalid credentials');
+    if (!(await user.comparePassword(password))) {
+      throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
+    }
+
+    return getAuthTokens(user._id).then((resp) => ({ ...resp, user: user.toObject() }));
+  } catch (_err) {
+    throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
   }
-
-  return getAuthTokens(user._id).then((resp) => ({ ...resp, user: user.toObject() }));
 };
 
 export const register = async (data: RegistrationDto) => {
-  const workspace = await workspaceSource.create({ ...data.workspace, image: '' });
+  const [workspace, plan] = await Promise.all([
+    workspaceSource.create({ ...data.workspace, image: '' }),
+    planSource.findOneById(data.plan),
+  ]);
+
+  if (!plan) {
+    throw new Error('Plan not found');
+  }
 
   const user = await userSource.create({
     ...data.user,
+    isVerified: false,
+    otp: generateOTP(),
+    enableNotifications: true,
     workspaces: [workspace._id],
     roles: [{ workspace: workspace._id, role: data.user.role }],
   });
 
-  return { workspace, user };
+  const activeTill = moment().add(1, 'w').add(1, plan.type);
+
+  const subscription = await subscriptionSource.create({
+    workspace: workspace._id,
+    interval: plan.type,
+    plan: plan._id,
+    activeTill: activeTill.unix(),
+    status: SubscriptionStatus.pending,
+  });
+
+  return { workspace, user, subscription };
 };
 
 export const getGoogleAuthUrl = () => {
@@ -62,6 +87,7 @@ export const authenticateWithGoogle = async (code: string) => {
     const user = await userSource.findOneOrFail({ email: userInfo.email });
     const tokens = await getAuthTokens(user._id);
     Object.assign(query, tokens);
+    Object.assign(query, { user: user.toJson() });
   } catch (err: unknown) {
     Object.assign(query, { status: 403, error: (err as AxiosError)?.response?.data ?? (err as Error).message ?? err });
   }
