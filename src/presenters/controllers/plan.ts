@@ -1,4 +1,4 @@
-import { getAllPlans, getPlanById } from '@domains';
+import { getAllPlans, getPlanById } from '@useCases';
 import { BaseController, Controller, Get } from '@utils';
 import { Request } from 'express';
 

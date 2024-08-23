@@ -37,6 +37,7 @@ jobs:
             echo "DATABASE=dentalbox-production" >> $GITHUB_ENV
             echo "NODE_ENV=production" >> $GITHUB_ENV
             echo "SECRET_KEY=${{secrets.SECRET_KEY_PRODUCTION}}" >> $GITHUB_ENV
+            echo "IMAGES_BUCKET=${{vars.IMAGES_BUCKET_PRODUCTION}}" >> $GITHUB_ENV
 
           elif [[ "${GITHUB_REF}" == "refs/heads/staging" ]]; then
             echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD_DEVELOPMENT }}" >> $GITHUB_ENV
@@ -45,6 +46,7 @@ jobs:
             echo "DATABASE=dentalbox-development" >> $GITHUB_ENV
             echo "NODE_ENV=staging" >> $GITHUB_ENV
             echo "SECRET_KEY=${{secrets.SECRET_KEY_STAGING}}" >> $GITHUB_ENV
+            echo "IMAGES_BUCKET=${{vars.IMAGES_BUCKET_DEVELOPMENT}}" >> $GITHUB_ENV
           else
             echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD_DEVELOPMENT }}" >> $GITHUB_ENV
             echo "NODE_ENV=development" >> $GITHUB_ENV
@@ -52,6 +54,7 @@ jobs:
             echo "DATABASE=dentalbox-development" >> $GITHUB_ENV
             echo "NODE_ENV=development" >> $GITHUB_ENV
             echo "SECRET_KEY=${{secrets.SECRET_KEY_DEVELOPMENT}}" >> $GITHUB_ENV
+            echo "IMAGES_BUCKET=${{vars.IMAGES_BUCKET_DEVELOPMENT}}" >> $GITHUB_ENV
           fi
 
       - name: Install dependencies

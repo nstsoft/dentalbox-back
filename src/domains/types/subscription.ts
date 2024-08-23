@@ -5,6 +5,7 @@ export enum SubscriptionStatus {
   pending = 'pending',
   expired = 'expired',
   cancelled = 'cancelled',
+  trial = 'trial',
 }
 
 export type SubscriptionType = {

@@ -1,6 +1,7 @@
 import { planSource, subscriptionSource, userSource, workspaceSource } from '@data';
 import { RegistrationDto, SubscriptionStatus } from '@domains';
 import { AuthError } from '@errors';
+import { uploadWorkspaceImage } from '@services';
 import { generateOTP, getAuthTokens } from '@utils';
 import axios, { AxiosError } from 'axios';
 import { config } from 'config';
@@ -10,25 +11,33 @@ import querystring from 'querystring';
 export const login = async (email: string, password: string) => {
   try {
     const user = await userSource.findOneOrFail({ email });
+    const workspacesData = await workspaceSource.getManyByIds(user.workspaces);
 
     if (!(await user.comparePassword(password))) {
       throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
     }
 
-    return getAuthTokens(user._id).then((resp) => ({ ...resp, user: user.toObject() }));
+    return getAuthTokens(user._id).then((resp) => ({
+      ...resp,
+      user: user.toObject(),
+      workspaces: workspacesData.map((w) => ({
+        id: w._id,
+        name: w.name,
+        image: w.image,
+      })),
+    }));
   } catch (_err) {
     throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
   }
 };
 
-export const register = async (data: RegistrationDto) => {
-  const [workspace, plan] = await Promise.all([
-    workspaceSource.create({ ...data.workspace, image: '' }),
-    planSource.findOneById(data.plan),
-  ]);
+export const register = async (data: RegistrationDto, workspaceImage?: Express.Multer.File) => {
+  const plan = await planSource.findOneOrFail({ _id: data.plan });
+  const workspace = await workspaceSource.create({ ...data.workspace, image: '' });
 
-  if (!plan) {
-    throw new Error('Plan not found');
+  if (workspaceImage) {
+    const { location } = await uploadWorkspaceImage(workspace._id, workspaceImage.buffer);
+    await workspaceSource.updateOne(workspace._id, { image: location });
   }
 
   const user = await userSource.create({
@@ -40,14 +49,14 @@ export const register = async (data: RegistrationDto) => {
     roles: [{ workspace: workspace._id, role: data.user.role }],
   });
 
-  const activeTill = moment().add(1, 'w').add(1, plan.type);
+  const activeTill = moment().add(1, 'w');
 
   const subscription = await subscriptionSource.create({
     workspace: workspace._id,
     interval: plan.type,
     plan: plan._id,
     activeTill: activeTill.unix(),
-    status: SubscriptionStatus.pending,
+    status: SubscriptionStatus.trial,
   });
 
   return { workspace, user, subscription };

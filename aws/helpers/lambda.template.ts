@@ -29,6 +29,7 @@ export const LambdaConstruct = (scope: Construct, id: string, props: Partial<Pro
       REGION: config.REGION,
       ACCOUNT: config.ACCOUNT,
       NODE_ENV: config.NODE_ENV,
+      IMAGES_BUCKET: config.IMAGES_BUCKET,
     },
     layers: [],
     ...props,

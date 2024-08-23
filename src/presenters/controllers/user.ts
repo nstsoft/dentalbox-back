@@ -1,5 +1,6 @@
-import { confirmOtp, createUser, getSubscriptionByWorkspace, getWorkspaceById, UserDto } from '@domains';
+import { UserDto } from '@domains';
 import { AuthError } from '@errors';
+import { confirmOtp, createUser, getSubscriptionByWorkspace, getWorkspaceById } from '@useCases';
 import { BaseController, Controller, Get, Patch, Post, ValidateBody } from '@utils';
 import { Request } from 'express';
 
@@ -17,8 +18,9 @@ export class UserController extends BaseController {
     if (req.user.workspaces.includes(workspace)) {
       const workspaceData = await getWorkspaceById(workspace);
       const subscriptionData = await getSubscriptionByWorkspace(workspace);
-      console.log(subscriptionData);
       return { user: req.user, workspace: workspaceData, subscriptionData };
+    } else {
+      throw new AuthError('Forbidden', { message: 'You do not have access to this workspace' }, 403);
     }
   }
 

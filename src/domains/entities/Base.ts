@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export class Base {
   constructor(data?: unknown) {
     if (data) {
@@ -26,12 +27,10 @@ export class Base {
     return ownProperties;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static toDomain<T extends typeof Base>(this: T, data?: Partial<InstanceType<T> & { _id?: any }>) {
     return new this(JSON.parse(JSON.stringify(data))) as InstanceType<T>;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static toBatchDomain<T extends typeof Base>(this: T, data: Partial<InstanceType<T> & { _id?: any }>[]) {
     return data.map((item) => Base.toDomain({ ...item, _id: item?._id?.toString() })) as InstanceType<T>[];
   }

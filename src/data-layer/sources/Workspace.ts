@@ -9,4 +9,8 @@ export class WorkspaceDataSource extends BaseSource<WorkspaceEntity, WorkspaceTy
   constructor(repository: IWorkspaceRepository) {
     super(repository);
   }
+
+  getManyByIds(ids: string[]) {
+    return this.repository.getManyByIds(ids);
+  }
 }
