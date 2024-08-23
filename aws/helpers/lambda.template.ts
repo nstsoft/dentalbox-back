@@ -1,5 +1,5 @@
 import { Duration } from 'aws-cdk-lib';
-import { FunctionOptions, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { FunctionOptions, ILayerVersion, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 
@@ -10,6 +10,7 @@ type Props = {
   functionName: string;
   entry: string;
   handler: string;
+  layers?: ILayerVersion[];
 } & FunctionOptions;
 
 export const LambdaConstruct = (scope: Construct, id: string, props: Partial<Props>) =>
@@ -29,5 +30,6 @@ export const LambdaConstruct = (scope: Construct, id: string, props: Partial<Pro
       ACCOUNT: config.ACCOUNT,
       NODE_ENV: config.NODE_ENV,
     },
+    layers: [],
     ...props,
   });
