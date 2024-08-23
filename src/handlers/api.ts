@@ -4,7 +4,7 @@ import serverlessExpress from '@codegenie/serverless-express';
 import { MongoSource } from '@data';
 import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda';
 
-import { app } from './server';
+import { app } from '../server';
 
 let serverlessExpressInstance: Handler;
 

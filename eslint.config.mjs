@@ -20,7 +20,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ['.config/*', './eslint.config.mjs', './tsconfig.json', './dist'],
+    ignores: ['.config/*', './eslint.config.mjs', './tsconfig.json', './dist', './lambdas', './cdk.out'],
     files: ['**/*.{js,mjs,cjs,ts}'],
     plugins: {
       '@typescript-eslint': typescriptEslint,

@@ -7,8 +7,8 @@ const s3config: S3ClientConfig = { region: config.REGION };
 if (config.LAUNCH === 'local') {
   Object.assign(s3config, {
     credentials: {
-      accessKeyId: config.AWS_ACCESS_KEY_ID_LOCAL,
-      secretAccessKey: config.AWS_SECRET_ACCESS_KEY_LOCAL,
+      accessKeyId: config.AWS_ACCESS_KEY_ID,
+      secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
     },
   });
 }

@@ -19,8 +19,8 @@ type Config = {
   GOOGLE_REDIRECT_URI: string;
   AUTH_REDIRECT_URL: string;
   IMAGES_BUCKET: string;
-  AWS_ACCESS_KEY_ID_LOCAL: string;
-  AWS_SECRET_ACCESS_KEY_LOCAL: string;
+  AWS_ACCESS_KEY_ID: string;
+  AWS_SECRET_ACCESS_KEY: string;
   LAUNCH: string;
 };
 
@@ -40,7 +40,7 @@ export const config: Config = {
   GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI ?? '',
   AUTH_REDIRECT_URL: process.env.AUTH_REDIRECT_URL ?? '',
   IMAGES_BUCKET: process.env.IMAGES_BUCKET ?? '',
-  AWS_ACCESS_KEY_ID_LOCAL: process.env.AWS_ACCESS_KEY_ID_LOCAL ?? '',
-  AWS_SECRET_ACCESS_KEY_LOCAL: process.env.AWS_SECRET_ACCESS_KEY_LOCAL ?? '',
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID ?? '',
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY ?? '',
   LAUNCH: process.env.LAUNCH ?? '',
 };

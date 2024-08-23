@@ -4,3 +4,13 @@ cdk/cdk_out
 dist
 package-lock.json
 .env
+cdk.out
+lambdas
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out

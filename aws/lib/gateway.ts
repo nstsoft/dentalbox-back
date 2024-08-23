@@ -15,6 +15,7 @@ export class ApiGateway extends Construct {
     this.restApi = new RestApi(this, 'dentalbox', {
       restApiName: `dentalbox`,
       deployOptions: { stageName: NODE_ENV },
+      binaryMediaTypes: ['*/*'],
     });
 
     const integration = new LambdaIntegration(handler, { proxy: true, allowTestInvoke: false });

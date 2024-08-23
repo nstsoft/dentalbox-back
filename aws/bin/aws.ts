@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
+import 'reflect-metadata';
 
 import * as cdk from 'aws-cdk-lib';
 
