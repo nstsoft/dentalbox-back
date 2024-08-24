@@ -1,5 +1,5 @@
 import { planSource, subscriptionSource, userSource, workspaceSource } from '@data';
-import { RegistrationDto, SubscriptionStatus } from '@domains';
+import { RegistrationDto, SubscriptionStatus, UserStatus } from '@domains';
 import { AuthError } from '@errors';
 import { uploadWorkspaceImage } from '@services';
 import { generateOTP, getAuthTokens } from '@utils';
@@ -38,6 +38,7 @@ export const register = async (data: RegistrationDto, workspaceImage?: Express.M
 
   const user = await userSource.create({
     ...data.user,
+    status: UserStatus.active,
     isVerified: false,
     otp: generateOTP(),
     enableNotifications: true,

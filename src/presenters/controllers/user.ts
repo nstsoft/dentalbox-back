@@ -1,8 +1,6 @@
-import { UserDto } from '@domains';
 import { AuthError } from '@errors';
-import { confirmOtp, createUser, getSubscriptionByWorkspace, getWorkspaceById } from '@useCases';
-import { BaseController, Controller, Get, Patch, Post, ValidateBody } from '@utils';
-import { Request } from 'express';
+import { confirmOtp, getSubscriptionByWorkspace, getWorkspaceById } from '@useCases';
+import { BaseController, Controller, Get, Patch } from '@utils';
 
 import { authenticateToken } from '../middlewares';
 
@@ -27,12 +25,6 @@ export class UserController extends BaseController {
   @Get('/:id', [authenticateToken])
   async get(req: Express.AuthenticatedRequest) {
     return req.user;
-  }
-
-  @Post('/')
-  @ValidateBody(UserDto)
-  async create(req: Request<unknown, unknown, UserDto>) {
-    return createUser(req.body);
   }
 
   @Patch('/confirm-otp', [authenticateToken])

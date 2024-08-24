@@ -1,6 +1,6 @@
 import bcryptjs from 'bcryptjs';
 
-import { RawUser, UserRole } from '../types';
+import { RawUser, UserRole, UserStatus } from '../types';
 import { Base } from './Base';
 
 export class User extends Base {
@@ -18,6 +18,7 @@ export class User extends Base {
   enableNotifications: boolean = true;
   otp: number;
   isVerified: boolean = false;
+  status: UserStatus;
 
   constructor(data: RawUser) {
     super();
@@ -32,6 +33,7 @@ export class User extends Base {
     this.phone = data.phone;
     this.otp = data?.otp;
     this.isVerified = data?.isVerified;
+    this.status = data?.status;
 
     if (data.workspaces) {
       this.workspaces = data.workspaces;

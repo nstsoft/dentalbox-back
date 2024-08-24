@@ -1,9 +1,10 @@
-import { UserDto } from '@domains';
+import { UserDto, UserStatus } from '@domains';
 import { userSource } from '@src/data-layer';
 import { generateOTP } from '@utils';
 
 export const createUser = (data: UserDto) => {
   return userSource.create({
+    status: data.status ?? UserStatus.pending,
     ...data,
     roles: [],
     workspaces: [],

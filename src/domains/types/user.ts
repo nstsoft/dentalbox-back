@@ -7,6 +7,12 @@ export enum UserRole {
   assistant = 'assistant',
 }
 
+export enum UserStatus {
+  active = 'active',
+  inactive = 'inactive',
+  pending = 'pending',
+}
+
 export type UserType = {
   name: string;
   surname: string;
@@ -21,6 +27,7 @@ export type UserType = {
   isVerified: boolean;
   enableNotifications: boolean;
   otp: number;
+  status: UserStatus;
 };
 
 export type RawUser = UserType & { _id: string };

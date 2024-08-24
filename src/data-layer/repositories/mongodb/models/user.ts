@@ -1,4 +1,4 @@
-import { UserRole, UserType } from '@domains';
+import { UserRole, UserStatus, UserType } from '@domains';
 import { removeUndefinedProps } from '@utils';
 import bcryptjs from 'bcryptjs';
 import { config } from 'config';
@@ -35,6 +35,8 @@ export class UserModel {
   notes?: string;
   @Column({ array: true })
   roles: Role[];
+  @Column({ array: false, enum: UserStatus, default: UserStatus.pending })
+  status: UserStatus;
   @Column({ array: true })
   workspaces?: ObjectId[];
   @Column()
@@ -77,6 +79,7 @@ export class UserModel {
     this.otp = user?.otp;
     this.isVerified = user?.isVerified;
     this.enableNotifications = user?.enableNotifications;
+    this.status = user?.status;
     if (user?.workspaces) {
       this.roles = user.roles.map(({ workspace, role }) => ({ workspace: new ObjectId(workspace), role }));
       this.workspaces = user.workspaces.map((id) => new ObjectId(id));

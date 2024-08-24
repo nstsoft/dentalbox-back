@@ -1,6 +1,6 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-import { UserRole } from '../types';
+import { UserRole, UserStatus } from '../types';
 
 export class UserDto {
   @IsEmail()
@@ -18,4 +18,8 @@ export class UserDto {
   surname: string;
   @IsString()
   secondName: string;
+  @IsString()
+  @IsEnum(UserStatus)
+  @IsOptional()
+  status?: UserStatus;
 }
