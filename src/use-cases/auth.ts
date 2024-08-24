@@ -20,11 +20,7 @@ export const login = async (email: string, password: string) => {
     return getAuthTokens(user._id).then((resp) => ({
       ...resp,
       user: user.toObject(),
-      workspaces: workspacesData.map((w) => ({
-        id: w._id,
-        name: w.name,
-        image: w.image,
-      })),
+      workspaces: workspacesData.map((w) => ({ id: w._id, name: w.name, image: w.image })),
     }));
   } catch (_err) {
     throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
@@ -49,17 +45,26 @@ export const register = async (data: RegistrationDto, workspaceImage?: Express.M
     roles: [{ workspace: workspace._id, role: data.user.role }],
   });
 
-  const activeTill = moment().add(1, 'w');
+  const [tokens, workspaces] = await Promise.all([
+    getAuthTokens(user._id),
+    workspaceSource.getManyByIds(user.workspaces),
+  ]);
 
   const subscription = await subscriptionSource.create({
     workspace: workspace._id,
     interval: plan.type,
     plan: plan._id,
-    activeTill: activeTill.unix(),
+    activeTill: moment().add(1, 'w').unix(),
     status: SubscriptionStatus.trial,
   });
 
-  return { workspace, user, subscription };
+  return {
+    ...tokens,
+    workspace,
+    user,
+    subscription,
+    workspaces: workspaces.map((w) => ({ id: w._id, name: w.name, image: w.image })),
+  };
 };
 
 export const getGoogleAuthUrl = () => {
