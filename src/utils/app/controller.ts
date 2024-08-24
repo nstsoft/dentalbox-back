@@ -33,9 +33,11 @@ export function BaseMethod(
       try {
         const result = await originalMethod.call(this, req, res, next);
         if (!res.headersSent) {
+          console.log('----------------------');
           return res.json(result);
         }
       } catch (error) {
+        console.log('ddddddddddddaagggggggg');
         return next(error);
       }
     };

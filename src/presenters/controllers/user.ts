@@ -10,16 +10,12 @@ export class UserController extends BaseController {
     super();
   }
 
-  @Get('/me/:workspace', [authenticateToken])
+  @Get('/me', [authenticateToken])
   async me(req: Express.AuthenticatedRequest<{ workspace: string }>) {
-    const { workspace } = req.params;
-    if (req.user.workspaces.includes(workspace)) {
-      const workspaceData = await getWorkspaceById(workspace);
-      const subscriptionData = await getSubscriptionByWorkspace(workspace);
-      return { user: req.user, workspace: workspaceData, subscriptionData };
-    } else {
-      throw new AuthError('Forbidden', { message: 'You do not have access to this workspace' }, 403);
-    }
+    const workspace = req.headers.workspace as string;
+    const workspaceData = await getWorkspaceById(workspace);
+    const subscriptionData = await getSubscriptionByWorkspace(workspace);
+    return { user: req.user, workspace: workspaceData, subscriptionData };
   }
 
   @Get('/:id', [authenticateToken])

@@ -5,17 +5,24 @@ import { NextFunction, Request, Response } from 'express';
 import { Forbidden } from 'http-errors';
 
 export const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
+  console.log('dddddddddddddddddddddddddddddddddddddddddddddddd');
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
+
+  const workspace = req.headers.workspace as string;
 
   if (!token) return next(new Forbidden('Invalid token'));
 
   try {
     const verified = verifyToken(token) as { _id: string };
     const user = await userSource.findOneOrFail({ _id: verified._id });
-    if (req.params.workspace) {
-      user.excludeWorkspaces(req.params.workspace);
+
+    if (!user.workspaces.includes(workspace)) {
+      return next(new AuthError('Forbidden', { message: 'Forbidden resource' }, 403));
     }
+
+    user.excludeWorkspaces(workspace);
+
     if (!user.isVerified) {
       return next(new AuthError('Unverified', { message: 'Please verify your account' }, 403));
     }
@@ -25,7 +32,8 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     return next();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    console.log(err);
-    return next(new AuthError('Unauthorized', { message: 'Invalid token' }, 403));
+    return next(
+      new AuthError(err.name === 'TokenExpiredError' ? 'Expired' : 'Unauthorized', { message: 'Invalid token' }, 403),
+    );
   }
 };
