@@ -50,7 +50,6 @@ export class User extends Base {
   }
 
   excludeWorkspaces(currentWorkspace: string) {
-    console.log(this.workspaces, currentWorkspace);
     this.workspaces = this.workspaces.includes(currentWorkspace) ? [currentWorkspace] : [];
   }
 }

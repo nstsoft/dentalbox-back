@@ -20,18 +20,18 @@ export class Base {
 
   properties(): Record<string, unknown> {
     const ownProperties: Record<string, unknown> = {};
-    for (const entrie of Object.entries(this)) {
-      ownProperties[entrie[0]] = entrie[1];
+    for (const entry of Object.entries(this)) {
+      ownProperties[entry[0]] = entry[1];
     }
 
     return ownProperties;
   }
 
-  static toDomain<T extends typeof Base>(this: T, data?: Partial<InstanceType<T> & { _id?: any }>) {
+  static toDomain<T extends typeof Base>(this: T, data?: any) {
     return new this(JSON.parse(JSON.stringify(data))) as InstanceType<T>;
   }
 
-  static toBatchDomain<T extends typeof Base>(this: T, data: Partial<InstanceType<T> & { _id?: any }>[]) {
+  static toBatchDomain<T extends typeof Base>(this: T, data: any[]) {
     return data.map((item) => Base.toDomain({ ...item, _id: item?._id?.toString() })) as InstanceType<T>[];
   }
 }

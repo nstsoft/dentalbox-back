@@ -25,24 +25,3 @@ export function RolesGuard(...roles: string[]) {
     };
   };
 }
-
-// // Middleware to check roles
-// export function RoleGuaaaaard(req: Request, res: Response, next: NextFunction) {
-//   const routeHandler = req.route?.stack.find((layer: any) => layer.name === 'bound dispatch')?.handle;
-//   const roles: string[] = Reflect.getMetadata(ROLES_KEY, routeHandler);
-//   console.log('rrrrrrrrrrrrrrpppppppppppppppppp');
-//   const workspaceId = req.headers.workspace as string;
-//   const {
-//     user: { roles: userRoles },
-//   } = req as unknown as { user: { roles: { workspace: string; role: string }[] } };
-//   console.log('rrrrrrrrrrrrrr', userRoles);
-//   const workspaceRoles: string[] = userRoles
-//     .filter(({ workspace }) => workspace === workspaceId)
-//     .map(({ role }) => role);
-
-//   if (roles.some((item) => workspaceRoles.includes(item))) {
-//     return next(new Error());
-//   }
-
-//   next();
-// }

@@ -1,5 +1,6 @@
 import {
   CabinetRepository,
+  InvitationRepository,
   MongoSource,
   PlanRepository,
   SubscriptionRepository,
@@ -8,6 +9,7 @@ import {
 } from './repositories';
 import {
   CabinetDataSource,
+  InvitationDataSource,
   PlanDataSource,
   SubscriptionDataSource,
   UserDataSource,
@@ -15,9 +17,10 @@ import {
 } from './sources';
 
 const userSource = new UserDataSource(new UserRepository());
+const invitationSource = new InvitationDataSource(new InvitationRepository());
 const planSource = new PlanDataSource(new PlanRepository());
 const workspaceSource = new WorkspaceDataSource(new WorkspaceRepository());
 const cabinetSource = new CabinetDataSource(new CabinetRepository());
 const subscriptionSource = new SubscriptionDataSource(new SubscriptionRepository());
 
-export { cabinetSource, MongoSource, planSource, subscriptionSource, userSource, workspaceSource };
+export { cabinetSource, invitationSource, MongoSource, planSource, subscriptionSource, userSource, workspaceSource };

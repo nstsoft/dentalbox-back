@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PlanType, SubscriptionType, UserType, WorkspaceType } from '@domains';
+import type { InvitationType, PlanType, SubscriptionType, UserType, WorkspaceType } from '@domains';
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
 import { type FindManyOptions, type FindOptionsOrder, MongoRepository } from 'typeorm';
 
-import { MongoSource, PlanModel, SubscriptionModel, UserModel, WorkspaceModel } from './mongodb';
+import { InvitationModel, MongoSource, PlanModel, SubscriptionModel, UserModel, WorkspaceModel } from './mongodb';
 
-type Models = UserModel | PlanModel | WorkspaceModel | SubscriptionModel;
-type EntityData = UserType | WorkspaceType | PlanType | SubscriptionType;
+type Models = UserModel | PlanModel | WorkspaceModel | SubscriptionModel | InvitationModel;
+type EntityData = UserType | WorkspaceType | PlanType | SubscriptionType | InvitationType;
 
 export abstract class Repository<M extends Models, Domain, Data extends EntityData> {
   repository: MongoRepository<M>;
@@ -69,5 +69,23 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
     }
     const found = await this.repository.findOneByOrFail(criteria);
     return this.domain.toDomain(found);
+  }
+
+  async findOne(criteria: Partial<Data & { _id?: string }>) {
+    if (criteria._id) {
+      Object.assign(criteria, { _id: new ObjectId(criteria._id) });
+    }
+    const found = await this.repository.findOne({ where: criteria });
+    return found && this.domain.toDomain(found);
+  }
+
+  async upsert(criteria: Partial<Data & { _id?: string }>, data: Partial<Data>) {
+    if (criteria._id) {
+      Object.assign(criteria, { _id: new ObjectId(criteria._id) });
+    }
+    await this.repository.updateOne({ criteria }, { $set: data }, { upsert: true });
+
+    const found = await this.repository.findOne({ where: criteria });
+    return found && this.domain.toDomain(found);
   }
 }

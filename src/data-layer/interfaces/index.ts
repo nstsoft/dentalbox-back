@@ -1,5 +1,6 @@
 export * from './base.source';
 export * from './cabinet';
+export * from './invitation';
 export * from './plan';
 export * from './subscription';
 export * from './user';

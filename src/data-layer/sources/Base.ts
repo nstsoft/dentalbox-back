@@ -31,4 +31,12 @@ export abstract class BaseSource<T, C> implements IDataSource<T, C> {
   delete(id: string | string[]) {
     return this.repository.delete(id);
   }
+
+  findOne(criteria: Partial<T>) {
+    return this.repository.findOne(criteria);
+  }
+
+  upsert(criteria: Partial<T>, data: Partial<T>) {
+    return this.repository.upsert(criteria, data);
+  }
 }

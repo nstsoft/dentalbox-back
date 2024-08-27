@@ -1,5 +1,5 @@
 import { RegistrationDto } from '@domains';
-import { authenticateWithGoogle, getGoogleAuthUrl, login, register } from '@useCases';
+import { authenticateWithGoogle, getAuthenticationData, getGoogleAuthUrl, login, register } from '@useCases';
 import { BaseController, Controller, Get, Post, ValidateBody } from '@utils';
 import { Request, Response } from 'express';
 import multer from 'multer';
@@ -12,13 +12,16 @@ export class AuthenticationController extends BaseController {
 
   @Post('/login')
   async login(req: Request) {
-    return login(req.body.login, req.body.password);
+    const user = await login(req.body.login, req.body.password);
+    return getAuthenticationData(user);
   }
 
   @Post('/register', [upload.single('workspaceImage')])
   @ValidateBody(RegistrationDto)
   async register(req: Request<unknown, unknown, RegistrationDto>) {
-    return register(req.body, req.file);
+    const response = await register(req.body, req.file);
+    const authData = await getAuthenticationData(response.user);
+    return { ...response, ...authData };
   }
 
   @Get('/google')

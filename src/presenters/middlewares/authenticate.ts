@@ -5,7 +5,6 @@ import { NextFunction, Request, Response } from 'express';
 import { Forbidden } from 'http-errors';
 
 export const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
-  console.log('dddddddddddddddddddddddddddddddddddddddddddddddd');
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -28,6 +27,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     }
 
     Object.assign(req, { user: user.toObject() });
+    Object.assign(req, { workspace });
 
     return next();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

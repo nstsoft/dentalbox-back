@@ -22,6 +22,7 @@ type Config = {
   AWS_ACCESS_KEY_ID: string;
   AWS_SECRET_ACCESS_KEY: string;
   LAUNCH: string;
+  INVITATION_LINK: string;
 };
 
 export const config: Config = {
@@ -43,4 +44,5 @@ export const config: Config = {
   AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID ?? '',
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY ?? '',
   LAUNCH: process.env.LAUNCH ?? '',
+  INVITATION_LINK: process.env.INVITATION_LINK ?? '',
 };

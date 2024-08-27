@@ -1,6 +1,14 @@
+import { AcceptInvitationDto, InviteUserDto, UserRole } from '@domains';
 import { AuthError } from '@errors';
-import { confirmOtp, getSubscriptionByWorkspace, getWorkspaceById } from '@useCases';
-import { BaseController, Controller, Get, Patch } from '@utils';
+import {
+  acceptInvitation,
+  confirmOtp,
+  getAuthenticationData,
+  getSubscriptionByWorkspace,
+  getWorkspaceById,
+  inviteUser,
+} from '@useCases';
+import { BaseController, Controller, Get, Patch, Post, RolesGuard, ValidateBody } from '@utils';
 
 import { authenticateToken } from '../middlewares';
 
@@ -29,5 +37,20 @@ export class UserController extends BaseController {
       throw new AuthError('Unverified', { message: 'Invalid otp code' }, 403);
     }
     return confirmOtp(req.user._id);
+  }
+
+  @RolesGuard('admin')
+  @ValidateBody(InviteUserDto)
+  @Post('/invite', [authenticateToken])
+  async inviteUser(req: Express.AuthenticatedRequest<unknown, unknown, { email: string; role: UserRole }>) {
+    return inviteUser(req.body.email, req.workspace, req.body.role);
+  }
+
+  @ValidateBody(AcceptInvitationDto)
+  @Patch('/accept-invitation')
+  async acceptInvitation(req: Express.AuthenticatedRequest<unknown, unknown, AcceptInvitationDto>) {
+    const invitation = await acceptInvitation(req.body);
+    const authData = await getAuthenticationData(invitation.user);
+    return { ...invitation, ...authData };
   }
 }

@@ -14,6 +14,11 @@ export function mongoErrorInterceptor(err: CustomError, req: Request, res: Respo
     message = 'Entity not found.';
     isMongoError = true;
   }
+  if (err.name === 'MongoBulkWriteError') {
+    status = 400;
+    isMongoError = true;
+  }
+
   if (isMongoError) {
     res.status(status).json({
       status,

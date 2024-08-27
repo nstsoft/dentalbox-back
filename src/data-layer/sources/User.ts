@@ -1,4 +1,4 @@
-import type { UserEntity, UserType } from '@domains';
+import { type UserEntity, type UserType } from '@domains';
 
 import { IUserRepository, IUserSource } from '../interfaces';
 import { BaseSource } from './Base';

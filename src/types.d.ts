@@ -13,6 +13,7 @@ declare global {
       Locals extends Record<string, any> = Record<string, any>,
     > extends ExpressRequest<P, ResBody, ReqBody, ReqQuery, Locals> {
       user: User & { _id: string; workspaces: string[] };
+      workspace: string;
     }
   }
 }

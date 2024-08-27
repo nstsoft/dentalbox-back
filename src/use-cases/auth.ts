@@ -1,5 +1,5 @@
 import { planSource, subscriptionSource, userSource, workspaceSource } from '@data';
-import { RegistrationDto, SubscriptionStatus, UserStatus } from '@domains';
+import { RegistrationDto, SubscriptionStatus, UserEntity, UserStatus } from '@domains';
 import { AuthError } from '@errors';
 import { uploadWorkspaceImage } from '@services';
 import { generateOTP, getAuthTokens } from '@utils';
@@ -8,20 +8,27 @@ import { config } from 'config';
 import moment from 'moment';
 import querystring from 'querystring';
 
+export const getAuthenticationData = async (user: UserEntity) => {
+  const [workspacesData, tokens] = await Promise.all([
+    workspaceSource.getManyByIds(user.workspaces),
+    getAuthTokens(user._id),
+  ]);
+
+  return {
+    ...tokens,
+    user: user.toObject(),
+    workspaces: workspacesData.map((w) => ({ id: w._id, name: w.name, image: w.image })),
+  };
+};
+
 export const login = async (email: string, password: string) => {
   try {
     const user = await userSource.findOneOrFail({ email });
-    const workspacesData = await workspaceSource.getManyByIds(user.workspaces);
 
     if (!(await user.comparePassword(password))) {
       throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
     }
-
-    return getAuthTokens(user._id).then((resp) => ({
-      ...resp,
-      user: user.toObject(),
-      workspaces: workspacesData.map((w) => ({ id: w._id, name: w.name, image: w.image })),
-    }));
+    return user;
   } catch (_err) {
     throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
   }
@@ -46,11 +53,6 @@ export const register = async (data: RegistrationDto, workspaceImage?: Express.M
     roles: [{ workspace: workspace._id, role: data.user.role }],
   });
 
-  const [tokens, workspaces] = await Promise.all([
-    getAuthTokens(user._id),
-    workspaceSource.getManyByIds(user.workspaces),
-  ]);
-
   const subscription = await subscriptionSource.create({
     workspace: workspace._id,
     interval: plan.type,
@@ -59,13 +61,7 @@ export const register = async (data: RegistrationDto, workspaceImage?: Express.M
     status: SubscriptionStatus.trial,
   });
 
-  return {
-    ...tokens,
-    workspace,
-    user,
-    subscription,
-    workspaces: workspaces.map((w) => ({ id: w._id, name: w.name, image: w.image })),
-  };
+  return { user, workspace, subscription };
 };
 
 export const getGoogleAuthUrl = () => {

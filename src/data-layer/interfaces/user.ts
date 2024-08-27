@@ -1,4 +1,5 @@
-import { type UserEntity, type UserType } from '../../domains/types';
+import { type UserEntity, type UserType } from '@domains';
+
 import { IDataSource, IRepositorySource } from './base.source';
 
 export interface IUserRepository extends IRepositorySource<UserEntity, UserType> {}
