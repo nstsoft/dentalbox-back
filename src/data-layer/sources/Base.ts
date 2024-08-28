@@ -1,4 +1,5 @@
 import type { Pagination } from '@utils';
+import { FindOptionsWhere } from 'typeorm';
 
 import { IDataSource, IRepositorySource } from '../interfaces';
 export abstract class BaseSource<T, C> implements IDataSource<T, C> {
@@ -16,7 +17,7 @@ export abstract class BaseSource<T, C> implements IDataSource<T, C> {
     return this.repository.findOneById(id);
   }
 
-  findOneOrFail(criteria: Partial<T & { _id: string }>) {
+  findOneOrFail(criteria: FindOptionsWhere<T & { _id?: string }>) {
     return this.repository.findOneOrFail(criteria);
   }
 
@@ -32,7 +33,7 @@ export abstract class BaseSource<T, C> implements IDataSource<T, C> {
     return this.repository.delete(id);
   }
 
-  findOne(criteria: Partial<T>) {
+  findOne(criteria: FindOptionsWhere<T & { _id?: string }>) {
     return this.repository.findOne(criteria);
   }
 

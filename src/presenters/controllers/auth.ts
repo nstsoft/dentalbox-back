@@ -1,4 +1,4 @@
-import { RegistrationDto } from '@domains';
+import { LoginDto, RegistrationDto } from '@domains';
 import { authenticateWithGoogle, getAuthenticationData, getGoogleAuthUrl, login, register } from '@useCases';
 import { BaseController, Controller, Get, Post, ValidateBody } from '@utils';
 import { Request, Response } from 'express';
@@ -11,6 +11,7 @@ export class AuthenticationController extends BaseController {
   }
 
   @Post('/login')
+  @ValidateBody(LoginDto)
   async login(req: Request) {
     const user = await login(req.body.login, req.body.password);
     return getAuthenticationData(user);

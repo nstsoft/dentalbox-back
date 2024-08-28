@@ -14,3 +14,10 @@ export class RegistrationDto {
   @IsString()
   plan: string;
 }
+
+export class LoginDto {
+  @IsString()
+  login: string;
+  @IsString()
+  password: string;
+}

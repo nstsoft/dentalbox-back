@@ -1,5 +1,6 @@
 import { AcceptInvitationDto, InvitationStatus, UserDto, UserRole, UserStatus } from '@domains';
 import { InvitationAlreadySent, InvitationError, InvitationExpired, InvitationNotExists } from '@errors';
+import { sendInvitationLink, sentOtp } from '@services';
 import { invitationSource, subscriptionSource, userSource } from '@src/data-layer';
 import { generateOTP } from '@utils';
 import { config } from 'config';
@@ -22,10 +23,6 @@ export const confirmOtp = (_id: string) => {
   return userSource.updateOne(_id, { isVerified: true });
 };
 
-export const sendInvitationLink = (invitation: string, existed: boolean, email: string) => {
-  return config.INVITATION_LINK + `?invitation=${invitation}&existed=${existed}&email=${email}`;
-};
-
 export const inviteUser = async (email: string, workspace: string, role: UserRole) => {
   const [existedInvitation, existedUser] = await Promise.all([
     invitationSource.findOne({ email, workspace }),
@@ -36,16 +33,17 @@ export const inviteUser = async (email: string, workspace: string, role: UserRol
     throw new InvitationError(InvitationAlreadySent, 'Invitation already sent');
   }
 
-  const activeTill = moment().add(1, 'w').unix();
   const invitation = await invitationSource.create({
     email,
     workspace,
     userRole: role,
-    activeTill,
+    activeTill: moment().add(1, 'w').unix(),
     status: InvitationStatus.pending,
   });
 
-  return sendInvitationLink(invitation._id, !!existedUser, email);
+  const invitationLink = config.INVITATION_LINK + `?invitation=${invitation}&existed=${!!existedUser}&email=${email}`;
+
+  return sendInvitationLink(invitationLink, email);
 };
 
 export const acceptInvitation = async (data: AcceptInvitationDto) => {
@@ -72,20 +70,24 @@ export const acceptInvitation = async (data: AcceptInvitationDto) => {
       throw BadRequest('Password is required');
     }
 
+    const otp = generateOTP();
+
     user = await userSource.create({
+      otp,
       password: data.password,
       email: invitation.email,
       secondName: data.secondName ?? '',
       surname: data.surname ?? '',
       address: data.address,
       status: UserStatus.active,
-      otp: generateOTP(),
       isVerified: false,
       name: data.name ?? '',
       workspaces: updatedWorkspaces,
       roles: updatedRoles,
       enableNotifications: false,
     });
+
+    await sentOtp(user, otp);
   }
 
   return { user, subscription: await subscriptionSource.findOneByWorkspace(user.workspaces[0]) };

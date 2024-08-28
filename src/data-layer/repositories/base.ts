@@ -2,7 +2,7 @@
 import type { InvitationType, PlanType, SubscriptionType, UserType, WorkspaceType } from '@domains';
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
-import { type FindManyOptions, type FindOptionsOrder, MongoRepository } from 'typeorm';
+import { type FindManyOptions, type FindOptionsOrder, type FindOptionsWhere, MongoRepository } from 'typeorm';
 
 import { InvitationModel, MongoSource, PlanModel, SubscriptionModel, UserModel, WorkspaceModel } from './mongodb';
 
@@ -63,17 +63,17 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
     return this.repository.update(_id, parsed as any);
   }
 
-  async findOneOrFail(criteria: Partial<Data & { _id?: string }>) {
+  async findOneOrFail(criteria: FindOptionsWhere<Data & { _id?: string }>) {
     if (criteria._id) {
-      Object.assign(criteria, { _id: new ObjectId(criteria._id) });
+      Object.assign(criteria, { _id: new ObjectId(criteria._id as string) });
     }
     const found = await this.repository.findOneByOrFail(criteria);
     return this.domain.toDomain(found);
   }
 
-  async findOne(criteria: Partial<Data & { _id?: string }>) {
-    if (criteria._id) {
-      Object.assign(criteria, { _id: new ObjectId(criteria._id) });
+  async findOne(criteria: FindOptionsWhere<Data & { _id?: string }>) {
+    if (criteria && criteria._id) {
+      Object.assign(criteria, { _id: new ObjectId(criteria._id as string) });
     }
     const found = await this.repository.findOne({ where: criteria });
     return found && this.domain.toDomain(found);

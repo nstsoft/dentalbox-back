@@ -1,7 +1,8 @@
 import { planSource, subscriptionSource, userSource, workspaceSource } from '@data';
-import { RegistrationDto, SubscriptionStatus, UserEntity, UserStatus } from '@domains';
+import { RegistrationDto, SubscriptionStatus, UserEntity, UserRole, UserStatus } from '@domains';
 import { AuthError } from '@errors';
-import { uploadWorkspaceImage } from '@services';
+import { googleProvider } from '@providers';
+import { sentOtp, uploadWorkspaceImage } from '@services';
 import { generateOTP, getAuthTokens } from '@utils';
 import axios, { AxiosError } from 'axios';
 import { config } from 'config';
@@ -21,11 +22,11 @@ export const getAuthenticationData = async (user: UserEntity) => {
   };
 };
 
-export const login = async (email: string, password: string) => {
+export const login = async (login: string, password: string) => {
   try {
-    const user = await userSource.findOneOrFail({ email });
+    const user = await userSource.findOneByLogin(login);
 
-    if (!(await user.comparePassword(password))) {
+    if (!user || !(await user.comparePassword(password))) {
       throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
     }
     return user;
@@ -43,56 +44,44 @@ export const register = async (data: RegistrationDto, workspaceImage?: Express.M
     await workspaceSource.updateOne(workspace._id, { image: location });
   }
 
+  const otp = generateOTP();
+
   const user = await userSource.create({
     ...data.user,
     status: UserStatus.active,
     isVerified: false,
-    otp: generateOTP(),
+    otp,
     enableNotifications: true,
     workspaces: [workspace._id],
-    roles: [{ workspace: workspace._id, role: data.user.role }],
+    roles: [{ workspace: workspace._id, role: UserRole.admin }],
   });
 
-  const subscription = await subscriptionSource.create({
-    workspace: workspace._id,
-    interval: plan.type,
-    plan: plan._id,
-    activeTill: moment().add(1, 'w').unix(),
-    status: SubscriptionStatus.trial,
-  });
+  const [subscription] = await Promise.all([
+    subscriptionSource.create({
+      workspace: workspace._id,
+      interval: plan.type,
+      plan: plan._id,
+      activeTill: moment().add(1, 'w').unix(),
+      status: SubscriptionStatus.trial,
+    }),
+    sentOtp(user, otp),
+  ]);
 
   return { user, workspace, subscription };
 };
 
 export const getGoogleAuthUrl = () => {
-  const params = {
-    client_id: config.GOOGLE_CLIENT_ID,
-    redirect_uri: config.GOOGLE_REDIRECT_URI,
-    response_type: 'code',
-    scope: 'profile email',
-  };
-
-  return `https://accounts.google.com/o/oauth2/v2/auth?${querystring.stringify(params)}`;
+  return googleProvider.getGoogleAuthUrl();
 };
 
 export const authenticateWithGoogle = async (code: string) => {
-  const { data } = await axios.post(
-    'https://oauth2.googleapis.com/token',
-    querystring.stringify({
-      client_id: config.GOOGLE_CLIENT_ID,
-      client_secret: config.GOOGLE_CLIENT_SECRET,
-      code,
-      grant_type: 'authorization_code',
-      redirect_uri: config.GOOGLE_REDIRECT_URI,
-    }),
-  );
-  const accessToken = data.access_token;
+  const { access_token } = await googleProvider.getToken(code);
 
   const query = { provider: 'google', status: 200 };
 
   try {
     const { data: userInfo } = await axios.get(
-      `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${accessToken}`,
+      `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`,
     );
 
     const user = await userSource.findOneOrFail({ email: userInfo.email });

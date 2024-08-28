@@ -23,6 +23,11 @@ type Config = {
   AWS_SECRET_ACCESS_KEY: string;
   LAUNCH: string;
   INVITATION_LINK: string;
+  SES_FROM: string;
+  NODEMAILER_FROM: string;
+  NODEMAILER_FROM_PASSWORD: string;
+  GOOGLE_SERVICE_ACCOUNT_CLIENT_ID: string;
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: string;
 };
 
 export const config: Config = {
@@ -45,4 +50,9 @@ export const config: Config = {
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY ?? '',
   LAUNCH: process.env.LAUNCH ?? '',
   INVITATION_LINK: process.env.INVITATION_LINK ?? '',
+  SES_FROM: process.env.SES_FROM ?? '',
+  NODEMAILER_FROM: process.env.SES_FROM ?? '',
+  NODEMAILER_FROM_PASSWORD: process.env.NODEMAILER_FROM_PASSWORD ?? '',
+  GOOGLE_SERVICE_ACCOUNT_CLIENT_ID: process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_ID ?? '',
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/gm, '\n') ?? '',
 };

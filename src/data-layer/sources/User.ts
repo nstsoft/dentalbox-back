@@ -9,4 +9,8 @@ export class UserDataSource extends BaseSource<UserEntity, UserType> implements 
   constructor(repository: IUserRepository) {
     super(repository);
   }
+
+  findOneByLogin(login: string) {
+    return this.repository.findOneByLogin(login);
+  }
 }

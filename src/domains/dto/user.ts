@@ -1,4 +1,5 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { phoneNumberRegex } from '@utils';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 
 import { UserRole, UserStatus } from '../types';
 
@@ -10,6 +11,7 @@ export class UserDto {
   name: string;
   @IsString()
   @IsOptional()
+  @Matches(phoneNumberRegex, { message: 'Phone number must be in E.164 format' })
   phone: string;
   @IsString()
   @IsOptional()
@@ -17,6 +19,7 @@ export class UserDto {
   @IsString()
   password: string;
   @IsString()
+  @IsOptional()
   @IsEnum(UserRole)
   role: UserRole;
   _id?: string;
@@ -56,6 +59,7 @@ export class AcceptInvitationDto {
   password?: string;
   @IsString()
   @IsOptional()
+  @Matches(phoneNumberRegex, { message: 'Phone number must be in E.164 format' })
   phone?: string;
   @IsString()
   invitation: string;
