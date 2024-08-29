@@ -10,7 +10,7 @@ import {
 } from '@useCases';
 import { BaseController, Controller, Get, Patch, Post, RolesGuard, ValidateBody } from '@utils';
 
-import { authenticateToken } from '../middlewares';
+import { authenticate, authenticateUnverified } from '../middlewares';
 
 @Controller('/user')
 export class UserController extends BaseController {
@@ -18,7 +18,7 @@ export class UserController extends BaseController {
     super();
   }
 
-  @Get('/me', [authenticateToken])
+  @Get('/me', [authenticateUnverified])
   async me(req: Express.AuthenticatedRequest<{ workspace: string }>) {
     const workspace = req.headers.workspace as string;
     const workspaceData = await getWorkspaceById(workspace);
@@ -26,12 +26,12 @@ export class UserController extends BaseController {
     return { user: req.user, workspace: workspaceData, subscriptionData };
   }
 
-  @Get('/:id', [authenticateToken])
+  @Get('/:id', [authenticate])
   async get(req: Express.AuthenticatedRequest) {
     return req.user;
   }
 
-  @Patch('/confirm-otp', [authenticateToken])
+  @Patch('/verify-otp', [authenticateUnverified])
   async confirmOtp(req: Express.AuthenticatedRequest<unknown, unknown, { otp: string }>) {
     if (req.user.otp !== +req.body.otp) {
       throw new AuthError('Unverified', { message: 'Invalid otp code' }, 403);
@@ -41,7 +41,7 @@ export class UserController extends BaseController {
 
   @RolesGuard('admin')
   @ValidateBody(InviteUserDto)
-  @Post('/invite', [authenticateToken])
+  @Post('/invite', [authenticate])
   async inviteUser(req: Express.AuthenticatedRequest<unknown, unknown, { email: string; role: UserRole }>) {
     return inviteUser(req.body.email, req.workspace, req.body.role);
   }

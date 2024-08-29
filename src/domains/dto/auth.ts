@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsString, ValidateNested } from 'class-validator';
+import { IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { UserDto } from './user';
 import { WorkspaceDto } from './workspace';
@@ -13,6 +13,8 @@ export class RegistrationDto {
   workspace: WorkspaceDto;
   @IsString()
   plan: string;
+  @IsOptional()
+  workspaceImage?: string;
 }
 
 export class LoginDto {

@@ -19,9 +19,7 @@ export const createUser = (data: UserDto) => {
   });
 };
 
-export const confirmOtp = (_id: string) => {
-  return userSource.updateOne(_id, { isVerified: true });
-};
+export const confirmOtp = (_id: string) => userSource.updateOne(_id, { isVerified: true });
 
 export const inviteUser = async (email: string, workspace: string, role: UserRole) => {
   const [existedInvitation, existedUser] = await Promise.all([

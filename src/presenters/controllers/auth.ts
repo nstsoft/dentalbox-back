@@ -2,8 +2,7 @@ import { LoginDto, RegistrationDto } from '@domains';
 import { authenticateWithGoogle, getAuthenticationData, getGoogleAuthUrl, login, register } from '@useCases';
 import { BaseController, Controller, Get, Post, ValidateBody } from '@utils';
 import { Request, Response } from 'express';
-import multer from 'multer';
-const upload = multer({ storage: multer.memoryStorage() });
+
 @Controller('/auth')
 export class AuthenticationController extends BaseController {
   constructor() {
@@ -17,10 +16,12 @@ export class AuthenticationController extends BaseController {
     return getAuthenticationData(user);
   }
 
-  @Post('/register', [upload.single('workspaceImage')])
+  @Post('/register')
   @ValidateBody(RegistrationDto)
   async register(req: Request<unknown, unknown, RegistrationDto>) {
-    const response = await register(req.body, req.file);
+    const buffer = Buffer.from(req.body.workspaceImage ?? '', 'base64');
+
+    const response = await register(req.body, buffer);
     const authData = await getAuthenticationData(response.user);
     return { ...response, ...authData };
   }

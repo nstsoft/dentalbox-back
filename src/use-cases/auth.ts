@@ -35,12 +35,12 @@ export const login = async (login: string, password: string) => {
   }
 };
 
-export const register = async (data: RegistrationDto, workspaceImage?: Express.Multer.File) => {
+export const register = async (data: RegistrationDto, workspaceImage?: Buffer) => {
   const plan = await planSource.findOneOrFail({ _id: data.plan });
   const workspace = await workspaceSource.create({ ...data.workspace, image: '' });
 
   if (workspaceImage) {
-    const { location } = await uploadWorkspaceImage(workspace._id, workspaceImage.buffer);
+    const { location } = await uploadWorkspaceImage(workspace._id, workspaceImage);
     await workspaceSource.updateOne(workspace._id, { image: location });
   }
 
@@ -70,9 +70,7 @@ export const register = async (data: RegistrationDto, workspaceImage?: Express.M
   return { user, workspace, subscription };
 };
 
-export const getGoogleAuthUrl = () => {
-  return googleProvider.getGoogleAuthUrl();
-};
+export const getGoogleAuthUrl = () => googleProvider.getGoogleAuthUrl();
 
 export const authenticateWithGoogle = async (code: string) => {
   const { access_token } = await googleProvider.getToken(code);
