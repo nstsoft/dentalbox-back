@@ -11,7 +11,7 @@ export class WorkspaceModel {
   @Column({ unique: true, type: 'text' })
   name: string;
   @Column({ unique: false, type: 'text' })
-  image: string;
+  image?: string;
   @Column({ unique: false, type: 'text' })
   description: string;
   @Column()

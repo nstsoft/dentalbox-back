@@ -41,6 +41,10 @@ export class User extends Base {
     }
   }
 
+  get otpCode() {
+    return this.otp;
+  }
+
   comparePassword(password: string): Promise<boolean> {
     return bcryptjs.compare(password, this.password);
   }

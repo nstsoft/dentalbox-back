@@ -3,7 +3,7 @@ import { Base } from './Base';
 
 export class Workspace extends Base {
   name: string;
-  image: string;
+  image?: string;
   description: string;
   _id: string;
 

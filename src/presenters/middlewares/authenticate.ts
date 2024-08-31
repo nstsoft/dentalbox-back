@@ -25,12 +25,13 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
       return next(new AuthError('Unverified', { message: 'Please verify your account' }, 403));
     }
 
-    Object.assign(req, { user: user.toObject() });
+    Object.assign(req, { user: { ...user.toObject(), otpCode: user.otpCode } });
     Object.assign(req, { workspace });
 
     return next();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
+    console.log(err);
     if (err.name === 'TokenExpiredError') {
       return next(new AuthError('Expired', { message: 'Invalid token' }, 403));
     }

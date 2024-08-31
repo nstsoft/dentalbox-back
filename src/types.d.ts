@@ -12,7 +12,7 @@ declare global {
       ReqQuery = core.Query,
       Locals extends Record<string, any> = Record<string, any>,
     > extends ExpressRequest<P, ResBody, ReqBody, ReqQuery, Locals> {
-      user: User & { _id: string; workspaces: string[] };
+      user: User & { _id: string; workspaces: string[]; otpCode: number };
       workspace: string;
     }
   }

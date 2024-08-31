@@ -34,4 +34,5 @@ export type RawUser = UserType & { _id: string };
 export type UserEntity = BaseEntity<RawUser> & {
   comparePassword(password: string): Promise<boolean>;
   excludeWorkspaces(currentWorkspace: string): void;
+  get otpCode(): number;
 };

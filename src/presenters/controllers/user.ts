@@ -33,7 +33,7 @@ export class UserController extends BaseController {
 
   @Patch('/verify-otp', [authenticateUnverified])
   async confirmOtp(req: Express.AuthenticatedRequest<unknown, unknown, { otp: string }>) {
-    if (req.user.otp !== +req.body.otp) {
+    if (req.user.otpCode !== +req.body.otp) {
       throw new AuthError('Unverified', { message: 'Invalid otp code' }, 403);
     }
     return confirmOtp(req.user._id);

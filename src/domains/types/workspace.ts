@@ -2,7 +2,7 @@ import { BaseEntity } from '@utils';
 
 export type WorkspaceType = {
   name: string;
-  image: string;
+  image?: string;
   description: string;
 };
 

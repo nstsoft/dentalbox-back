@@ -18,7 +18,7 @@ export const getAuthenticationData = async (user: UserEntity) => {
   return {
     ...tokens,
     user: user.toObject(),
-    workspaces: workspacesData.map((w) => ({ id: w._id, name: w.name, image: w.image })),
+    workspaces: workspacesData.map((w) => ({ _id: w._id, name: w.name, image: w.image })),
   };
 };
 
@@ -37,7 +37,7 @@ export const login = async (login: string, password: string) => {
 
 export const register = async (data: RegistrationDto, workspaceImage?: Buffer) => {
   const plan = await planSource.findOneOrFail({ _id: data.plan });
-  const workspace = await workspaceSource.create({ ...data.workspace, image: '' });
+  const workspace = await workspaceSource.create({ ...data.workspace });
 
   if (workspaceImage) {
     const { location } = await uploadWorkspaceImage(workspace._id, workspaceImage);

@@ -19,7 +19,10 @@ export class AuthenticationController extends BaseController {
   @Post('/register')
   @ValidateBody(RegistrationDto)
   async register(req: Request<unknown, unknown, RegistrationDto>) {
-    const buffer = Buffer.from(req.body.workspaceImage ?? '', 'base64');
+    let buffer;
+    if (req.body.workspaceImage?.length) {
+      buffer = Buffer.from(req.body.workspaceImage ?? '', 'base64');
+    }
 
     const response = await register(req.body, buffer);
     const authData = await getAuthenticationData(response.user);
