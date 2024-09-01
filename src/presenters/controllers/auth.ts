@@ -1,6 +1,7 @@
 import { LoginDto, RegistrationDto } from '@domains';
+import { AuthError } from '@src/errors';
 import { authenticateWithGoogle, getAuthenticationData, getGoogleAuthUrl, login, register } from '@useCases';
-import { BaseController, Controller, Get, Post, ValidateBody } from '@utils';
+import { BaseController, Controller, Get, Post, refreshAuthToken, ValidateBody } from '@utils';
 import { Request, Response } from 'express';
 
 @Controller('/auth')
@@ -14,6 +15,17 @@ export class AuthenticationController extends BaseController {
   async login(req: Request) {
     const user = await login(req.body.login, req.body.password);
     return getAuthenticationData(user);
+  }
+
+  @Get('/refresh-token')
+  async refreshToken(req: Request) {
+    const authHeader = req.headers.authorization;
+    const authToken = authHeader && authHeader.split(' ')[1];
+    const refreshToken = req.headers['refresh-token'] as string;
+    if (!authToken || !refreshToken) {
+      throw new AuthError('TokenNotProvided', { message: 'Token not provided' }, 403);
+    }
+    return refreshAuthToken(authToken, refreshToken);
   }
 
   @Post('/register')

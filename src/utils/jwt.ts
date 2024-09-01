@@ -14,3 +14,17 @@ export const getAuthTokens = async (_id: string) => {
 
   return { authToken, refreshToken };
 };
+
+export const refreshAuthToken = async (authToken: string, refreshToken: string) => {
+  try {
+    jwt.verify(authToken, config.SECRET_KEY) as { _id: string };
+    return { authToken, refreshToken };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    if (e.name === 'TokenExpiredError') {
+      const rToken = jwt.verify(refreshToken, config.SECRET_KEY) as { _id: string };
+      return getAuthTokens(rToken._id);
+    }
+    return Promise.reject(e);
+  }
+};

@@ -10,16 +10,9 @@ import moment from 'moment';
 import querystring from 'querystring';
 
 export const getAuthenticationData = async (user: UserEntity) => {
-  const [workspacesData, tokens] = await Promise.all([
-    workspaceSource.getManyByIds(user.workspaces),
-    getAuthTokens(user._id),
-  ]);
+  const [tokens] = await Promise.all([getAuthTokens(user._id)]);
 
-  return {
-    ...tokens,
-    user: user.toObject(),
-    workspaces: workspacesData.map((w) => ({ _id: w._id, name: w.name, image: w.image })),
-  };
+  return { ...tokens, user: user.toObject() };
 };
 
 export const login = async (login: string, password: string) => {

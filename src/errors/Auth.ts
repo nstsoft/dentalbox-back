@@ -1,6 +1,6 @@
-import { Expired, Forbidden, Unauthorized, Unverified } from './constants';
+import { Expired, Forbidden, TokenNotProvided, Unauthorized, Unverified } from './constants';
 
-type ErrorType = typeof Unauthorized | typeof Unverified | typeof Forbidden | typeof Expired;
+type ErrorType = typeof Unauthorized | typeof Unverified | typeof Forbidden | typeof Expired | typeof TokenNotProvided;
 
 export class AuthError extends Error {
   public statusCode: number;

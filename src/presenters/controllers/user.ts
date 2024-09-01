@@ -10,7 +10,7 @@ import {
 } from '@useCases';
 import { BaseController, Controller, Get, Patch, Post, RolesGuard, ValidateBody } from '@utils';
 
-import { authenticate, authenticateUnverified } from '../middlewares';
+import { authenticate } from '../middlewares';
 
 @Controller('/user')
 export class UserController extends BaseController {
@@ -18,20 +18,23 @@ export class UserController extends BaseController {
     super();
   }
 
-  @Get('/me', [authenticateUnverified])
+  @Get('/me', [authenticate(false)])
   async me(req: Express.AuthenticatedRequest<{ workspace: string }>) {
     const workspace = req.headers.workspace as string;
-    const workspaceData = await getWorkspaceById(workspace);
-    const subscriptionData = await getSubscriptionByWorkspace(workspace);
+    const [workspaceData, subscriptionData] = await Promise.all([
+      getWorkspaceById(workspace),
+      getSubscriptionByWorkspace(workspace),
+    ]);
+
     return { user: req.user, workspace: workspaceData, subscriptionData };
   }
 
-  @Get('/:id', [authenticate])
+  @Get('/:id', [authenticate()])
   async get(req: Express.AuthenticatedRequest) {
     return req.user;
   }
 
-  @Patch('/verify-otp', [authenticateUnverified])
+  @Patch('/verify-otp', [authenticate(false)])
   async confirmOtp(req: Express.AuthenticatedRequest<unknown, unknown, { otp: string }>) {
     if (req.user.otpCode !== +req.body.otp) {
       throw new AuthError('Unverified', { message: 'Invalid otp code' }, 403);
@@ -41,7 +44,7 @@ export class UserController extends BaseController {
 
   @RolesGuard('admin')
   @ValidateBody(InviteUserDto)
-  @Post('/invite', [authenticate])
+  @Post('/invite', [authenticate()])
   async inviteUser(req: Express.AuthenticatedRequest<unknown, unknown, { email: string; role: UserRole }>) {
     return inviteUser(req.body.email, req.workspace, req.body.role);
   }
