@@ -12,8 +12,9 @@ export type SubscriptionType = {
   status: SubscriptionStatus;
   activeTill: number;
   workspace: string;
-  plan: string;
+  product: string;
   interval: string;
+  priceId: string;
 };
 
 export type RawSubscription = SubscriptionType & { _id: string };

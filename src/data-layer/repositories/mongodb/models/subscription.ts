@@ -7,17 +7,19 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColu
 export class SubscriptionModel {
   @PrimaryColumn()
   @ObjectIdColumn()
-  _id: ObjectId;
+  _id: ObjectId = new ObjectId();
   @Column({ array: false })
   workspace: ObjectId;
-  @Column({ array: false })
-  plan: ObjectId;
+  @Column({ unique: false, nullable: false, type: 'string' })
+  product: string;
   @Column({ type: 'enum', enum: SubscriptionStatus, default: SubscriptionStatus.pending, array: false })
   status: SubscriptionStatus;
   @Column({ unique: false, nullable: false, type: 'number' })
   activeTill: number;
   @Column({ unique: false, nullable: false, type: 'string' })
   interval: string;
+  @Column({ unique: false, nullable: false, type: 'string' })
+  priceId: string;
   @Column()
   createdAt: Date;
   @Column()
@@ -37,11 +39,11 @@ export class SubscriptionModel {
   constructor(subscription: SubscriptionType) {
     if (subscription) {
       this.workspace = new ObjectId(subscription?.workspace);
-      this.plan = new ObjectId(subscription?.plan);
       this.activeTill = subscription?.activeTill;
       this.status = subscription?.status;
       this.interval = subscription?.interval;
-      this._id = new ObjectId();
+      this.product = subscription?.product;
+      this.priceId = subscription?.priceId;
     }
   }
 

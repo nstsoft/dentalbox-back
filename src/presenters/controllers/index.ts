@@ -1,4 +1,4 @@
 export * from './auth';
-export * from './plan';
+export * from './product';
 export * from './user';
 export * from './workspace';

@@ -6,10 +6,6 @@ import { Request, Response } from 'express';
 
 @Controller('/auth')
 export class AuthenticationController extends BaseController {
-  constructor() {
-    super();
-  }
-
   @Post('/login')
   @ValidateBody(LoginDto)
   async login(req: Request) {

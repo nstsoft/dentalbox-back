@@ -27,6 +27,8 @@ jobs:
       IMAGES_BUCKET: ${{ vars.IMAGES_BUCKET }}
       NODE_ENV: ${{ github.ref_name }}
       INVITATION_LINK: ${{ vars.INVITATION_LINK }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      SES_FROM: ${{ vars.SES_FROM }}
 
     steps:
       - name: Checkout

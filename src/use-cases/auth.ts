@@ -1,7 +1,7 @@
-import { planSource, subscriptionSource, userSource, workspaceSource } from '@data';
+import { subscriptionSource, userSource, workspaceSource } from '@data';
 import { RegistrationDto, SubscriptionStatus, UserEntity, UserRole, UserStatus } from '@domains';
 import { AuthError } from '@errors';
-import { googleProvider } from '@providers';
+import { googleProvider, stripeProvider } from '@providers';
 import { sentOtp, uploadWorkspaceImage } from '@services';
 import { generateOTP, getAuthTokens } from '@utils';
 import axios, { AxiosError } from 'axios';
@@ -29,7 +29,7 @@ export const login = async (login: string, password: string) => {
 };
 
 export const register = async (data: RegistrationDto, workspaceImage?: Buffer) => {
-  const plan = await planSource.findOneOrFail({ _id: data.plan });
+  const product = await stripeProvider.getProductById(data.productId);
   const workspace = await workspaceSource.create({ ...data.workspace });
 
   if (workspaceImage) {
@@ -52,8 +52,9 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
   const [subscription] = await Promise.all([
     subscriptionSource.create({
       workspace: workspace._id,
-      interval: plan.type,
-      plan: plan._id,
+      interval: product.interval === 'week' ? 'w' : 'm',
+      product: product.id,
+      priceId: product.priceId,
       activeTill: moment().add(1, 'w').unix(),
       status: SubscriptionStatus.trial,
     }),

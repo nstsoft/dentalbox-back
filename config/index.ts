@@ -28,6 +28,7 @@ type Config = {
   NODEMAILER_FROM_PASSWORD: string;
   GOOGLE_SERVICE_ACCOUNT_CLIENT_ID: string;
   GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: string;
+  STRIPE_SECRET_KEY: string;
 };
 
 export const config: Config = {
@@ -55,4 +56,5 @@ export const config: Config = {
   NODEMAILER_FROM_PASSWORD: process.env.NODEMAILER_FROM_PASSWORD ?? '',
   GOOGLE_SERVICE_ACCOUNT_CLIENT_ID: process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_ID ?? '',
   GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/gm, '\n') ?? '',
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ?? '',
 };

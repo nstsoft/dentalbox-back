@@ -6,7 +6,7 @@ import { Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
 export class InvitationModel {
   @PrimaryColumn()
   @ObjectIdColumn()
-  _id: ObjectId;
+  _id: ObjectId = new ObjectId();
   @Column({ unique: false, type: 'string' })
   email: string;
   @Column({ unique: false, type: 'string' })
@@ -22,7 +22,6 @@ export class InvitationModel {
       this.workspace = invitation.workspace;
       this.userRole = invitation?.userRole;
       this.activeTill = invitation?.activeTill;
-      this._id = new ObjectId();
     }
   }
 }

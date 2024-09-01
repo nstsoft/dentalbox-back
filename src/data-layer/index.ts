@@ -2,7 +2,6 @@ import {
   CabinetRepository,
   InvitationRepository,
   MongoSource,
-  PlanRepository,
   SubscriptionRepository,
   UserRepository,
   WorkspaceRepository,
@@ -10,7 +9,6 @@ import {
 import {
   CabinetDataSource,
   InvitationDataSource,
-  PlanDataSource,
   SubscriptionDataSource,
   UserDataSource,
   WorkspaceDataSource,
@@ -18,9 +16,9 @@ import {
 
 const userSource = new UserDataSource(new UserRepository());
 const invitationSource = new InvitationDataSource(new InvitationRepository());
-const planSource = new PlanDataSource(new PlanRepository());
+
 const workspaceSource = new WorkspaceDataSource(new WorkspaceRepository());
 const cabinetSource = new CabinetDataSource(new CabinetRepository());
 const subscriptionSource = new SubscriptionDataSource(new SubscriptionRepository());
 
-export { cabinetSource, invitationSource, MongoSource, planSource, subscriptionSource, userSource, workspaceSource };
+export { cabinetSource, invitationSource, MongoSource, subscriptionSource, userSource, workspaceSource };

@@ -14,10 +14,6 @@ import { authenticate } from '../middlewares';
 
 @Controller('/user')
 export class UserController extends BaseController {
-  constructor() {
-    super();
-  }
-
   @Get('/me', [authenticate(false)])
   async me(req: Express.AuthenticatedRequest<{ workspace: string }>) {
     const workspace = req.headers.workspace as string;

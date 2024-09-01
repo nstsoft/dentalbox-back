@@ -16,7 +16,7 @@ export class Role {
 export class UserModel {
   @PrimaryColumn()
   @ObjectIdColumn()
-  _id: ObjectId;
+  _id: ObjectId = new ObjectId();
   @Column({ unique: true, type: 'text' })
   email: string;
   @Column({ unique: false, type: 'text' })
@@ -67,7 +67,6 @@ export class UserModel {
   }
 
   constructor(user: UserType) {
-    this._id = new ObjectId();
     this.email = user?.email;
     this.name = user?.name;
     this.secondName = user?.secondName;

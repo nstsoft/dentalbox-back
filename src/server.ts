@@ -1,6 +1,6 @@
 import '@config';
 
-import { AuthenticationController, PlanController, UserController, WorkspaceController } from '@controllers';
+import { AuthenticationController, ProductController, UserController, WorkspaceController } from '@controllers';
 import { mongoErrorInterceptor } from '@src/presenters/middlewares';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
@@ -31,7 +31,7 @@ const apiRouter = express.Router();
 
 apiRouter.use(new UserController().route);
 apiRouter.use(new AuthenticationController().route);
-apiRouter.use(new PlanController().route);
+apiRouter.use(new ProductController().route);
 apiRouter.use(new WorkspaceController().route);
 
 app.use('/api/v1', apiRouter);

@@ -7,7 +7,7 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColu
 export class CabinetModel {
   @PrimaryColumn()
   @ObjectIdColumn()
-  _id: ObjectId;
+  _id: ObjectId = new ObjectId();
   @Column({ unique: true, type: 'text' })
   name: string;
   @Column({ unique: false, type: 'text' })
@@ -39,7 +39,6 @@ export class CabinetModel {
   }
 
   constructor(cabinet: CabinetType) {
-    this._id = new ObjectId();
     this.name = cabinet?.name;
     this.image = cabinet?.image;
     this.description = cabinet?.description;

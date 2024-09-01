@@ -12,7 +12,7 @@ export class RegistrationDto {
   @Type(() => WorkspaceDto)
   workspace: WorkspaceDto;
   @IsString()
-  plan: string;
+  productId: string;
   @IsOptional()
   workspaceImage?: string;
 }

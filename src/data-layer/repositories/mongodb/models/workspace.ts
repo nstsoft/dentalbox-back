@@ -7,7 +7,7 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColu
 export class WorkspaceModel {
   @PrimaryColumn()
   @ObjectIdColumn()
-  _id: ObjectId;
+  _id: ObjectId = new ObjectId();
   @Column({ unique: true, type: 'text' })
   name: string;
   @Column({ unique: false, type: 'text' })
@@ -34,7 +34,6 @@ export class WorkspaceModel {
     this.name = workspace?.name;
     this.image = workspace?.image;
     this.description = workspace?.description;
-    this._id = new ObjectId();
   }
 
   toPlain() {
