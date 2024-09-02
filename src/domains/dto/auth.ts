@@ -15,6 +15,8 @@ export class RegistrationDto {
   productId: string;
   @IsOptional()
   workspaceImage?: string;
+  @IsString()
+  defaultPaymentMethodId: string;
 }
 
 export class LoginDto {

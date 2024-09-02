@@ -19,6 +19,11 @@ export class User extends Base {
   otp: number;
   isVerified: boolean = false;
   status: UserStatus;
+  dob?: string;
+  stripeCustomerId?: string;
+  paymentMethods?: string[];
+  defaultPaymentMethodId?: string;
+  image?: string;
 
   constructor(data: RawUser) {
     super();
@@ -34,6 +39,11 @@ export class User extends Base {
     this.otp = data?.otp;
     this.isVerified = data?.isVerified;
     this.status = data?.status;
+    this.dob = data?.dob;
+    this.stripeCustomerId = data.stripeCustomerId;
+    this.paymentMethods = data.paymentMethods ?? [data.defaultPaymentMethodId].filter((el) => el !== undefined);
+    this.defaultPaymentMethodId = data.defaultPaymentMethodId;
+    this.image = data.image;
 
     if (data.workspaces) {
       this.workspaces = data.workspaces;

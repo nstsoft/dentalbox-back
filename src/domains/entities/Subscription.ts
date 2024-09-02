@@ -9,15 +9,17 @@ export class Subscription extends Base {
   _id: string;
   interval: string;
   priceId: string;
+  stripeSubscription: string;
 
   constructor(data: RawSubscription) {
     super();
+    this._id = data._id;
     this.status = data.status;
     this.activeTill = data.activeTill;
     this.workspace = data.workspace;
     this.product = data.product;
     this.interval = data.interval;
     this.priceId = data.priceId;
-    this._id = data._id;
+    this.stripeSubscription = data.stripeSubscription;
   }
 }

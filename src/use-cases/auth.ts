@@ -29,11 +29,13 @@ export const login = async (login: string, password: string) => {
 };
 
 export const register = async (data: RegistrationDto, workspaceImage?: Buffer) => {
-  let userId = null;
-  let workspaceId = null;
+  let userId,
+    workspaceId,
+    stripeCustomerId,
+    stripeSubscriptionId = null;
 
   try {
-    const product = await stripeProvider.getProductById(data.productId);
+    const product = await stripeProvider.product.getOne(data.productId);
     const workspace = await workspaceSource.create({ ...data.workspace });
     workspaceId = workspace._id;
 
@@ -42,6 +44,8 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
       await workspaceSource.updateOne(workspace._id, { image: location });
     }
 
+    const stripeCustomer = await stripeProvider.customer.create(data.user.email, data.defaultPaymentMethodId);
+    stripeCustomerId = stripeCustomer.id;
     const otp = generateOTP();
 
     const user = await userSource.create({
@@ -52,9 +56,14 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
       enableNotifications: true,
       workspaces: [workspace._id],
       roles: [{ workspace: workspace._id, role: UserRole.admin }],
+      defaultPaymentMethodId: data.defaultPaymentMethodId,
+      stripeCustomerId,
     });
 
     userId = user._id;
+
+    const stripeSubscription = await stripeProvider.subscription.create(stripeCustomerId, product.priceId);
+    stripeSubscriptionId = stripeSubscription.id;
 
     const [subscription] = await Promise.all([
       subscriptionSource.create({
@@ -64,6 +73,7 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
         priceId: product.priceId,
         activeTill: moment().add(1, 'w').unix(),
         status: SubscriptionStatus.trial,
+        stripeSubscription: 'stripeSubscription',
       }),
       sentOtp(user, otp),
     ]);
@@ -71,12 +81,14 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
     return { user, workspace, subscription };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    await Promise.all([userId && userSource.delete(userId), workspaceId && workspaceSource.delete(workspaceId)]);
-    console.log({
-      workspaceId,
-      userId,
-    });
-    throw new Error(err);
+    await Promise.allSettled([
+      userId && userSource.delete(userId),
+      workspaceId && workspaceSource.delete(workspaceId),
+      stripeSubscriptionId && stripeProvider.cancelSubscription(stripeSubscriptionId),
+      stripeCustomerId && stripeProvider.removeCustomer(stripeCustomerId),
+    ]);
+
+    return Promise.reject(err);
   }
 };
 

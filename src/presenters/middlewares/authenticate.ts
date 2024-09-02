@@ -10,6 +10,7 @@ export const authenticate =
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     const workspace = req.headers.workspace as string;
+    let role = null;
 
     if (!token) return next(new Forbidden('Invalid token'));
 
@@ -21,6 +22,7 @@ export const authenticate =
         return next(new AuthError('Forbidden', { message: 'Forbidden resource' }, 403));
       }
       if (checkWorkspace) {
+        role = user.roles.find((role) => role.workspace.toString() === workspace)?.role;
         user.excludeWorkspaces(workspace);
       }
 
@@ -28,7 +30,7 @@ export const authenticate =
         return next(new AuthError('Unverified', { message: 'Please verify your account' }, 403));
       }
 
-      Object.assign(req, { user: { ...user.toObject(), otpCode: user.otpCode } });
+      Object.assign(req, { user: { ...user.toObject(), otpCode: user.otpCode, role } });
       Object.assign(req, { workspace });
 
       return next();

@@ -15,6 +15,7 @@ export type SubscriptionType = {
   product: string;
   interval: string;
   priceId: string;
+  stripeSubscription: string;
 };
 
 export type RawSubscription = SubscriptionType & { _id: string };

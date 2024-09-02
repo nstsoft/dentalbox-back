@@ -27,6 +27,11 @@ export type UserType = {
   enableNotifications: boolean;
   otp: number;
   status: UserStatus;
+  stripeCustomerId?: string;
+  paymentMethods?: string[];
+  defaultPaymentMethodId?: string;
+  dob?: string;
+  image?: string;
 };
 
 export type RawUser = UserType & { _id: string };

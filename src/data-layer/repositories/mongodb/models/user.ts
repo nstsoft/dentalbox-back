@@ -37,6 +37,8 @@ export class UserModel {
   roles: Role[];
   @Column({ array: false, enum: UserStatus, default: UserStatus.pending })
   status: UserStatus;
+  @Column({ type: 'timestamptz', nullable: true })
+  dob?: Date;
   @Column({ array: true })
   workspaces?: ObjectId[];
   @Column()
@@ -49,6 +51,14 @@ export class UserModel {
   enableNotifications: boolean;
   @Column({ unique: false, type: 'number' })
   otp: number;
+  @Column({ unique: false, type: 'text' })
+  stripeCustomerId?: string;
+  @Column({ unique: false, type: 'text', nullable: true })
+  defaultPaymentMethodId?: string;
+  @Column({ unique: false, type: 'text', array: true })
+  paymentMethods?: string[];
+  @Column({ unique: false, type: 'text' })
+  image?: string;
 
   @BeforeInsert()
   async hashPassword() {
@@ -79,6 +89,11 @@ export class UserModel {
     this.isVerified = user?.isVerified;
     this.enableNotifications = user?.enableNotifications;
     this.status = user?.status;
+    this.stripeCustomerId = user?.stripeCustomerId;
+    this.paymentMethods = user?.paymentMethods;
+    this.defaultPaymentMethodId = user?.defaultPaymentMethodId;
+    this.dob = new Date(user?.dob ?? Date.now());
+    this.image = user?.image;
     if (user?.workspaces) {
       this.roles = user.roles.map(({ workspace, role }) => ({ workspace: new ObjectId(workspace), role }));
       this.workspaces = user.workspaces.map((id) => new ObjectId(id));

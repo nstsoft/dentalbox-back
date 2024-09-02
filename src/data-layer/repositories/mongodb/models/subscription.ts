@@ -24,6 +24,8 @@ export class SubscriptionModel {
   createdAt: Date;
   @Column()
   updatedAt: Date;
+  @Column({ unique: false, type: 'text', nullable: false })
+  stripeSubscription: string;
 
   @BeforeInsert()
   setCreatedAt() {
@@ -44,6 +46,7 @@ export class SubscriptionModel {
       this.interval = subscription?.interval;
       this.product = subscription?.product;
       this.priceId = subscription?.priceId;
+      this.stripeSubscription = subscription?.stripeSubscription;
     }
   }
 
