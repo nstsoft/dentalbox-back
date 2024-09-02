@@ -1,5 +1,5 @@
-import { subscriptionSource, userSource, workspaceSource } from '@data';
-import { RegistrationDto, SubscriptionStatus, UserEntity, UserRole, UserStatus } from '@domains';
+import { invitationSource, subscriptionSource, userSource, workspaceSource } from '@data';
+import { InvitationStatus, RegistrationDto, SubscriptionStatus, UserEntity, UserRole, UserStatus } from '@domains';
 import { AuthError } from '@errors';
 import { googleProvider, stripeProvider } from '@providers';
 import { sentOtp, uploadWorkspaceImage } from '@services';
@@ -8,6 +8,7 @@ import axios, { AxiosError } from 'axios';
 import { config } from 'config';
 import moment from 'moment';
 import querystring from 'querystring';
+import { MoreThan } from 'typeorm';
 
 export const getAuthenticationData = async (user: UserEntity) => {
   const [tokens] = await Promise.all([getAuthTokens(user._id)]);
@@ -35,6 +36,10 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
     stripeSubscriptionId = null;
 
   try {
+    await invitationSource.update(
+      { email: data.user.email, activeTill: MoreThan(moment().unix()) },
+      { status: InvitationStatus.declined },
+    );
     const product = await stripeProvider.product.getOne(data.productId);
     const workspace = await workspaceSource.create({ ...data.workspace });
     workspaceId = workspace._id;

@@ -88,4 +88,11 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
     const found = await this.repository.findOne({ where: criteria });
     return found && this.domain.toDomain(found);
   }
+
+  async update(criteria: FindOptionsWhere<Data & { _id?: string }>, data: Partial<Data>) {
+    if (criteria && criteria._id) {
+      Object.assign(criteria, { _id: new ObjectId(criteria._id as string) });
+    }
+    return this.repository.updateMany({ where: criteria }, data);
+  }
 }

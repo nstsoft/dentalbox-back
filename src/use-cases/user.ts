@@ -2,10 +2,11 @@ import { AcceptInvitationDto, InvitationStatus, UserDto, UserRole, UserStatus } 
 import { InvitationAlreadySent, InvitationError, InvitationExpired, InvitationNotExists } from '@errors';
 import { sendInvitationLink, sentOtp } from '@services';
 import { invitationSource, subscriptionSource, userSource } from '@src/data-layer';
-import { generateOTP } from '@utils';
+import { generateOTP, generateToken, verifyToken } from '@utils';
 import { config } from 'config';
 import { BadRequest } from 'http-errors';
 import moment from 'moment';
+import { MoreThan } from 'typeorm';
 
 export const createUser = (data: UserDto) => {
   return userSource.create({
@@ -35,17 +36,25 @@ export const inviteUser = async (email: string, workspace: string, role: UserRol
     email,
     workspace,
     userRole: role,
-    activeTill: moment().add(1, 'w').unix(),
+    activeTill: moment().add(1, 'w').startOf('day').unix(),
     status: InvitationStatus.pending,
   });
 
-  const invitationLink = config.INVITATION_LINK + `?invitation=${invitation}&existed=${!!existedUser}&email=${email}`;
+  const invitationToken = generateToken({ _id: invitation._id }, '1w');
+
+  const invitationLink =
+    config.INVITATION_LINK + `?existed=${!!existedUser}&email=${email}&invitationToken=${invitationToken}`;
 
   return sendInvitationLink(invitationLink, email);
 };
 
 export const acceptInvitation = async (data: AcceptInvitationDto) => {
-  const invitation = await invitationSource.findOne({ _id: data.invitation, status: InvitationStatus.pending });
+  const { _id } = verifyToken(data.token) as { _id: string };
+  const invitation = await invitationSource.findOne({
+    _id,
+    status: InvitationStatus.pending,
+    activeTill: MoreThan(moment().startOf('day').unix()),
+  });
 
   if (!invitation) {
     throw new InvitationError(InvitationNotExists, 'Invitation not found', 404);

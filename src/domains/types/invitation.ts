@@ -5,6 +5,8 @@ import { UserRole } from './user';
 export enum InvitationStatus {
   pending = 'pending',
   accepted = 'accepted',
+  declined = 'declined',
+  expired = 'expired',
 }
 
 export type InvitationType = {

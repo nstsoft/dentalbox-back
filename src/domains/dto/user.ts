@@ -62,5 +62,5 @@ export class AcceptInvitationDto {
   @Matches(phoneNumberRegex, { message: 'Phone number must be in E.164 format' })
   phone?: string;
   @IsString()
-  invitation: string;
+  token: string;
 }
