@@ -29,39 +29,55 @@ export const login = async (login: string, password: string) => {
 };
 
 export const register = async (data: RegistrationDto, workspaceImage?: Buffer) => {
-  const product = await stripeProvider.getProductById(data.productId);
-  const workspace = await workspaceSource.create({ ...data.workspace });
+  let userId = null;
+  let workspaceId = null;
 
-  if (workspaceImage) {
-    const { location } = await uploadWorkspaceImage(workspace._id, workspaceImage);
-    await workspaceSource.updateOne(workspace._id, { image: location });
+  try {
+    const product = await stripeProvider.getProductById(data.productId);
+    const workspace = await workspaceSource.create({ ...data.workspace });
+    workspaceId = workspace._id;
+
+    if (workspaceImage) {
+      const { location } = await uploadWorkspaceImage(workspace._id, workspaceImage);
+      await workspaceSource.updateOne(workspace._id, { image: location });
+    }
+
+    const otp = generateOTP();
+
+    const user = await userSource.create({
+      ...data.user,
+      status: UserStatus.active,
+      isVerified: false,
+      otp,
+      enableNotifications: true,
+      workspaces: [workspace._id],
+      roles: [{ workspace: workspace._id, role: UserRole.admin }],
+    });
+
+    userId = user._id;
+
+    const [subscription] = await Promise.all([
+      subscriptionSource.create({
+        workspace: workspace._id,
+        interval: product.interval === 'week' ? 'w' : 'm',
+        product: product.id,
+        priceId: product.priceId,
+        activeTill: moment().add(1, 'w').unix(),
+        status: SubscriptionStatus.trial,
+      }),
+      sentOtp(user, otp),
+    ]);
+
+    return { user, workspace, subscription };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    await Promise.all([userId && userSource.delete(userId), workspaceId && workspaceSource.delete(workspaceId)]);
+    console.log({
+      workspaceId,
+      userId,
+    });
+    throw new Error(err);
   }
-
-  const otp = generateOTP();
-
-  const user = await userSource.create({
-    ...data.user,
-    status: UserStatus.active,
-    isVerified: false,
-    otp,
-    enableNotifications: true,
-    workspaces: [workspace._id],
-    roles: [{ workspace: workspace._id, role: UserRole.admin }],
-  });
-
-  const [subscription] = await Promise.all([
-    subscriptionSource.create({
-      workspace: workspace._id,
-      interval: product.interval === 'week' ? 'w' : 'm',
-      product: product.id,
-      priceId: product.priceId,
-      activeTill: moment().add(1, 'w').unix(),
-      status: SubscriptionStatus.trial,
-    }),
-    sentOtp(user, otp),
-  ]);
-
-  return { user, workspace, subscription };
 };
 
 export const getGoogleAuthUrl = () => googleProvider.getGoogleAuthUrl();
