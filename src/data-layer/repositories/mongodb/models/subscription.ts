@@ -1,4 +1,4 @@
-import { SubscriptionStatus, SubscriptionType } from '@domains';
+import { SubscriptionType } from '@domains';
 import { removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
 import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
@@ -12,10 +12,6 @@ export class SubscriptionModel {
   workspace: ObjectId;
   @Column({ unique: false, nullable: false, type: 'string' })
   product: string;
-  @Column({ type: 'enum', enum: SubscriptionStatus, default: SubscriptionStatus.pending, array: false })
-  status: SubscriptionStatus;
-  @Column({ unique: false, nullable: false, type: 'number' })
-  activeTill: number;
   @Column({ unique: false, nullable: false, type: 'string' })
   interval: string;
   @Column({ unique: false, nullable: false, type: 'string' })
@@ -41,9 +37,6 @@ export class SubscriptionModel {
   constructor(subscription: SubscriptionType) {
     if (subscription) {
       this.workspace = new ObjectId(subscription?.workspace);
-      this.activeTill = subscription?.activeTill;
-      this.status = subscription?.status;
-      this.interval = subscription?.interval;
       this.product = subscription?.product;
       this.priceId = subscription?.priceId;
       this.stripeSubscription = subscription?.stripeSubscription;

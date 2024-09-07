@@ -4,6 +4,8 @@ export type WorkspaceType = {
   name: string;
   image?: string;
   description: string;
+  maxMembersCount: number;
+  currentMembersCount: number;
 };
 
 export type RawWorkspace = WorkspaceType & { _id: string };

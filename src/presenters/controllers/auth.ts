@@ -28,6 +28,7 @@ export class AuthenticationController extends BaseController {
   @ValidateBody(RegistrationDto)
   async register(req: Request<unknown, unknown, RegistrationDto>) {
     let buffer;
+
     if (req.body.workspaceImage?.length) {
       buffer = Buffer.from(req.body.workspaceImage ?? '', 'base64');
     }

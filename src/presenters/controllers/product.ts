@@ -1,4 +1,4 @@
-import { getAllPlans, getPlanById } from '@useCases';
+import { getAllProducts, getPlanById } from '@useCases';
 import { BaseController, Controller, Get } from '@utils';
 import { Request } from 'express';
 
@@ -10,7 +10,7 @@ export class ProductController extends BaseController {
   }
 
   @Get('/')
-  async login() {
-    return getAllPlans();
+  async getAll() {
+    return getAllProducts();
   }
 }

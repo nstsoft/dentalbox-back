@@ -1,19 +1,8 @@
 import { BaseEntity } from '@utils';
 
-export enum SubscriptionStatus {
-  active = 'active',
-  pending = 'pending',
-  expired = 'expired',
-  cancelled = 'cancelled',
-  trial = 'trial',
-}
-
 export type SubscriptionType = {
-  status: SubscriptionStatus;
-  activeTill: number;
   workspace: string;
   product: string;
-  interval: string;
   priceId: string;
   stripeSubscription: string;
 };

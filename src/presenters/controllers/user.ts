@@ -1,5 +1,6 @@
 import { AcceptInvitationDto, InviteUserDto, UserRole } from '@domains';
 import { AuthError } from '@errors';
+import { stripeProvider } from '@src/providers';
 import {
   acceptInvitation,
   confirmOtp,
@@ -21,8 +22,9 @@ export class UserController extends BaseController {
       getWorkspaceById(workspace),
       getSubscriptionByWorkspace(workspace),
     ]);
+    const stripeSubscription = await stripeProvider.subscription.get(subscriptionData?.stripeSubscription ?? '');
 
-    return { user: req.user, workspace: workspaceData, subscriptionData };
+    return { user: req.user, workspace: workspaceData, subscriptionData, stripeSubscription };
   }
 
   @Get('/:id', [authenticate()])

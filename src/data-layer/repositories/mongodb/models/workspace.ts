@@ -14,6 +14,10 @@ export class WorkspaceModel {
   image?: string;
   @Column({ unique: false, type: 'text' })
   description: string;
+  @Column({ unique: false, type: 'number' })
+  maxMembersCount: number;
+  @Column({ unique: false, type: 'number', default: 1 })
+  currentMembersCount: number;
   @Column()
   createdAt: Date;
   @Column()
@@ -34,6 +38,8 @@ export class WorkspaceModel {
     this.name = workspace?.name;
     this.image = workspace?.image;
     this.description = workspace?.description;
+    this.maxMembersCount = workspace?.maxMembersCount;
+    this.currentMembersCount = workspace?.currentMembersCount;
   }
 
   toPlain() {

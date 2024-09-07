@@ -31,6 +31,9 @@ export class UserDto {
   @IsEnum(UserStatus)
   @IsOptional()
   status?: UserStatus;
+  @IsString()
+  @IsOptional()
+  dob?: string;
 }
 export class InviteUserDto {
   @IsEmail()

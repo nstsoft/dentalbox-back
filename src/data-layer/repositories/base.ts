@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { InvitationType, SubscriptionType, UserType, WorkspaceType } from '@domains';
+import type { CabinetType, InvitationType, SubscriptionType, UserType, WorkspaceType } from '@domains';
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
 import { type FindManyOptions, type FindOptionsOrder, type FindOptionsWhere, MongoRepository } from 'typeorm';
 
-import { InvitationModel, MongoSource, SubscriptionModel, UserModel, WorkspaceModel } from './mongodb';
+import { CabinetModel, InvitationModel, MongoSource, SubscriptionModel, UserModel, WorkspaceModel } from './mongodb';
 
-type Models = UserModel | WorkspaceModel | SubscriptionModel | InvitationModel;
-type EntityData = UserType | WorkspaceType | SubscriptionType | InvitationType;
+type Models = UserModel | WorkspaceModel | SubscriptionModel | InvitationModel | CabinetModel;
+type EntityData = UserType | WorkspaceType | SubscriptionType | InvitationType | CabinetType;
 
 export abstract class Repository<M extends Models, Domain, Data extends EntityData> {
   repository: MongoRepository<M>;
@@ -93,6 +93,6 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
     if (criteria && criteria._id) {
       Object.assign(criteria, { _id: new ObjectId(criteria._id as string) });
     }
-    return this.repository.updateMany({ where: criteria }, data);
+    return this.repository.updateMany({ where: criteria }, { $set: data });
   }
 }

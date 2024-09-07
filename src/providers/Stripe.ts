@@ -16,20 +16,18 @@ class StripeProvider {
       .then((data) => this.parseProduct(data));
   }
 
-  createCustomer(email: string, payment_method: string) {
-    return this.stripe.customers.create({
-      email,
-      payment_method,
-      invoice_settings: { default_payment_method: payment_method },
-    });
+  createCustomer(email: string) {
+    return this.stripe.customers.create({ email });
   }
 
   createSubscription(customer: string, price: string, quantity = 1) {
     return this.stripe.subscriptions.create({
       customer,
       items: [{ price, quantity }],
-      expand: ['latest_invoice.payment_intent'],
+      expand: ['latest_invoice.payment_intent', 'pending_setup_intent'],
       trial_period_days: 10,
+      payment_behavior: 'default_incomplete',
+      payment_settings: { save_default_payment_method: 'on_subscription' },
     });
   }
 
@@ -54,6 +52,7 @@ class StripeProvider {
       amount: price.unit_amount,
       priceId: price.id,
       priceActive: price.active,
+      metadata: product.metadata,
     };
   }
 
@@ -75,6 +74,7 @@ class StripeProvider {
     return {
       create: this.createSubscription.bind(this),
       cancel: this.cancelSubscription.bind(this),
+      get: (subscriptionId: string) => this.stripe.subscriptions.retrieve(subscriptionId),
     };
   }
 }

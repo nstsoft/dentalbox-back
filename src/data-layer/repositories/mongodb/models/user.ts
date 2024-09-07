@@ -53,10 +53,6 @@ export class UserModel {
   otp: number;
   @Column({ unique: false, type: 'text' })
   stripeCustomerId?: string;
-  @Column({ unique: false, type: 'text', nullable: true })
-  defaultPaymentMethodId?: string;
-  @Column({ unique: false, type: 'text', array: true })
-  paymentMethods?: string[];
   @Column({ unique: false, type: 'text' })
   image?: string;
 
@@ -90,8 +86,6 @@ export class UserModel {
     this.enableNotifications = user?.enableNotifications;
     this.status = user?.status;
     this.stripeCustomerId = user?.stripeCustomerId;
-    this.paymentMethods = user?.paymentMethods;
-    this.defaultPaymentMethodId = user?.defaultPaymentMethodId;
     this.dob = new Date(user?.dob ?? Date.now());
     this.image = user?.image;
     if (user?.workspaces) {

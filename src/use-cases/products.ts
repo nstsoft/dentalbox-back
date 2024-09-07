@@ -4,6 +4,6 @@ export const getPlanById = (id: string) => {
   return stripeProvider.getProductById(id);
 };
 
-export const getAllPlans = async () => {
+export const getAllProducts = async () => {
   return stripeProvider.getProducts();
 };

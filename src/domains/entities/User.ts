@@ -21,8 +21,6 @@ export class User extends Base {
   status: UserStatus;
   dob?: string;
   stripeCustomerId?: string;
-  paymentMethods?: string[];
-  defaultPaymentMethodId?: string;
   image?: string;
 
   constructor(data: RawUser) {
@@ -41,8 +39,6 @@ export class User extends Base {
     this.status = data?.status;
     this.dob = data?.dob;
     this.stripeCustomerId = data.stripeCustomerId;
-    this.paymentMethods = data.paymentMethods ?? [data.defaultPaymentMethodId].filter((el) => el !== undefined);
-    this.defaultPaymentMethodId = data.defaultPaymentMethodId;
     this.image = data.image;
 
     if (data.workspaces) {

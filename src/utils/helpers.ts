@@ -52,13 +52,6 @@ export const deepParseObjectId = (obj: any): any => {
   return obj;
 };
 
-export const generateOTP = (length = 6) => {
-  let otp = '';
-
-  for (let i = 0; i < length; i++) {
-    const randomDigit = Math.floor(Math.random() * 10);
-    otp += randomDigit;
-  }
-
-  return +otp;
+export const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000);
 };

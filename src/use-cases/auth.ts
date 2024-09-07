@@ -1,5 +1,5 @@
 import { invitationSource, subscriptionSource, userSource, workspaceSource } from '@data';
-import { InvitationStatus, RegistrationDto, SubscriptionStatus, UserEntity, UserRole, UserStatus } from '@domains';
+import { InvitationStatus, RegistrationDto, UserEntity, UserRole, UserStatus } from '@domains';
 import { AuthError } from '@errors';
 import { googleProvider, stripeProvider } from '@providers';
 import { sentOtp, uploadWorkspaceImage } from '@services';
@@ -40,16 +40,24 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
       { email: data.user.email, activeTill: MoreThan(moment().unix()) },
       { status: InvitationStatus.declined },
     );
+
     const product = await stripeProvider.product.getOne(data.productId);
-    const workspace = await workspaceSource.create({ ...data.workspace });
+    const maxMembersCount = +product.metadata.team;
+    const workspace = await workspaceSource.create({
+      ...data.workspace,
+      maxMembersCount,
+      currentMembersCount: 1,
+    });
+
     workspaceId = workspace._id;
 
     if (workspaceImage) {
       const { location } = await uploadWorkspaceImage(workspace._id, workspaceImage);
+
       await workspaceSource.updateOne(workspace._id, { image: location });
     }
 
-    const stripeCustomer = await stripeProvider.customer.create(data.user.email, data.defaultPaymentMethodId);
+    const stripeCustomer = await stripeProvider.customer.create(data.user.email);
     stripeCustomerId = stripeCustomer.id;
     const otp = generateOTP();
 
@@ -61,7 +69,6 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
       enableNotifications: true,
       workspaces: [workspace._id],
       roles: [{ workspace: workspace._id, role: UserRole.admin }],
-      defaultPaymentMethodId: data.defaultPaymentMethodId,
       stripeCustomerId,
     });
 
@@ -73,19 +80,17 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
     const [subscription] = await Promise.all([
       subscriptionSource.create({
         workspace: workspace._id,
-        interval: product.interval === 'week' ? 'w' : 'm',
         product: product.id,
         priceId: product.priceId,
-        activeTill: moment().add(1, 'w').unix(),
-        status: SubscriptionStatus.trial,
-        stripeSubscription: 'stripeSubscription',
+        stripeSubscription: stripeSubscriptionId,
       }),
       sentOtp(user, otp),
     ]);
 
-    return { user, workspace, subscription };
+    return { user, workspace, subscription, stripeSubscription };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
+    console.log(err);
     await Promise.allSettled([
       userId && userSource.delete(userId),
       workspaceId && workspaceSource.delete(workspaceId),

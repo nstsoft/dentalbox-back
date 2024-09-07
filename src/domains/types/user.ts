@@ -28,8 +28,6 @@ export type UserType = {
   otp: number;
   status: UserStatus;
   stripeCustomerId?: string;
-  paymentMethods?: string[];
-  defaultPaymentMethodId?: string;
   dob?: string;
   image?: string;
 };
