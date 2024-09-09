@@ -42,6 +42,9 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
     );
 
     const product = await stripeProvider.product.getOne(data.productId);
+    if (!product.prices.some(({ priceId }) => priceId !== data.priceId)) {
+      throw new Error('Invalid product');
+    }
     const maxMembersCount = +product.metadata.team;
     const workspace = await workspaceSource.create({
       ...data.workspace,
@@ -74,14 +77,14 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
 
     userId = user._id;
 
-    const stripeSubscription = await stripeProvider.subscription.create(stripeCustomerId, product.priceId);
+    const stripeSubscription = await stripeProvider.subscription.create(stripeCustomerId, data.priceId);
     stripeSubscriptionId = stripeSubscription.id;
 
     const [subscription] = await Promise.all([
       subscriptionSource.create({
         workspace: workspace._id,
-        product: product.id,
-        priceId: product.priceId,
+        product: product.productId,
+        priceId: data.priceId,
         stripeSubscription: stripeSubscriptionId,
       }),
       sentOtp(user, otp),

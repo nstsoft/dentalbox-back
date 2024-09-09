@@ -13,6 +13,8 @@ export class RegistrationDto {
   workspace: WorkspaceDto;
   @IsString()
   productId: string;
+  @IsString()
+  priceId: string;
   @IsOptional()
   workspaceImage?: string;
 }

@@ -4,16 +4,28 @@ import { Stripe } from 'stripe';
 class StripeProvider {
   private stripe = new Stripe(config.STRIPE_SECRET_KEY);
 
-  getProducts() {
-    return this.stripe.products
-      .list({ expand: ['data.default_price'] })
-      .then(({ data }) => data.map(this.parseProduct));
+  async getProducts() {
+    const [products, prices] = await Promise.all([
+      this.stripe.products.list({ active: true }).then(({ data }) => data),
+      this.stripe.prices.list({ active: true, limit: 100 }).then(({ data }) => data),
+    ]);
+
+    return products.map((product) => ({
+      ...this.parseProduct(product),
+      prices: prices.filter((price) => product.id === price.product).map(this.parsePrice),
+    }));
   }
 
-  getProductById(productId: string) {
-    return this.stripe.products
-      .retrieve(productId, { expand: ['default_price'] })
-      .then((data) => this.parseProduct(data));
+  async getProductById(productId: string) {
+    const [prices, product] = await Promise.all([
+      this.stripe.prices.list({ active: true, product: productId }).then(({ data }) => data),
+      this.stripe.products.retrieve(productId),
+    ]);
+
+    return {
+      ...this.parseProduct(product),
+      prices: prices.map(this.parsePrice),
+    };
   }
 
   createCustomer(email: string) {
@@ -40,19 +52,20 @@ class StripeProvider {
   }
 
   parseProduct(product: Stripe.Product) {
-    const price = product.default_price as Stripe.Price;
     return {
-      id: product.id,
-      active: product.active,
-      name: product.name,
-      description: product.description,
+      productId: product.id,
       image: product.images[0],
-      interval: price.recurring?.interval,
+      metadata: product.metadata,
+    };
+  }
+
+  parsePrice(price: Stripe.Price) {
+    return {
+      priceId: price.id,
       currency: price.currency,
       amount: price.unit_amount,
-      priceId: price.id,
-      priceActive: price.active,
-      metadata: product.metadata,
+      interval: price.recurring?.interval,
+      productId: price.product,
     };
   }
 

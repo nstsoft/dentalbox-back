@@ -1,6 +1,6 @@
 import { stripeProvider } from '@providers';
 
-export const getPlanById = (id: string) => {
+export const getProductById = (id: string) => {
   return stripeProvider.getProductById(id);
 };
 
