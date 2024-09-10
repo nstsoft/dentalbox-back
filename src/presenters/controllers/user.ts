@@ -1,14 +1,6 @@
 import { AcceptInvitationDto, InviteUserDto, UserRole } from '@domains';
 import { AuthError } from '@errors';
-import { stripeProvider } from '@src/providers';
-import {
-  acceptInvitation,
-  confirmOtp,
-  getAuthenticationData,
-  getSubscriptionByWorkspace,
-  getWorkspaceById,
-  inviteUser,
-} from '@useCases';
+import { acceptInvitation, confirmOtp, getAuthenticationData, inviteUser } from '@useCases';
 import { BaseController, Controller, Get, Patch, Post, RolesGuard, ValidateBody } from '@utils';
 
 import { authenticate } from '../middlewares';
@@ -17,14 +9,7 @@ import { authenticate } from '../middlewares';
 export class UserController extends BaseController {
   @Get('/me', [authenticate(false)])
   async me(req: Express.AuthenticatedRequest<{ workspace: string }>) {
-    const workspace = req.headers.workspace as string;
-    const [workspaceData, subscriptionData] = await Promise.all([
-      getWorkspaceById(workspace),
-      getSubscriptionByWorkspace(workspace),
-    ]);
-    const stripeSubscription = await stripeProvider.subscription.get(subscriptionData?.stripeSubscription ?? '');
-
-    return { user: req.user, workspace: workspaceData, subscriptionData, stripeSubscription };
+    return { user: req.user };
   }
 
   @Get('/:id', [authenticate()])
@@ -40,7 +25,7 @@ export class UserController extends BaseController {
     return confirmOtp(req.user._id);
   }
 
-  @RolesGuard('admin')
+  @RolesGuard('admin', 'owner')
   @ValidateBody(InviteUserDto)
   @Post('/invite', [authenticate()])
   async inviteUser(req: Express.AuthenticatedRequest<unknown, unknown, { email: string; role: UserRole }>) {

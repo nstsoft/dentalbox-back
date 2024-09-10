@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
+import { validate, type ValidationError } from 'class-validator';
 import { NextFunction, Request, Response } from 'express';
 
 export function ValidateBody<T>(classType: new (...args: any[]) => T): MethodDecorator {

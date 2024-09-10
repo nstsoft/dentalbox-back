@@ -4,7 +4,7 @@ import { Stripe } from 'stripe';
 class StripeProvider {
   private stripe = new Stripe(config.STRIPE_SECRET_KEY);
 
-  async getProducts() {
+  private async getProducts() {
     const [products, prices] = await Promise.all([
       this.stripe.products.list({ active: true }).then(({ data }) => data),
       this.stripe.prices.list({ active: true, limit: 100 }).then(({ data }) => data),
@@ -16,7 +16,11 @@ class StripeProvider {
     }));
   }
 
-  async getProductById(productId: string) {
+  private async createSetupIntent(customer: string) {
+    return this.stripe.setupIntents.create({ customer });
+  }
+
+  private async getProductById(productId: string) {
     const [prices, product] = await Promise.all([
       this.stripe.prices.list({ active: true, product: productId }).then(({ data }) => data),
       this.stripe.products.retrieve(productId),
@@ -28,11 +32,11 @@ class StripeProvider {
     };
   }
 
-  createCustomer(email: string) {
+  private createCustomer(email: string) {
     return this.stripe.customers.create({ email });
   }
 
-  createSubscription(customer: string, price: string, quantity = 1) {
+  private createSubscription(customer: string, price: string, quantity = 1) {
     return this.stripe.subscriptions.create({
       customer,
       items: [{ price, quantity }],
@@ -43,15 +47,19 @@ class StripeProvider {
     });
   }
 
-  removeCustomer(customerId: string) {
+  private removeCustomer(customerId: string) {
     return this.stripe.customers.del(customerId);
   }
 
-  cancelSubscription(subscriptionId: string) {
+  private cancelSubscription(subscriptionId: string) {
     return this.stripe.subscriptions.cancel(subscriptionId);
   }
 
-  parseProduct(product: Stripe.Product) {
+  private getPriceById(id: string) {
+    return this.stripe.prices.retrieve(id);
+  }
+
+  private parseProduct(product: Stripe.Product) {
     return {
       productId: product.id,
       image: product.images[0],
@@ -59,7 +67,7 @@ class StripeProvider {
     };
   }
 
-  parsePrice(price: Stripe.Price) {
+  private parsePrice(price: Stripe.Price) {
     return {
       priceId: price.id,
       currency: price.currency,
@@ -71,7 +79,7 @@ class StripeProvider {
 
   get customer() {
     return {
-      removeCustomer: this.removeCustomer.bind(this),
+      remove: this.removeCustomer.bind(this),
       create: this.createCustomer.bind(this),
     };
   }
@@ -83,11 +91,35 @@ class StripeProvider {
     };
   }
 
+  get price() {
+    return {
+      getOne: this.getPriceById.bind(this),
+    };
+  }
+
+  get intent() {
+    return {
+      createSetup: this.createSetupIntent.bind(this),
+    };
+  }
+
   get subscription() {
     return {
       create: this.createSubscription.bind(this),
       cancel: this.cancelSubscription.bind(this),
-      get: (subscriptionId: string) => this.stripe.subscriptions.retrieve(subscriptionId),
+      get: (subscriptionId: string) =>
+        this.stripe.subscriptions.retrieve(subscriptionId, {
+          expand: ['latest_invoice.payment_intent', 'pending_setup_intent'],
+        }) as Promise<
+          Stripe.Subscription & {
+            pending_setup_intent: Stripe.SetupIntent | null;
+            latest_invoice:
+              | (Stripe.Invoice & {
+                  payment_intent: Stripe.PaymentIntent | null;
+                })
+              | null;
+          }
+        >,
     };
   }
 }

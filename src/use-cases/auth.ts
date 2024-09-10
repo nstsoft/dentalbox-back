@@ -71,7 +71,7 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
       otp,
       enableNotifications: true,
       workspaces: [workspace._id],
-      roles: [{ workspace: workspace._id, role: UserRole.admin }],
+      roles: [{ workspace: workspace._id, role: UserRole.owner }],
       stripeCustomerId,
     });
 
@@ -97,8 +97,8 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
     await Promise.allSettled([
       userId && userSource.delete(userId),
       workspaceId && workspaceSource.delete(workspaceId),
-      stripeSubscriptionId && stripeProvider.cancelSubscription(stripeSubscriptionId),
-      stripeCustomerId && stripeProvider.removeCustomer(stripeCustomerId),
+      stripeSubscriptionId && stripeProvider.subscription.cancel(stripeSubscriptionId),
+      stripeCustomerId && stripeProvider.customer.remove(stripeCustomerId),
     ]);
 
     return Promise.reject(err);

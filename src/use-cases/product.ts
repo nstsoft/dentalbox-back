@@ -1,9 +1,9 @@
 import { stripeProvider } from '@providers';
 
 export const getProductById = (id: string) => {
-  return stripeProvider.getProductById(id);
+  return stripeProvider.product.getOne(id);
 };
 
 export const getAllProducts = async () => {
-  return stripeProvider.getProducts();
+  return stripeProvider.product.getList();
 };

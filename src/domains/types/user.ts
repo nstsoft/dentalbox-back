@@ -1,6 +1,7 @@
 import { BaseEntity } from '@utils';
 
 export enum UserRole {
+  owner = 'owner',
   admin = 'admin',
   manager = 'manager',
   doctor = 'doctor',

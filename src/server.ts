@@ -1,6 +1,13 @@
 import '@config';
 
-import { AuthenticationController, ProductController, UserController, WorkspaceController } from '@controllers';
+import {
+  AuthenticationController,
+  PaymentController,
+  ProductController,
+  SubscriptionController,
+  UserController,
+  WorkspaceController,
+} from '@controllers';
 import { mongoErrorInterceptor } from '@src/presenters/middlewares';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
@@ -33,6 +40,8 @@ apiRouter.use(new UserController().route);
 apiRouter.use(new AuthenticationController().route);
 apiRouter.use(new ProductController().route);
 apiRouter.use(new WorkspaceController().route);
+apiRouter.use(new SubscriptionController().route);
+apiRouter.use(new PaymentController().route);
 
 app.use('/api/v1', apiRouter);
 
