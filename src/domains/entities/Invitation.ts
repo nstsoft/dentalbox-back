@@ -1,7 +1,7 @@
 import { InvitationStatus, RawInvitation, UserRole } from '../types';
-import { Base } from './Base';
+import { BaseEntity } from './Base';
 
-export class Invitation extends Base {
+export class Invitation extends BaseEntity {
   email: string;
   workspace: string;
   status: InvitationStatus;

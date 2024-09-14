@@ -1,7 +1,7 @@
 import { RawCabinet } from '../types';
-import { Base } from './Base';
+import { BaseEntity } from './Base';
 
-export class Cabinet extends Base {
+export class Cabinet extends BaseEntity {
   name: string;
   image: string;
   description: string;

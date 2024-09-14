@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export class Base {
+export class BaseEntity {
   constructor(data?: unknown) {
     if (data) {
       Object.assign(this, data);
@@ -27,11 +27,11 @@ export class Base {
     return ownProperties;
   }
 
-  static toDomain<T extends typeof Base>(this: T, data?: any) {
+  static toDomain<T extends typeof BaseEntity>(this: T, data?: any) {
     return new this(JSON.parse(JSON.stringify(data))) as InstanceType<T>;
   }
 
-  static toBatchDomain<T extends typeof Base>(this: T, data: any[]) {
-    return data.map((item) => Base.toDomain({ ...item, _id: item?._id?.toString() })) as InstanceType<T>[];
+  static toBatchDomain<T extends typeof BaseEntity>(this: T, data: any[]) {
+    return data.map((item) => this.toDomain({ ...item, _id: item?._id?.toString() })) as InstanceType<T>[];
   }
 }

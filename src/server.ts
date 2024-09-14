@@ -18,10 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use((req, res, next) => {
-  const pagination = {
-    skip: 0,
-    limit: 20,
-  };
+  const pagination = { skip: 0, limit: 20 };
   if (!isNaN(+(req.query?.skip ?? 0))) {
     pagination.skip = Number(req.query.skip);
   }

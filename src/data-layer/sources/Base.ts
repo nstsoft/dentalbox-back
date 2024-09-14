@@ -1,7 +1,8 @@
 import type { Pagination } from '@utils';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 
 import { IDataSource, IRepositorySource } from '../interfaces';
+import { FindAllCriteria } from '../types';
 export abstract class BaseSource<T, C> implements IDataSource<T, C> {
   protected repository: IRepositorySource<T, C>;
 
@@ -9,8 +10,8 @@ export abstract class BaseSource<T, C> implements IDataSource<T, C> {
     this.repository = repository;
   }
 
-  findAll(criteria: Partial<C>, pagination?: Pagination) {
-    return this.repository.findAll(criteria, pagination);
+  findAll(criteria: FindAllCriteria<C>, pagination?: Pagination, orderBy?: FindOptionsOrder<C>) {
+    return this.repository.findAll(criteria, pagination, orderBy);
   }
 
   findOneById(id: string) {

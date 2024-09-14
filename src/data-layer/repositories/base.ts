@@ -4,6 +4,7 @@ import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils
 import { ObjectId } from 'mongodb';
 import { type FindManyOptions, type FindOptionsOrder, type FindOptionsWhere, MongoRepository } from 'typeorm';
 
+import { FindAllCriteria } from '../types';
 import { CabinetModel, InvitationModel, MongoSource, SubscriptionModel, UserModel, WorkspaceModel } from './mongodb';
 
 type Models = UserModel | WorkspaceModel | SubscriptionModel | InvitationModel | CabinetModel;
@@ -27,11 +28,14 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
     return data && this.domain.toDomain({ ...data, _id: data._id.toString() });
   }
 
-  async findAll(criteria: Partial<Data>, pagination?: Pagination) {
+  async findAll(
+    criteria: FindAllCriteria<Data>,
+    pagination?: Pagination,
+    orderBy?: FindOptionsOrder<new (...data: unknown[]) => M>,
+  ) {
     const plain = deepParseObjectId(removeUndefinedProps(criteria));
-
     const params: FindManyOptions<new (...data: unknown[]) => M> = Object.keys(plain).length ? { where: plain } : {};
-    const order: FindOptionsOrder<new (...data: unknown[]) => M> = { _id: 'DESC' };
+    const order = orderBy ?? { _id: 'DESC' };
 
     const [data, count] = await this.repository.findAndCount({
       ...params,
@@ -40,10 +44,7 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
       skip: pagination?.skip ?? 0,
     });
 
-    return {
-      count,
-      data: this.domain.toBatchDomain(data),
-    };
+    return { count, data: this.domain.toBatchDomain(data) };
   }
 
   async create(data: Data) {

@@ -1,9 +1,9 @@
 import bcryptjs from 'bcryptjs';
 
 import { RawUser, UserRole, UserStatus } from '../types';
-import { Base } from './Base';
+import { BaseEntity } from './Base';
 
-export class User extends Base {
+export class User extends BaseEntity {
   email: string;
   name: string;
   password: string;
@@ -59,7 +59,8 @@ export class User extends Base {
     return { ...this.properties(), password: '******', otp: 0 } as RawUser;
   }
 
-  excludeWorkspaces(currentWorkspace: string) {
+  excludeWorkspaces(currentWorkspace: string): User {
     this.workspaces = this.workspaces.includes(currentWorkspace) ? [currentWorkspace] : [];
+    return this;
   }
 }

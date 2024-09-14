@@ -20,6 +20,14 @@ export const createUser = (data: UserDto) => {
   });
 };
 
+export const getUsersByWorkspace = async (workspace: string, pagination: { limit: number; skip: number }) => {
+  const { count, data } = await userSource.findAll({ workspaces: { $in: [workspace] } }, pagination, {
+    surname: 'ASC',
+  });
+
+  return { count, data: data.map((user) => user.excludeWorkspaces(workspace)) };
+};
+
 export const confirmOtp = (_id: string) => userSource.updateOne(_id, { isVerified: true });
 
 export const inviteUser = async (email: string, workspace: string, role: UserRole) => {

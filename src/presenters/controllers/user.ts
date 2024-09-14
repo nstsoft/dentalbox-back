@@ -1,12 +1,17 @@
 import { AcceptInvitationDto, InviteUserDto, UserRole } from '@domains';
 import { AuthError } from '@errors';
-import { acceptInvitation, confirmOtp, getAuthenticationData, inviteUser } from '@useCases';
+import { acceptInvitation, confirmOtp, getAuthenticationData, getUsersByWorkspace, inviteUser } from '@useCases';
 import { BaseController, Controller, Get, Patch, Post, RolesGuard, ValidateBody } from '@utils';
 
 import { authenticate } from '../middlewares';
 
 @Controller('/user')
 export class UserController extends BaseController {
+  @Get('/', [authenticate(false)])
+  async list(req: Express.AuthenticatedRequest<{ workspace: string }>) {
+    return getUsersByWorkspace(req.workspace, { skip: req.query.skip, limit: req.query.limit });
+  }
+
   @Get('/me', [authenticate(false)])
   async me(req: Express.AuthenticatedRequest<{ workspace: string }>) {
     return { user: req.user };

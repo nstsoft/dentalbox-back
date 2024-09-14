@@ -1,7 +1,7 @@
 import { RawWorkspace } from '../types';
-import { Base } from './Base';
+import { BaseEntity } from './Base';
 
-export class Workspace extends Base {
+export class Workspace extends BaseEntity {
   name: string;
   image?: string;
   description: string;

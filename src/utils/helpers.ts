@@ -34,22 +34,29 @@ export const removeUndefinedProps = (obj: any) => {
   return obj;
 };
 
-export const deepParseObjectId = (obj: any): any => {
-  if (Array.isArray(obj)) {
-    // Process arrays
-    for (let i = 0; i < obj.length; i++) {
-      obj[i] = deepParseObjectId(obj[i]);
-    }
-  } else if (obj && typeof obj === 'object') {
-    for (const key in obj) {
-      if (ObjectId.isValid(obj[key])) {
-        obj[key] = ObjectId.createFromHexString(obj[key]);
-      } else if (typeof obj[key] === 'object') {
-        return deepParseObjectId(obj[key]);
+export const isValidObjectId = (str: string) => {
+  return ObjectId.isValid(str) && String(new ObjectId(str)) === str;
+};
+
+export const deepParseObjectId = (data: any): any => {
+  if (Array.isArray(data)) {
+    return data.map((item) => deepParseObjectId(item));
+  }
+  if (typeof data === 'object' && data !== null) {
+    for (const key in data) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (data.hasOwnProperty(key)) {
+        data[key] = deepParseObjectId(data[key]);
       }
     }
+    return data;
   }
-  return obj;
+
+  if (typeof data === 'string' && isValidObjectId(data)) {
+    return new ObjectId(data);
+  }
+
+  return data;
 };
 
 export const generateOTP = () => {

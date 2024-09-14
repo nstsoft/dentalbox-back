@@ -1,7 +1,7 @@
 import { RawSubscription } from '../types';
-import { Base } from './Base';
+import { BaseEntity } from './Base';
 
-export class Subscription extends Base {
+export class Subscription extends BaseEntity {
   workspace: string;
   product: string;
   _id: string;
