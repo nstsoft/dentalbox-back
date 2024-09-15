@@ -36,6 +36,10 @@ class StripeProvider {
     return this.stripe.customers.create({ email });
   }
 
+  private getPaymentMethods(customer: string) {
+    return this.stripe.paymentMethods.list({ customer, type: 'card' });
+  }
+
   private createSubscription(customer: string, price: string, quantity = 1) {
     return this.stripe.subscriptions.create({
       customer,
@@ -100,6 +104,12 @@ class StripeProvider {
   get intent() {
     return {
       createSetup: this.createSetupIntent.bind(this),
+    };
+  }
+
+  get paymentMethod() {
+    return {
+      list: this.getPaymentMethods.bind(this),
     };
   }
 

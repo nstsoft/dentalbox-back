@@ -21,6 +21,7 @@ export const authenticate =
       if (!user.workspaces.includes(workspace) && checkWorkspace) {
         return next(new AuthError('Forbidden', { message: 'Forbidden resource' }, 403));
       }
+
       if (checkWorkspace) {
         role = user.roles.find((role) => role.workspace.toString() === workspace)?.role;
         user.excludeWorkspaces(workspace);

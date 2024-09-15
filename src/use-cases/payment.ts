@@ -3,6 +3,9 @@ import { stripeProvider } from '@providers';
 export const createSetupIntent = (customer: string) => {
   return stripeProvider.intent.createSetup(customer);
 };
+export const retrievePaymentMethods = (customer: string) => {
+  return stripeProvider.paymentMethod.list(customer);
+};
 
 export const getClientSecret = async (stripeSubscriptionId: string, customerId: string) => {
   const subscription = await stripeProvider.subscription.get(stripeSubscriptionId);
