@@ -7,7 +7,7 @@ export class Cabinet extends BaseEntity {
   description: string;
   address: string;
   phone: string;
-  users: string[];
+  chairs: string[];
   workspace: string;
   _id: string;
 
@@ -21,8 +21,8 @@ export class Cabinet extends BaseEntity {
     this.address = data.address;
     this.phone = data.phone;
     this.workspace = data.workspace;
-    if (data.users) {
-      this.users = data.users;
+    if (data.chairs) {
+      this.chairs = data.chairs;
     }
   }
 }

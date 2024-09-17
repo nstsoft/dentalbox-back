@@ -23,7 +23,7 @@ export class CabinetModel {
   @Column()
   updatedAt: Date;
   @Column({ array: true })
-  users?: ObjectId[];
+  chairs?: ObjectId[];
   @Column({ array: false })
   workspace?: ObjectId;
 
@@ -47,8 +47,8 @@ export class CabinetModel {
     if (cabinet?.workspace) {
       this.workspace = new ObjectId(cabinet?.workspace);
     }
-    if (cabinet?.users) {
-      this.users = cabinet.users.map((id) => new ObjectId(id));
+    if (cabinet?.chairs) {
+      this.chairs = cabinet.chairs.map((id) => new ObjectId(id));
     }
   }
 

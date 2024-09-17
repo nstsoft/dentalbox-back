@@ -21,8 +21,8 @@ export class CabinetRepository extends Repository<CabinetModel, Cabinet, Cabinet
   }
 
   async updateOne(_id: string, data: Partial<CabinetType & { _id?: string }>) {
-    if (data.users) {
-      Object.assign(data, { users: data.users.map((user) => new ObjectId(user)) });
+    if (data.chairs) {
+      Object.assign(data, { users: data.chairs.map((chair) => new ObjectId(chair)) });
     }
 
     return this.repository.update(_id, data);

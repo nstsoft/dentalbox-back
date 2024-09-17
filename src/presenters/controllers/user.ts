@@ -15,12 +15,12 @@ import { authenticate } from '../middlewares';
 @Controller('/user')
 export class UserController extends BaseController {
   @Get('/', [authenticate(false)])
-  async list(req: Express.AuthenticatedRequest<{ workspace: string }>) {
+  async list(req: Express.AuthenticatedRequest) {
     return getUsersByWorkspace(req.workspace, { skip: req.query.skip, limit: req.query.limit });
   }
 
   @Get('/me', [authenticate(false)])
-  async me(req: Express.AuthenticatedRequest<{ workspace: string }>) {
+  async me(req: Express.AuthenticatedRequest) {
     const workspace = await getWorkspaceById(req.workspace);
     return { user: req.user, workspace };
   }

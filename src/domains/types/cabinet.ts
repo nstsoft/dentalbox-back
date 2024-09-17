@@ -6,7 +6,7 @@ export type CabinetType = {
   description: string;
   address: string;
   phone: string;
-  users: string[];
+  chairs: string[];
   workspace: string;
 };
 

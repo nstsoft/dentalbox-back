@@ -8,13 +8,13 @@ import { authenticate } from '../middlewares';
 export class PaymentController extends BaseController {
   @RolesGuard('owner')
   @Get('/create-payment-intent', [authenticate(false, true)])
-  async my(req: Express.AuthenticatedRequest<{ workspace: string }>) {
+  async my(req: Express.AuthenticatedRequest) {
     return createSetupIntent(req.user.stripeCustomerId!);
   }
 
   @RolesGuard('owner', 'admin')
   @Get('/client-secret', [authenticate(false, true)])
-  async getClientSecret(req: Express.AuthenticatedRequest<{ workspace: string }>) {
+  async getClientSecret(req: Express.AuthenticatedRequest) {
     const subscription = await getSubscriptionByWorkspace(req.workspace);
     if (!subscription?.stripeSubscription) {
       throw new SubscriptionError('StripeSubscriptionNotFound', {});
@@ -24,7 +24,7 @@ export class PaymentController extends BaseController {
 
   // @RolesGuard('owner')
   @Get('/payment-methods', [authenticate(false, false)])
-  async getPaymentMethods(req: Express.AuthenticatedRequest<{ workspace: string }>) {
+  async getPaymentMethods(req: Express.AuthenticatedRequest) {
     if (!req.user.stripeCustomerId) {
       throw new Error('StripeCustomerIdNotFound');
     }

@@ -7,7 +7,7 @@ import { authenticate } from '../middlewares';
 @Controller('/subscription', [authenticate(false, true)])
 export class SubscriptionController extends BaseController {
   @Get('/')
-  async my(req: Express.AuthenticatedRequest<{ workspace: string }>) {
+  async my(req: Express.AuthenticatedRequest) {
     const subscription = await getSubscriptionByWorkspace(req.workspace);
     if (!subscription) {
       throw new NotFound('Subscription not found');

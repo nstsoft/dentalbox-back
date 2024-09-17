@@ -29,7 +29,6 @@ export class AuthenticationController extends BaseController {
   }
 
   @Post('/register', [upload.single('file')])
-  // @ValidateBody(RegistrationDto)
   async register(req: Request<unknown, unknown>, res: Response) {
     const data = JSON.parse(req.body.data);
 
