@@ -3,7 +3,7 @@ import { BaseEntity } from '@utils';
 export type CabinetType = {
   name: string;
   image: string;
-  description: string;
+  notes: string;
   address: string;
   phone: string;
   chairs: string[];

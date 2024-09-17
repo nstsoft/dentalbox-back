@@ -20,8 +20,16 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ['.config/*', './eslint.config.mjs', './tsconfig.json', './dist', './lambdas', './cdk.out'],
+    ignores: [
+      '.config/*',
+      './eslint.config.mjs',
+      './tsconfig.json',
+      './dist',
+      './lambdas',
+      './cdk.out',
+    ],
     files: ['**/*.{js,mjs,cjs,ts}'],
+    'max-len': ['error', { code: 100 }],
     plugins: {
       '@typescript-eslint': typescriptEslint,
       prettier,

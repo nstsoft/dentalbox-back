@@ -1,14 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { CabinetType, InvitationType, SubscriptionType, UserType, WorkspaceType } from '@domains';
+import type { CabinetType, ChairType, InvitationType, SubscriptionType, UserType, WorkspaceType } from '@domains';
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
 import { type FindManyOptions, type FindOptionsOrder, type FindOptionsWhere, MongoRepository } from 'typeorm';
 
 import { FindAllCriteria } from '../types';
-import { CabinetModel, InvitationModel, MongoSource, SubscriptionModel, UserModel, WorkspaceModel } from './mongodb';
+import {
+  CabinetModel,
+  ChairModel,
+  InvitationModel,
+  MongoSource,
+  SubscriptionModel,
+  UserModel,
+  WorkspaceModel,
+} from './mongodb';
 
-type Models = UserModel | WorkspaceModel | SubscriptionModel | InvitationModel | CabinetModel;
-type EntityData = UserType | WorkspaceType | SubscriptionType | InvitationType | CabinetType;
+type Models = UserModel | WorkspaceModel | SubscriptionModel | InvitationModel | CabinetModel | ChairModel;
+type EntityData = UserType | WorkspaceType | SubscriptionType | InvitationType | CabinetType | ChairType;
 
 export abstract class Repository<M extends Models, Domain, Data extends EntityData> {
   repository: MongoRepository<M>;

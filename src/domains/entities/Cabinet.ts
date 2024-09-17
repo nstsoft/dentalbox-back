@@ -4,7 +4,7 @@ import { BaseEntity } from './Base';
 export class Cabinet extends BaseEntity {
   name: string;
   image: string;
-  description: string;
+  notes: string;
   address: string;
   phone: string;
   chairs: string[];
@@ -17,7 +17,7 @@ export class Cabinet extends BaseEntity {
     this.name = data.name;
 
     this.image = data.image;
-    this.description = data.description;
+    this.notes = data.notes;
     this.address = data.address;
     this.phone = data.phone;
     this.workspace = data.workspace;
