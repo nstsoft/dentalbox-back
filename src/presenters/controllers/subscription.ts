@@ -19,8 +19,17 @@ export class SubscriptionController extends BaseController {
     ]);
 
     return {
-      ...stripeSubscription,
       ...subscription,
+      billing_cycle_anchor: stripeSubscription?.billing_cycle_anchor,
+      cancel_at: stripeSubscription?.cancel_at,
+      canceled_at: stripeSubscription?.canceled_at,
+      cancellation_details: stripeSubscription?.cancellation_details,
+      created: stripeSubscription?.created,
+      currency: stripeSubscription?.currency,
+      current_period_end: stripeSubscription?.created,
+      current_period_start: stripeSubscription?.created,
+      customer: stripeSubscription?.created,
+      id: stripeSubscription?.created,
       price,
       product,
     };
