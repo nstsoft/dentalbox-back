@@ -2,11 +2,10 @@ import { BaseEntity } from '@utils';
 
 export type CabinetType = {
   name: string;
-  image: string;
-  notes: string;
-  address: string;
-  phone: string;
-  chairs: string[];
+  image?: string;
+  notes?: string;
+  address?: string;
+  phone?: string;
   workspace: string;
 };
 

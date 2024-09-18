@@ -18,8 +18,8 @@ export class InvitationModel {
 
   constructor(invitation: InvitationType) {
     if (invitation) {
-      this.email = invitation.email;
-      this.workspace = invitation.workspace;
+      this.email = invitation?.email;
+      this.workspace = invitation?.workspace;
       this.userRole = invitation?.userRole;
       this.activeTill = invitation?.activeTill;
     }

@@ -3,7 +3,7 @@ import { BaseEntity } from './Base';
 
 export class Chair extends BaseEntity {
   name: string;
-  notes: string;
+  notes?: string;
   cabinet: string;
   workspace: string;
   _id: string;

@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class CreateCabinetDto {
+export class ChairDto {
   _id?: string;
   @IsString()
   name: string;
@@ -8,9 +8,5 @@ export class CreateCabinetDto {
   @IsOptional()
   notes: string;
   @IsString()
-  @IsOptional()
-  address: string;
-  @IsString()
-  @IsOptional()
-  phone: string;
+  cabinet: string;
 }

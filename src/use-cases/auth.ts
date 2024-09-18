@@ -77,7 +77,10 @@ export const register = async (data: RegistrationDto, workspaceImage?: Buffer) =
 
     userId = user._id;
 
-    const stripeSubscription = await stripeProvider.subscription.create(stripeCustomerId, data.priceId);
+    const stripeSubscription = await stripeProvider.subscription.create(
+      stripeCustomerId,
+      data.priceId,
+    );
     stripeSubscriptionId = stripeSubscription.id;
 
     const [subscription] = await Promise.all([
@@ -122,7 +125,10 @@ export const authenticateWithGoogle = async (code: string) => {
     Object.assign(query, tokens);
     Object.assign(query, { user: user.toJson() });
   } catch (err: unknown) {
-    Object.assign(query, { status: 403, error: (err as AxiosError)?.response?.data ?? (err as Error).message ?? err });
+    Object.assign(query, {
+      status: 403,
+      error: (err as AxiosError)?.response?.data ?? (err as Error).message ?? err,
+    });
   }
 
   return `${config.AUTH_REDIRECT_URL}?${querystring.stringify(query)}`;

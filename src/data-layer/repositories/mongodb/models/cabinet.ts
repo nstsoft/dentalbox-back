@@ -11,19 +11,17 @@ export class CabinetModel {
   @Column({ unique: true, type: 'text' })
   name: string;
   @Column({ unique: false, type: 'text' })
-  image: string;
+  image?: string;
   @Column({ unique: false, type: 'text' })
-  notes: string;
+  notes?: string;
   @Column({ unique: false, type: 'text' })
-  address: string;
+  address?: string;
   @Column({ unique: false, type: 'text' })
-  phone: string;
+  phone?: string;
   @Column()
   createdAt: Date;
   @Column()
   updatedAt: Date;
-  @Column({ array: true })
-  chairs?: ObjectId[];
   @Column({ array: false })
   workspace?: ObjectId;
 
@@ -46,9 +44,6 @@ export class CabinetModel {
     this.address = cabinet?.address;
     if (cabinet?.workspace) {
       this.workspace = new ObjectId(cabinet?.workspace);
-    }
-    if (cabinet?.chairs) {
-      this.chairs = cabinet.chairs.map((id) => new ObjectId(id));
     }
   }
 

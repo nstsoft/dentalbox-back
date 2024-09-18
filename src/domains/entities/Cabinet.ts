@@ -3,11 +3,10 @@ import { BaseEntity } from './Base';
 
 export class Cabinet extends BaseEntity {
   name: string;
-  image: string;
-  notes: string;
-  address: string;
-  phone: string;
-  chairs: string[];
+  image?: string;
+  notes?: string;
+  address?: string;
+  phone?: string;
   workspace: string;
   _id: string;
 
@@ -15,14 +14,10 @@ export class Cabinet extends BaseEntity {
     super();
     this._id = data._id;
     this.name = data.name;
-
     this.image = data.image;
     this.notes = data.notes;
     this.address = data.address;
     this.phone = data.phone;
     this.workspace = data.workspace;
-    if (data.chairs) {
-      this.chairs = data.chairs;
-    }
   }
 }

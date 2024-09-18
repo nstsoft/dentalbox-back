@@ -41,7 +41,9 @@ export class UserController extends BaseController {
   @RolesGuard('admin', 'owner')
   @ValidateBody(InviteUserDto)
   @Post('/invite', [authenticate()])
-  async inviteUser(req: Express.AuthenticatedRequest<unknown, unknown, { email: string; role: UserRole }>) {
+  async inviteUser(
+    req: Express.AuthenticatedRequest<unknown, unknown, { email: string; role: UserRole }>,
+  ) {
     return inviteUser(req.body.email, req.workspace, req.body.role);
   }
 

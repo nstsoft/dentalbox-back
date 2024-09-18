@@ -11,7 +11,7 @@ export class ChairModel {
   @Column({ unique: true, type: 'text' })
   name: string;
   @Column({ unique: true, type: 'text' })
-  notes: string;
+  notes?: string;
   @Column()
   createdAt: Date;
   @Column()

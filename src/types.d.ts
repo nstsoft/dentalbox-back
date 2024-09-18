@@ -11,7 +11,13 @@ declare global {
       ReqBody = any,
       ReqQuery = core.Query,
       Locals extends Record<string, any> = Record<string, any>,
-    > extends ExpressRequest<P, ResBody, ReqBody, ReqQuery & { skip: number; limit: number }, Locals> {
+    > extends ExpressRequest<
+        P,
+        ResBody,
+        ReqBody,
+        ReqQuery & { skip: number; limit: number },
+        Locals
+      > {
       user: User & { _id: string; workspaces: string[]; otpCode: number };
       workspace: string;
     }

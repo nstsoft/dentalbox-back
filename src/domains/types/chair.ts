@@ -2,7 +2,7 @@ import { BaseEntity } from '@utils';
 
 export type ChairType = {
   name: string;
-  notes: string;
+  notes?: string;
   cabinet: string;
   workspace: string;
 };

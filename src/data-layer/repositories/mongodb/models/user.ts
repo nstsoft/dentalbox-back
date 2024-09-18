@@ -89,7 +89,10 @@ export class UserModel {
     this.dob = new Date(user?.dob ?? Date.now());
     this.image = user?.image;
     if (user?.workspaces) {
-      this.roles = user.roles.map(({ workspace, role }) => ({ workspace: new ObjectId(workspace), role }));
+      this.roles = user.roles.map(({ workspace, role }) => ({
+        workspace: new ObjectId(workspace),
+        role,
+      }));
       this.workspaces = user.workspaces.map((id) => new ObjectId(id));
     }
   }

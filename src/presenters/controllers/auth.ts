@@ -1,6 +1,12 @@
 import { LoginDto, RegistrationDto } from '@domains';
 import { AuthError } from '@errors';
-import { authenticateWithGoogle, getAuthenticationData, getGoogleAuthUrl, login, register } from '@useCases';
+import {
+  authenticateWithGoogle,
+  getAuthenticationData,
+  getGoogleAuthUrl,
+  login,
+  register,
+} from '@useCases';
 import { BaseController, Controller, Get, Post, refreshAuthToken, ValidateBody } from '@utils';
 import { plainToClass } from 'class-transformer';
 import { validate, type ValidationError } from 'class-validator';
@@ -32,11 +38,14 @@ export class AuthenticationController extends BaseController {
   async register(req: Request<unknown, unknown>, res: Response) {
     const data = JSON.parse(req.body.data);
 
-    const errors: ValidationError[] = await validate(plainToClass(RegistrationDto, data) as object, {
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      forbidUnknownValues: true,
-    });
+    const errors: ValidationError[] = await validate(
+      plainToClass(RegistrationDto, data) as object,
+      {
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        forbidUnknownValues: true,
+      },
+    );
 
     if (errors.length > 0) {
       const formattedErrors = errors.map((error) => {
