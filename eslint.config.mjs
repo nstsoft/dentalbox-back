@@ -29,7 +29,6 @@ export default [
       './cdk.out',
     ],
     files: ['**/*.{js,mjs,cjs,ts}'],
-    'max-len': ['error', { code: 100 }],
     plugins: {
       '@typescript-eslint': typescriptEslint,
       prettier,
@@ -39,6 +38,7 @@ export default [
     },
     languageOptions: { sourceType: 'module', parser },
     rules: {
+      'max-len': ['error', { code: 100 }],
       ...typescriptEslint.configs.rules,
       'prettier/prettier': 'error',
       'brace-style': ['error', '1tbs', { allowSingleLine: true }],

@@ -1,7 +1,14 @@
 import { AcceptInvitationDto, InvitationStatus, UserDto, UserRole, UserStatus } from '@domains';
-import { InvitationAlreadySent, InvitationError, InvitationExpired, InvitationNotExists } from '@errors';
+import {
+  InvitationAlreadySent,
+  InvitationError,
+  InvitationExpired,
+  InvitationNotExists,
+  WorkspaceError,
+  WorkspaceFullError,
+} from '@errors';
 import { sendInvitationLink, sentOtp } from '@services';
-import { invitationSource, subscriptionSource, userSource } from '@src/data-layer';
+import { invitationSource, subscriptionSource, userSource, workspaceSource } from '@src/data-layer';
 import { generateOTP, generateToken, verifyToken } from '@utils';
 import { config } from 'config';
 import { BadRequest } from 'http-errors';
@@ -20,10 +27,15 @@ export const createUser = (data: UserDto) => {
   });
 };
 
-export const getUsersByWorkspace = async (workspace: string, pagination: { limit: number; skip: number }) => {
-  const { count, data } = await userSource.findAll({ workspaces: { $in: [workspace] } }, pagination, {
-    surname: 'ASC',
-  });
+export const getUsersByWorkspace = async (
+  workspace: string,
+  pagination: { limit: number; skip: number },
+) => {
+  const { count, data } = await userSource.findAll(
+    { workspaces: { $in: [workspace] } },
+    pagination,
+    { surname: 'ASC' },
+  );
 
   return { count, data: data.map((user) => user.excludeWorkspaces(workspace)) };
 };
@@ -31,11 +43,15 @@ export const getUsersByWorkspace = async (workspace: string, pagination: { limit
 export const confirmOtp = (_id: string) => userSource.updateOne(_id, { isVerified: true });
 
 export const inviteUser = async (email: string, workspace: string, role: UserRole) => {
-  const [existedInvitation, existedUser] = await Promise.all([
+  const [existedInvitation, existedUser, currentWorkspace] = await Promise.all([
     invitationSource.findOne({ email, workspace }),
     userSource.findOne({ email }),
+    workspaceSource.findOneById(workspace),
   ]);
 
+  if (!currentWorkspace?.canAcceptUser()) {
+    throw new WorkspaceError(WorkspaceFullError, { message: 'Workspace is full' });
+  }
   if (existedInvitation && existedInvitation.activeTill > moment().unix()) {
     throw new InvitationError(InvitationAlreadySent, 'Invitation already sent');
   }
@@ -51,7 +67,8 @@ export const inviteUser = async (email: string, workspace: string, role: UserRol
   const invitationToken = generateToken({ _id: invitation._id }, '1w');
 
   const invitationLink =
-    config.INVITATION_LINK + `?existed=${!!existedUser}&email=${email}&invitationToken=${invitationToken}`;
+    config.INVITATION_LINK +
+    `?existed=${!!existedUser}&email=${email}&invitationToken=${invitationToken}`;
 
   return sendInvitationLink(invitationLink, email);
 };
@@ -72,10 +89,19 @@ export const acceptInvitation = async (data: AcceptInvitationDto) => {
     throw new InvitationError(InvitationExpired, 'Invitation expired');
   }
 
+  const workspace = await workspaceSource.findOneById(invitation.workspace);
+
+  if (!workspace?.canAcceptUser()) {
+    throw new WorkspaceError(WorkspaceFullError, { message: 'Workspace is full' });
+  }
+
   let user = await userSource.findOne({ email: invitation.email });
   const updatedWorkspaces = [...new Set([...(user?.workspaces ?? []), invitation.workspace])];
   const updatedRoles = [
-    ...new Set([...(user?.roles ?? []), { workspace: invitation.workspace, role: invitation.userRole }]),
+    ...new Set([
+      ...(user?.roles ?? []),
+      { workspace: invitation.workspace, role: invitation.userRole },
+    ]),
   ];
 
   if (user) {

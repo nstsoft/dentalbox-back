@@ -9,7 +9,14 @@ export class Workspace extends BaseEntity {
   currentMembersCount: number;
   _id: string;
 
-  constructor({ name, image, description, _id, maxMembersCount, currentMembersCount }: RawWorkspace) {
+  constructor({
+    name,
+    image,
+    description,
+    _id,
+    maxMembersCount,
+    currentMembersCount,
+  }: RawWorkspace) {
     super();
     this.name = name;
     this.description = description;
@@ -17,5 +24,9 @@ export class Workspace extends BaseEntity {
     this.maxMembersCount = maxMembersCount;
     this.currentMembersCount = currentMembersCount;
     this._id = _id;
+  }
+
+  canAcceptUser() {
+    return this.currentMembersCount < this.maxMembersCount;
   }
 }

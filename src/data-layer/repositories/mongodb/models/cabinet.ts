@@ -13,7 +13,7 @@ export class CabinetModel {
   @Column({ unique: false, type: 'text' })
   image: string;
   @Column({ unique: false, type: 'text' })
-  description: string;
+  notes: string;
   @Column({ unique: false, type: 'text' })
   address: string;
   @Column({ unique: false, type: 'text' })
@@ -41,7 +41,7 @@ export class CabinetModel {
   constructor(cabinet: CabinetType) {
     this.name = cabinet?.name;
     this.image = cabinet?.image;
-    this.description = cabinet?.description;
+    this.notes = cabinet?.notes;
     this.phone = cabinet?.phone;
     this.address = cabinet?.address;
     if (cabinet?.workspace) {
