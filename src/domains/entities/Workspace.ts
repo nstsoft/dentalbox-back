@@ -4,22 +4,15 @@ import { BaseEntity } from './Base';
 export class Workspace extends BaseEntity {
   name: string;
   image?: string;
-  description: string;
+  notes?: string;
   maxMembersCount: number;
   currentMembersCount: number;
   _id: string;
 
-  constructor({
-    name,
-    image,
-    description,
-    _id,
-    maxMembersCount,
-    currentMembersCount,
-  }: RawWorkspace) {
+  constructor({ name, image, notes, _id, maxMembersCount, currentMembersCount }: RawWorkspace) {
     super();
     this.name = name;
-    this.description = description;
+    this.notes = notes;
     this.image = image;
     this.maxMembersCount = maxMembersCount;
     this.currentMembersCount = currentMembersCount;

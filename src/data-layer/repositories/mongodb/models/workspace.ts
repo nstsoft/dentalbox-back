@@ -13,7 +13,7 @@ export class WorkspaceModel {
   @Column({ unique: false, type: 'text' })
   image?: string;
   @Column({ unique: false, type: 'text' })
-  description: string;
+  notes?: string;
   @Column({ unique: false, type: 'number' })
   maxMembersCount: number;
   @Column({ unique: false, type: 'number', default: 1 })
@@ -37,7 +37,7 @@ export class WorkspaceModel {
   constructor(workspace: WorkspaceType) {
     this.name = workspace?.name;
     this.image = workspace?.image;
-    this.description = workspace?.description;
+    this.notes = workspace?.notes;
     this.maxMembersCount = workspace?.maxMembersCount;
     this.currentMembersCount = workspace?.currentMembersCount;
   }

@@ -3,7 +3,7 @@ import { BaseEntity } from '@utils';
 export type WorkspaceType = {
   name: string;
   image?: string;
-  description: string;
+  notes?: string;
   maxMembersCount: number;
   currentMembersCount: number;
 };
