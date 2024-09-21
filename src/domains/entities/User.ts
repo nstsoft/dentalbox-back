@@ -61,6 +61,7 @@ export class User extends BaseEntity {
 
   excludeWorkspaces(currentWorkspace: string): User {
     this.workspaces = this.workspaces.includes(currentWorkspace) ? [currentWorkspace] : [];
+    this.roles = [this.roles.find(({ workspace }) => workspace === currentWorkspace)!];
     return this;
   }
 }

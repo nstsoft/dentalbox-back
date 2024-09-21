@@ -1,10 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { CabinetType, ChairType, InvitationType, SubscriptionType, UserType, WorkspaceType } from '@domains';
+import type {
+  CabinetType,
+  ChairType,
+  InvitationType,
+  SubscriptionType,
+  UserType,
+  WorkspaceType,
+} from '@domains';
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
-import { type FindManyOptions, type FindOptionsOrder, type FindOptionsWhere, MongoRepository } from 'typeorm';
+import {
+  type FindManyOptions,
+  type FindOptionsOrder,
+  type FindOptionsWhere,
+  MongoRepository,
+} from 'typeorm';
 
-import { FindAllCriteria } from '../types';
+import { FindAllCriteria } from '../../types';
 import {
   CabinetModel,
   ChairModel,
@@ -13,10 +25,22 @@ import {
   SubscriptionModel,
   UserModel,
   WorkspaceModel,
-} from './mongodb';
+} from './db';
 
-type Models = UserModel | WorkspaceModel | SubscriptionModel | InvitationModel | CabinetModel | ChairModel;
-type EntityData = UserType | WorkspaceType | SubscriptionType | InvitationType | CabinetType | ChairType;
+type Models =
+  | UserModel
+  | WorkspaceModel
+  | SubscriptionModel
+  | InvitationModel
+  | CabinetModel
+  | ChairModel;
+type EntityData =
+  | UserType
+  | WorkspaceType
+  | SubscriptionType
+  | InvitationType
+  | CabinetType
+  | ChairType;
 
 export abstract class Repository<M extends Models, Domain, Data extends EntityData> {
   repository: MongoRepository<M>;
@@ -26,7 +50,10 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
   constructor(model: new (...args: any[]) => M, domain: new (...args: any[]) => Domain) {
     this.model = model;
     this.repository = MongoSource.getMongoRepository(model);
-    this.domain = domain as unknown as { toDomain: (model: M) => Domain; toBatchDomain: (model: M[]) => Domain[] };
+    this.domain = domain as unknown as {
+      toDomain: (model: M) => Domain;
+      toBatchDomain: (model: M[]) => Domain[];
+    };
   }
 
   async findOneById(id: string) {
@@ -39,10 +66,14 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
   async findAll(
     criteria: FindAllCriteria<Data>,
     pagination?: Pagination,
+    filter?: FindManyOptions<Data>,
     orderBy?: FindOptionsOrder<new (...data: unknown[]) => M>,
   ) {
     const plain = deepParseObjectId(removeUndefinedProps(criteria));
-    const params: FindManyOptions<new (...data: unknown[]) => M> = Object.keys(plain).length ? { where: plain } : {};
+    const params: FindManyOptions<new (...data: unknown[]) => M> = Object.keys(plain).length
+      ? { ...filter, where: { ...plain, ...filter?.where } }
+      : { ...filter };
+
     const order = orderBy ?? { _id: 'DESC' };
 
     const [data, count] = await this.repository.findAndCount({

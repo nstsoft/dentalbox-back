@@ -40,3 +40,10 @@ export type UserEntity = BaseEntity<RawUser> & {
   excludeWorkspaces(currentWorkspace: string): UserEntity;
   get otpCode(): number;
 };
+
+export type UserListFilter = {
+  role?: UserRole[];
+  verified?: boolean;
+  search?: string;
+  workspace?: string;
+};

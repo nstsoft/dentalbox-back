@@ -13,8 +13,8 @@ export class CabinetController extends BaseController {
   @Get('/', [authenticate(true, true)])
   async list(req: Express.AuthenticatedRequest) {
     return getCabinetsByWorkspaceId(req.workspace, {
-      skip: req.query.skip,
-      limit: req.query.limit,
+      skip: req.pagination.skip,
+      limit: req.pagination.limit,
     });
   }
 

@@ -20,6 +20,8 @@ declare global {
       > {
       user: User & { _id: string; workspaces: string[]; otpCode: number };
       workspace: string;
+      pagination: { skip: number; limit: number };
+      filter: { search };
     }
   }
 }

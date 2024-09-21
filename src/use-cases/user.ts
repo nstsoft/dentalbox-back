@@ -29,11 +29,13 @@ export const createUser = (data: UserDto) => {
 
 export const getUsersByWorkspace = async (
   workspace: string,
-  pagination: { limit: number; skip: number },
+  criteria: { limit: number; skip: number },
+  filter?: { role: UserRole[]; verified?: boolean; search?: string },
 ) => {
   const { count, data } = await userSource.findAll(
     { workspaces: { $in: [workspace] } },
-    pagination,
+    criteria,
+    { ...filter, workspace },
     { surname: 'ASC' },
   );
 

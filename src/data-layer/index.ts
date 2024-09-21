@@ -6,7 +6,7 @@ import {
   SubscriptionRepository,
   UserRepository,
   WorkspaceRepository,
-} from './repositories';
+} from './repositories/mongodb';
 import {
   CabinetDataSource,
   ChairDataSource,

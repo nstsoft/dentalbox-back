@@ -1,5 +1,5 @@
 import { Pagination } from '@utils';
-import { FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import type { FindManyOptions, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 
 import { FindAllCriteria } from '../types';
 
@@ -11,6 +11,7 @@ export interface IDataSource<T, C> {
   findAll(
     criteria: FindAllCriteria<C>,
     pagination?: Pagination,
+    filter?: { [K: string]: unknown },
     orderBy?: FindOptionsOrder<C>,
   ): Promise<{ count: number; data: T[] }>;
   delete(id: string | string[]): Promise<unknown>;
@@ -18,6 +19,7 @@ export interface IDataSource<T, C> {
   update(criteria: FindOptionsWhere<T & { _id?: string }>, data: Partial<C>): Promise<unknown>;
   upsert(criteria: Partial<T>, data: Partial<T>): Promise<unknown>;
 }
+
 export interface IRepositorySource<T, C> {
   findOneById(id: string): Promise<T | null>;
   create(data: C): Promise<T>;
@@ -26,6 +28,7 @@ export interface IRepositorySource<T, C> {
   findAll(
     criteria: FindAllCriteria<C>,
     pagination?: Pagination,
+    filter?: FindManyOptions<T>,
     orderBy?: FindOptionsOrder<C>,
   ): Promise<{ count: number; data: T[] }>;
   delete(id: string | string[]): Promise<unknown>;

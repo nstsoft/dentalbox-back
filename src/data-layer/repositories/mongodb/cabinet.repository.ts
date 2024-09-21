@@ -1,8 +1,8 @@
 import { Cabinet, type CabinetType } from '@domains';
 
-import { ICabinetRepository } from '../interfaces';
+import { ICabinetRepository } from '../../interfaces';
 import { Repository } from './base';
-import { CabinetModel } from './mongodb';
+import { CabinetModel } from './db';
 
 export class CabinetRepository
   extends Repository<CabinetModel, Cabinet, CabinetType>

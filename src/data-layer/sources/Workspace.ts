@@ -3,7 +3,10 @@ import type { WorkspaceEntity, WorkspaceType } from '@domains';
 import { IWorkspaceRepository, IWorkspaceSource } from '../interfaces';
 import { BaseSource } from './Base';
 
-export class WorkspaceDataSource extends BaseSource<WorkspaceEntity, WorkspaceType> implements IWorkspaceSource {
+export class WorkspaceDataSource
+  extends BaseSource<WorkspaceEntity, WorkspaceType>
+  implements IWorkspaceSource
+{
   protected repository: IWorkspaceRepository;
 
   constructor(repository: IWorkspaceRepository) {
@@ -12,5 +15,9 @@ export class WorkspaceDataSource extends BaseSource<WorkspaceEntity, WorkspaceTy
 
   getManyByIds(ids: string[]) {
     return this.repository.getManyByIds(ids);
+  }
+
+  getUserWorkspaces(userId: string) {
+    return this.repository.getUserWorkspaces(userId);
   }
 }

@@ -16,7 +16,23 @@ import { authenticate } from '../middlewares';
 export class UserController extends BaseController {
   @Get('/', [authenticate(false)])
   async list(req: Express.AuthenticatedRequest) {
-    return getUsersByWorkspace(req.workspace, { skip: req.query.skip, limit: req.query.limit });
+    let verified;
+    if (req.query.verified === 'true') {
+      verified = true;
+    }
+    if (req.query.verified === 'false') {
+      verified = false;
+    }
+    let role = [];
+    if (req.query?.role?.length) {
+      role = typeof req.query?.role === 'string' ? [req.query.role] : req.query.role;
+    }
+
+    return getUsersByWorkspace(
+      req.workspace,
+      { skip: req.pagination.skip, limit: req.pagination.limit },
+      { verified, role, search: req.filter.search },
+    );
   }
 
   @Get('/me', [authenticate(false)])

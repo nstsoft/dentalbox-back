@@ -7,3 +7,7 @@ export const getWorkspaceById = (id: string) => {
 export const getUserWorkspaces = async (ids: string[]) => {
   return workspaceSource.getManyByIds(ids);
 };
+
+export const getWorkspacesByUserId = async (userId: string) => {
+  return workspaceSource.getUserWorkspaces(userId);
+};

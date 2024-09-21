@@ -10,8 +10,13 @@ export abstract class BaseSource<T, C> implements IDataSource<T, C> {
     this.repository = repository;
   }
 
-  findAll(criteria: FindAllCriteria<C>, pagination?: Pagination, orderBy?: FindOptionsOrder<C>) {
-    return this.repository.findAll(criteria, pagination, orderBy);
+  findAll(
+    criteria: FindAllCriteria<C>,
+    pagination?: Pagination,
+    filter?: { [K: string]: unknown },
+    orderBy?: FindOptionsOrder<C>,
+  ) {
+    return this.repository.findAll(criteria, pagination, filter, orderBy);
   }
 
   findOneById(id: string) {

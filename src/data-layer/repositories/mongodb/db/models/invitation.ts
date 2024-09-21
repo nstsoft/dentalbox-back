@@ -1,4 +1,4 @@
-import { InvitationType, UserRole } from '@domains';
+import { InvitationStatus, InvitationType, UserRole } from '@domains';
 import { ObjectId } from 'mongodb';
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
 
@@ -13,6 +13,8 @@ export class InvitationModel {
   workspace: string;
   @Column({ type: 'enum', enum: UserRole, default: UserRole.doctor, array: true })
   userRole: UserRole;
+  @Column({ type: 'enum', enum: InvitationStatus, default: InvitationStatus.pending, array: true })
+  status: InvitationStatus;
   @Column({ unique: false, type: 'number' })
   activeTill: number;
 
@@ -22,6 +24,7 @@ export class InvitationModel {
       this.workspace = invitation?.workspace;
       this.userRole = invitation?.userRole;
       this.activeTill = invitation?.activeTill;
+      this.status = invitation?.status;
     }
   }
 }
