@@ -85,6 +85,7 @@ class StripeProvider {
     return {
       remove: this.removeCustomer.bind(this),
       create: this.createCustomer.bind(this),
+      retrieve: (customerId: string) => this.stripe.customers.retrieve(customerId),
     };
   }
 

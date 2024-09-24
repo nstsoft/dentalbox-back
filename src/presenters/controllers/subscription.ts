@@ -25,6 +25,7 @@ export class SubscriptionController extends BaseController {
 
     return {
       ...subscription,
+      defaultPaymentMethod: stripeSubscription.default_payment_method,
       billing_cycle_anchor: stripeSubscription.billing_cycle_anchor,
       cancel_at: stripeSubscription.cancel_at,
       canceled_at: stripeSubscription.canceled_at,

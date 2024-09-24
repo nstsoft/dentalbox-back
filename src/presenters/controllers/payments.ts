@@ -1,5 +1,10 @@
 import { SubscriptionError } from '@errors';
-import { createSetupIntent, getClientSecret, getSubscriptionByWorkspace, retrievePaymentMethods } from '@useCases';
+import {
+  createSetupIntent,
+  getClientSecret,
+  getSubscriptionByWorkspace,
+  retrievePaymentMethods,
+} from '@useCases';
 import { BaseController, Controller, Get, RolesGuard } from '@utils';
 
 import { authenticate } from '../middlewares';
@@ -22,12 +27,13 @@ export class PaymentController extends BaseController {
     return getClientSecret(subscription?.stripeSubscription, req.user.stripeCustomerId!);
   }
 
-  // @RolesGuard('owner')
+  @RolesGuard('owner', 'admin')
   @Get('/payment-methods', [authenticate(false, false)])
   async getPaymentMethods(req: Express.AuthenticatedRequest) {
     if (!req.user.stripeCustomerId) {
       throw new Error('StripeCustomerIdNotFound');
     }
+
     return retrievePaymentMethods(req.user.stripeCustomerId);
   }
 }

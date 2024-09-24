@@ -28,7 +28,8 @@ export const getClientSecret = async (stripeSubscriptionId: string, customerId: 
   }
 
   let clientSecret =
-    subscription?.pending_setup_intent?.client_secret ?? subscription?.latest_invoice?.payment_intent?.client_secret;
+    subscription?.pending_setup_intent?.client_secret ??
+    subscription?.latest_invoice?.payment_intent?.client_secret;
 
   if (!clientSecret) {
     const intent = await stripeProvider.intent.createSetup(customerId);
