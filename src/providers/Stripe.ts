@@ -118,6 +118,7 @@ class StripeProvider {
     return {
       create: this.createSubscription.bind(this),
       cancel: this.cancelSubscription.bind(this),
+      update: this.stripe.subscriptions.update.bind(this.stripe.subscriptions),
       get: (subscriptionId: string) =>
         this.stripe.subscriptions.retrieve(subscriptionId, {
           expand: ['latest_invoice.payment_intent', 'pending_setup_intent'],

@@ -66,4 +66,6 @@ export class AcceptInvitationDto {
   phone?: string;
   @IsString()
   token: string;
+  @IsString()
+  dob: string;
 }

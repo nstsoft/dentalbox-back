@@ -1,10 +1,14 @@
+import { SetDefaultPaymentMethod } from '@domains';
+import { PaymentError, PaymentNotFoundError } from '@errors';
 import {
   getPriceByIdById,
   getProductById,
   getStripeSubscription,
   getSubscriptionByWorkspace,
+  retrievePaymentMethods,
+  setSubscriptionDefaultPaymentMethod,
 } from '@useCases';
-import { BaseController, Controller, Get } from '@utils';
+import { BaseController, Controller, Get, Patch, RolesGuard, ValidateBody } from '@utils';
 import { NotFound } from 'http-errors';
 
 import { authenticate } from '../middlewares';
@@ -40,5 +44,25 @@ export class SubscriptionController extends BaseController {
       price,
       product,
     };
+  }
+
+  @Patch('/payment-method')
+  @RolesGuard('owner', 'admin')
+  @ValidateBody(SetDefaultPaymentMethod)
+  async setDefaultPaymentMethod(
+    req: Express.AuthenticatedRequest<unknown, unknown, SetDefaultPaymentMethod>,
+  ) {
+    const paymentMethod = req.body.payment;
+    const methods = await retrievePaymentMethods(req.user.stripeCustomerId!);
+    if (!methods.find(({ id }) => id === 'paymentMethod')) {
+      throw new PaymentError(PaymentNotFoundError, { message: 'Payment method not found' }, 404);
+    }
+    const subscription = await getSubscriptionByWorkspace(req.workspace);
+    if (!subscription) {
+      throw new NotFound('Subscription not found');
+    }
+
+    const stripeSubscription = await getStripeSubscription(subscription.stripeSubscription);
+    return setSubscriptionDefaultPaymentMethod(stripeSubscription.id, paymentMethod);
   }
 }

@@ -3,12 +3,23 @@ import { AuthError } from '@errors';
 import {
   acceptInvitation,
   confirmOtp,
+  deleteInvitation,
   getAuthenticationData,
+  getUserInvitations,
   getUsersByWorkspace,
   getWorkspaceById,
   inviteUser,
 } from '@useCases';
-import { BaseController, Controller, Get, Patch, Post, RolesGuard, ValidateBody } from '@utils';
+import {
+  BaseController,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  RolesGuard,
+  ValidateBody,
+} from '@utils';
 
 import { authenticate } from '../middlewares';
 
@@ -35,15 +46,20 @@ export class UserController extends BaseController {
     );
   }
 
+  @Get('/invitation', [authenticate()])
+  async invitations(req: Express.AuthenticatedRequest) {
+    return getUserInvitations(req.workspace);
+  }
+
+  @Delete('/invitation/:invitationDd', [authenticate(false)])
+  async deleteInvitation(req: Express.AuthenticatedRequest) {
+    return deleteInvitation(req.workspace);
+  }
+
   @Get('/me', [authenticate(false)])
   async me(req: Express.AuthenticatedRequest) {
     const workspace = await getWorkspaceById(req.workspace);
     return { user: req.user, workspace };
-  }
-
-  @Get('/:id', [authenticate()])
-  async get(req: Express.AuthenticatedRequest) {
-    return req.user;
   }
 
   @Patch('/verify-otp', [authenticate(false)])
@@ -64,7 +80,7 @@ export class UserController extends BaseController {
   }
 
   @ValidateBody(AcceptInvitationDto)
-  @Patch('/accept-invitation')
+  @Post('/accept-invitation')
   async acceptInvitation(req: Express.AuthenticatedRequest<unknown, unknown, AcceptInvitationDto>) {
     const invitation = await acceptInvitation(req.body);
     const authData = await getAuthenticationData(invitation.user);

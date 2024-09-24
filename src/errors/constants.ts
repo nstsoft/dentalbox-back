@@ -10,3 +10,5 @@ export const StripeSubscriptionNotFound = 'StripeSubscriptionNotFound';
 export const SubscriptionNotFound = 'SubscriptionNotFound';
 export const SubscriptionError500 = 'SubscriptionError500';
 export const WorkspaceFullError = 'WorkspaceFullError';
+export const PaymentNotFoundError = 'PaymentNotFoundError';
+export const StripePaymentError = 'StripePaymentError';

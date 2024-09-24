@@ -14,7 +14,12 @@ export class AwsStack extends cdk.Stack {
     const { imagesBucket } = new S3ImagesBucketConstruct(this, 'images-bucket');
     const { handler } = new ApiConstruct(this, 'dentalbox-api', [layer]);
 
-    handler.addToRolePolicy(new PolicyStatement({ actions: ['sns:Publish'], resources: ['*'] }));
+    handler.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['sns:Publish', 'ses:SendEmail', 'ses:SendRawEmail'],
+        resources: ['*'],
+      }),
+    );
 
     imagesBucket.grantWrite(handler);
     imagesBucket.grantPut(handler);

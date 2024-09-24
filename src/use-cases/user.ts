@@ -1,3 +1,4 @@
+import { invitationSource, subscriptionSource, userSource, workspaceSource } from '@data';
 import { AcceptInvitationDto, InvitationStatus, UserDto, UserRole, UserStatus } from '@domains';
 import {
   InvitationAlreadySent,
@@ -8,11 +9,11 @@ import {
   WorkspaceFullError,
 } from '@errors';
 import { sendInvitationLink, sentOtp } from '@services';
-import { invitationSource, subscriptionSource, userSource, workspaceSource } from '@src/data-layer';
 import { generateOTP, generateToken, verifyToken } from '@utils';
 import { config } from 'config';
 import { BadRequest } from 'http-errors';
 import moment from 'moment';
+import querystring from 'querystring';
 import { MoreThan } from 'typeorm';
 
 export const createUser = (data: UserDto) => {
@@ -40,6 +41,14 @@ export const getUsersByWorkspace = async (
   );
 
   return { count, data: data.map((user) => user.excludeWorkspaces(workspace)) };
+};
+
+export const getUserInvitations = (workspace: string) => {
+  return invitationSource.findAll({ workspace });
+};
+
+export const deleteInvitation = (id: string) => {
+  return invitationSource.delete(id);
 };
 
 export const confirmOtp = (_id: string) => userSource.updateOne(_id, { isVerified: true });
@@ -70,7 +79,14 @@ export const inviteUser = async (email: string, workspace: string, role: UserRol
 
   const invitationLink =
     config.INVITATION_LINK +
-    `?existed=${!!existedUser}&email=${email}&invitationToken=${invitationToken}`;
+    '?' +
+    querystring.stringify({
+      existed: !!existedUser,
+      email,
+      invitationToken,
+      workspace: currentWorkspace.name,
+      workspaceImage: currentWorkspace.image ?? '',
+    });
 
   return sendInvitationLink(invitationLink, email);
 };
@@ -118,6 +134,7 @@ export const acceptInvitation = async (data: AcceptInvitationDto) => {
     user = await userSource.create({
       otp,
       password: data.password,
+      dob: new Date(data.dob).toString(),
       email: invitation.email,
       secondName: data.secondName ?? '',
       surname: data.surname ?? '',

@@ -1,6 +1,13 @@
-import { StripeSubscriptionNotFound, SubscriptionError500, SubscriptionNotFound } from './constants';
+import {
+  StripeSubscriptionNotFound,
+  SubscriptionError500,
+  SubscriptionNotFound,
+} from './constants';
 
-type ErrorType = typeof StripeSubscriptionNotFound | typeof SubscriptionNotFound | typeof SubscriptionError500;
+type ErrorType =
+  | typeof StripeSubscriptionNotFound
+  | typeof SubscriptionNotFound
+  | typeof SubscriptionError500;
 
 export class SubscriptionError extends Error {
   public statusCode: number;
@@ -8,7 +15,11 @@ export class SubscriptionError extends Error {
   public name: 'Subscription error';
   public type: ErrorType = SubscriptionError500;
 
-  constructor(type: ErrorType = SubscriptionError500, data: { message?: string; details?: string }, statusCode = 500) {
+  constructor(
+    type: ErrorType = SubscriptionError500,
+    data: { message?: string; details?: string },
+    statusCode = 500,
+  ) {
     const { message = '', details = '' } = data;
     super(message);
     this.statusCode = statusCode;

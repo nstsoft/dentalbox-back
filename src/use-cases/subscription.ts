@@ -5,6 +5,13 @@ export const getSubscriptionByWorkspace = (workspace: string) => {
   return subscriptionSource.findOneByWorkspace(workspace);
 };
 
+export const setSubscriptionDefaultPaymentMethod = (
+  subscription: string,
+  default_payment_method: string,
+) => {
+  return stripeProvider.subscription.update(subscription, { default_payment_method });
+};
+
 export const getStripeSubscription = async (id: string) => {
   const stripeSubscription = await stripeProvider.subscription.get(id);
 
