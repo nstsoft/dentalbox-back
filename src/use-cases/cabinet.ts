@@ -3,8 +3,12 @@ import { CabinetType } from '@domains';
 import { uploadCabinetImage } from '@services';
 import { Pagination } from '@utils';
 
-export const getCabinetsByWorkspaceId = async (workspace: string, pagination: Pagination) => {
-  return cabinetSource.findAll({ workspace }, pagination);
+export const getCabinetsByWorkspaceId = async (
+  workspace: string,
+  pagination: Pagination,
+  search?: string,
+) => {
+  return cabinetSource.findAll({ workspace }, pagination, { search });
 };
 
 export const createCabinet = async (data: CabinetType, buffer?: Buffer) => {

@@ -1,6 +1,9 @@
 import type { CabinetEntity, CabinetType } from '@domains';
+import type { Pagination } from '@utils';
+import { FindOptionsOrder } from 'typeorm';
 
 import { ICabinetRepository, ICabinetSource } from '../interfaces';
+import { FindAllCriteria } from '../types';
 import { BaseSource } from './Base';
 
 export class CabinetDataSource
@@ -15,5 +18,28 @@ export class CabinetDataSource
 
   findByUserId(id: string) {
     return this.repository.findByUserId(id);
+  }
+
+  findAll(
+    criteria: FindAllCriteria<CabinetType>,
+    pagination?: Pagination,
+    filter?: { search?: string },
+    orderBy?: FindOptionsOrder<CabinetType>,
+  ) {
+    const matchFilter = { where: {} };
+    let matchSearch = {};
+
+    if (filter?.search) {
+      matchSearch = {
+        $or: [
+          { name: { $regex: filter.search, $options: 'i' } },
+          { address: { $regex: filter.search, $options: 'i' } },
+        ],
+      };
+    }
+
+    matchFilter.where = matchSearch;
+
+    return this.repository.findAll(criteria, pagination, matchFilter, orderBy);
   }
 }

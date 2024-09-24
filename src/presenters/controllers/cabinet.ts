@@ -12,10 +12,14 @@ const upload = multer({ storage: multer.memoryStorage() });
 export class CabinetController extends BaseController {
   @Get('/', [authenticate(true, true)])
   async list(req: Express.AuthenticatedRequest) {
-    return getCabinetsByWorkspaceId(req.workspace, {
-      skip: req.pagination.skip,
-      limit: req.pagination.limit,
-    });
+    return getCabinetsByWorkspaceId(
+      req.workspace,
+      {
+        skip: req.pagination.skip,
+        limit: req.pagination.limit,
+      },
+      req.query.search,
+    );
   }
 
   @RolesGuard('admin', 'owner')
