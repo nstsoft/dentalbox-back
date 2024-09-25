@@ -48,12 +48,12 @@ export class UserController extends BaseController {
 
   @Get('/invitation', [authenticate()])
   async invitations(req: Express.AuthenticatedRequest) {
-    return getUserInvitations(req.workspace);
+    return getUserInvitations(req.workspace, req.pagination);
   }
 
-  @Delete('/invitation/:invitationDd', [authenticate(false)])
+  @Delete('/invitation/:invitationId', [authenticate(false)])
   async deleteInvitation(req: Express.AuthenticatedRequest) {
-    return deleteInvitation(req.workspace);
+    return deleteInvitation(req.params.invitationId);
   }
 
   @Get('/me', [authenticate(false)])

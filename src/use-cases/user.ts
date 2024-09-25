@@ -9,7 +9,7 @@ import {
   WorkspaceFullError,
 } from '@errors';
 import { sendInvitationLink, sentOtp } from '@services';
-import { generateOTP, generateToken, verifyToken } from '@utils';
+import { generateOTP, generateToken, Pagination, verifyToken } from '@utils';
 import { config } from 'config';
 import { BadRequest } from 'http-errors';
 import moment from 'moment';
@@ -43,8 +43,8 @@ export const getUsersByWorkspace = async (
   return { count, data: data.map((user) => user.excludeWorkspaces(workspace)) };
 };
 
-export const getUserInvitations = (workspace: string) => {
-  return invitationSource.findAll({ workspace });
+export const getUserInvitations = (workspace: string, pagination: Pagination) => {
+  return invitationSource.findByWorkspace(workspace, pagination);
 };
 
 export const deleteInvitation = (id: string) => {
