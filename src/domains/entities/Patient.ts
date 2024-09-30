@@ -13,7 +13,6 @@ export class Patient extends BaseEntity {
   image?: string;
   dob: string;
   workspace: string;
-  card: string;
 
   constructor(data: RawPatient) {
     super();
@@ -27,5 +26,6 @@ export class Patient extends BaseEntity {
     this.phone = data.phone;
     this.dob = data?.dob;
     this.image = data.image;
+    this.workspace = data.workspace;
   }
 }

@@ -7,7 +7,9 @@ import { Response } from 'express';
 import multer from 'multer';
 
 import { authenticate } from '../middlewares';
+
 const upload = multer({ storage: multer.memoryStorage() });
+
 @Controller('/cabinet')
 export class CabinetController extends BaseController {
   @Get('/', [authenticate(true, true)])

@@ -16,18 +16,16 @@ export class PatientModel {
   surname: string;
   @Column({ unique: false, type: 'text' })
   secondName: string;
-  @Column({ unique: false, type: 'text' })
+  @Column({ unique: true, type: 'text' })
   phone: string;
-  @Column({ unique: false, type: 'text' })
-  address: string;
+  @Column({ unique: false, type: 'text', nullable: true })
+  address?: string;
   @Column({ unique: false, type: 'text' })
   notes?: string;
   @Column({ type: 'timestamptz', nullable: true })
   dob?: Date;
   @Column({ array: false })
   workspace: ObjectId;
-  @Column({ array: false })
-  card: ObjectId;
   @Column()
   createdAt: Date;
   @Column()
@@ -57,11 +55,8 @@ export class PatientModel {
     this.dob = new Date(patient?.dob ?? Date.now());
     this.image = patient?.image;
 
-    if (patient?.card) {
-      this.card = new ObjectId(patient.card);
-    }
     if (patient?.workspace) {
-      this.card = new ObjectId(patient.workspace);
+      this.workspace = new ObjectId(patient.workspace);
     }
   }
 

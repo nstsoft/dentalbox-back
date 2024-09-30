@@ -1,6 +1,7 @@
 export * from './auth';
 export * from './cabinet';
 export * from './chair';
+export * from './patient';
 export * from './payment';
 export * from './price';
 export * from './product';

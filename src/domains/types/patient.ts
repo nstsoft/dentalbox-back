@@ -3,10 +3,9 @@ import { BaseEntity } from '@utils';
 export type PatientType = {
   email: string;
   name: string;
-  address: string;
+  address?: string;
   notes?: string;
   workspace: string;
-  card: string;
   surname: string;
   secondName: string;
   phone: string;

@@ -18,3 +18,12 @@ export const uploadCabinetImage = async (cabinet: string, body: Buffer) => {
 
   return awsProvider.uploadImageToS3(config.IMAGES_BUCKET, image, `cabinets/${cabinet}`);
 };
+
+export const uploadPatientAvatar = async (patient: string, body: Buffer) => {
+  const image = await sharp(body)
+    .resize(300, 300, { fit: 'cover' })
+    .toFormat('jpeg', { quality: 40 })
+    .toBuffer();
+
+  return awsProvider.uploadImageToS3(config.IMAGES_BUCKET, image, `patients/${patient}/avatars`);
+};

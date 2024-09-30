@@ -3,6 +3,7 @@ import '@config';
 import {
   AuthenticationController,
   CabinetController,
+  PatientController,
   PaymentController,
   ProductController,
   SubscriptionController,
@@ -45,6 +46,7 @@ apiRouter.use(new WorkspaceController().route);
 apiRouter.use(new SubscriptionController().route);
 apiRouter.use(new PaymentController().route);
 apiRouter.use(new CabinetController().route);
+apiRouter.use(new PatientController().route);
 
 app.use('/api/v1', apiRouter);
 

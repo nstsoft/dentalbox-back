@@ -3,6 +3,7 @@ import type {
   CabinetType,
   ChairType,
   InvitationType,
+  PatientType,
   SubscriptionType,
   UserType,
   WorkspaceType,
@@ -22,6 +23,7 @@ import {
   ChairModel,
   InvitationModel,
   MongoSource,
+  PatientModel,
   SubscriptionModel,
   UserModel,
   WorkspaceModel,
@@ -33,14 +35,16 @@ type Models =
   | SubscriptionModel
   | InvitationModel
   | CabinetModel
-  | ChairModel;
+  | ChairModel
+  | PatientModel;
 type EntityData =
   | UserType
   | WorkspaceType
   | SubscriptionType
   | InvitationType
   | CabinetType
-  | ChairType;
+  | ChairType
+  | PatientType;
 
 export abstract class Repository<M extends Models, Domain, Data extends EntityData> {
   repository: MongoRepository<M>;
