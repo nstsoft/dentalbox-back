@@ -7,8 +7,8 @@ export class User extends BaseEntity {
   email: string;
   name: string;
   password: string;
-  address?: string | undefined;
-  notes?: string | undefined;
+  address?: string;
+  notes?: string;
   _id: string;
   workspaces: string[] = [];
   roles: { workspace: string; role: UserRole }[] = [];

@@ -5,6 +5,7 @@ import {
   CabinetModel,
   ChairModel,
   InvitationModel,
+  PatientModel,
   SubscriptionModel,
   UserModel,
   WorkspaceModel,
@@ -14,7 +15,15 @@ const url = config.DATABASE_URL.replace('{user}', config.DATABASE_USER)
   .replace('{password}', config.DATABASE_PASSWORD)
   .replace('{database}', config.DATABASE);
 
-export { CabinetModel, ChairModel, InvitationModel, SubscriptionModel, UserModel, WorkspaceModel };
+export {
+  CabinetModel,
+  ChairModel,
+  InvitationModel,
+  PatientModel,
+  SubscriptionModel,
+  UserModel,
+  WorkspaceModel,
+};
 
 export const MongoSource = new DataSource({
   url,
@@ -28,5 +37,6 @@ export const MongoSource = new DataSource({
     SubscriptionModel,
     InvitationModel,
     ChairModel,
+    PatientModel,
   ],
 });

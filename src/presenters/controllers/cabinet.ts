@@ -1,5 +1,5 @@
 import { CreateCabinetDto } from '@domains';
-import { createCabinet, getCabinetsByWorkspaceId } from '@useCases';
+import { createCabinet, createChair, getCabinetsByWorkspaceId } from '@useCases';
 import { BaseController, Controller, Get, Post, RolesGuard } from '@utils';
 import { plainToClass } from 'class-transformer';
 import { validate, type ValidationError } from 'class-validator';
@@ -25,7 +25,7 @@ export class CabinetController extends BaseController {
   @RolesGuard('admin', 'owner')
   @Post('/', [authenticate(true, true), upload.single('file')])
   async create(req: Express.AuthenticatedRequest, res: Response) {
-    const data = JSON.parse(req.body.data);
+    const data = JSON.parse(req.body.data) as CreateCabinetDto;
 
     const errors: ValidationError[] = await validate(
       plainToClass(CreateCabinetDto, data) as object,
@@ -46,6 +46,13 @@ export class CabinetController extends BaseController {
 
       return res.status(400).json({ errors: formattedErrors });
     }
-    return createCabinet({ ...data, workspace: req.workspace }, req.file?.buffer);
+
+    const cabinet = await createCabinet({ ...data, workspace: req.workspace }, req.file?.buffer);
+    await Promise.all(
+      data.chairs.map(async (name) =>
+        createChair({ name, cabinet: cabinet._id, workspace: req.workspace }),
+      ),
+    );
+    return cabinet;
   }
 }

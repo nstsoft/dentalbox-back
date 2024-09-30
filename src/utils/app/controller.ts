@@ -27,7 +27,12 @@ export function BaseMethod(
 ): MethodDecorator {
   const routeMiddlewares = Array.isArray(middlewares) ? middlewares : [];
   return function (target: object, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
-    Reflect.defineMetadata('route', { route, method, routeMiddlewares, preBuildMiddlewares }, target, propertyKey);
+    Reflect.defineMetadata(
+      'route',
+      { route, method, routeMiddlewares, preBuildMiddlewares },
+      target,
+      propertyKey,
+    );
     const originalMethod = descriptor.value;
     descriptor.value = async function (req: Request, res: Response, next: NextFunction) {
       try {
@@ -87,7 +92,10 @@ export abstract class BaseController {
   private readonly router: Router = express.Router();
 
   constructor() {
-    const { routePrefix, controllerMiddlewares } = Reflect.getMetadata('routePrefix', this.constructor) as {
+    const { routePrefix, controllerMiddlewares } = Reflect.getMetadata(
+      'routePrefix',
+      this.constructor,
+    ) as {
       routePrefix: string;
       controllerMiddlewares: RouteMiddleWare[];
     };
@@ -104,7 +112,11 @@ export abstract class BaseController {
         const handler = (this as any)[methodName].bind(this);
 
         // Combine middlewares: preBuildMiddlewares -> controllerMiddlewares -> routeMiddlewares
-        const combinedMiddlewares = [...preBuildMiddlewares, ...controllerMiddlewares, ...routeMiddlewares];
+        const combinedMiddlewares = [
+          ...preBuildMiddlewares,
+          ...controllerMiddlewares,
+          ...routeMiddlewares,
+        ];
 
         this.router[method](`${routePrefix}${route}`, ...combinedMiddlewares, handler);
       }

@@ -3,7 +3,6 @@ import '@config';
 import {
   AuthenticationController,
   CabinetController,
-  ChairController,
   PaymentController,
   ProductController,
   SubscriptionController,
@@ -46,7 +45,6 @@ apiRouter.use(new WorkspaceController().route);
 apiRouter.use(new SubscriptionController().route);
 apiRouter.use(new PaymentController().route);
 apiRouter.use(new CabinetController().route);
-apiRouter.use(new ChairController().route);
 
 app.use('/api/v1', apiRouter);
 
@@ -57,6 +55,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use(mongoErrorInterceptor);
 
 app.use(function clientErrorHandler(error: any, req: Request, res: Response, _: unknown) {
+  console.error(error);
   return res
     .status(error.statusCode ?? error.status ?? 500)
     .json({ message: error.message, error });

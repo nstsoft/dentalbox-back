@@ -1,5 +1,7 @@
 import { BaseEntity } from '@utils';
 
+import { ChairType } from './chair';
+
 export type CabinetType = {
   name: string;
   image?: string;
@@ -11,4 +13,6 @@ export type CabinetType = {
 
 export type RawCabinet = CabinetType & { _id: string };
 
-export type CabinetEntity = BaseEntity<RawCabinet>;
+export type CabinetEntity = BaseEntity<RawCabinet> & {
+  setChairs(chairs: ChairType[]): void;
+};

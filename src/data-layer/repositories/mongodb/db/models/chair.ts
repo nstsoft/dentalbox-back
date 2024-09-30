@@ -8,9 +8,9 @@ export class ChairModel {
   @PrimaryColumn()
   @ObjectIdColumn()
   _id: ObjectId = new ObjectId();
-  @Column({ unique: true, type: 'text' })
+  @Column({ type: 'text' })
   name: string;
-  @Column({ unique: true, type: 'text' })
+  @Column({ type: 'text' })
   notes?: string;
   @Column()
   createdAt: Date;

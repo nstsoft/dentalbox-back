@@ -1,4 +1,4 @@
-import { RawCabinet } from '../types';
+import { ChairType, RawCabinet } from '../types';
 import { BaseEntity } from './Base';
 
 export class Cabinet extends BaseEntity {
@@ -8,6 +8,7 @@ export class Cabinet extends BaseEntity {
   address?: string;
   phone?: string;
   workspace: string;
+  chairs: ChairType[];
   _id: string;
 
   constructor(data: RawCabinet) {
@@ -19,5 +20,9 @@ export class Cabinet extends BaseEntity {
     this.address = data.address;
     this.phone = data.phone;
     this.workspace = data.workspace;
+  }
+
+  setChairs(chairs: ChairType[]) {
+    this.chairs = chairs;
   }
 }
