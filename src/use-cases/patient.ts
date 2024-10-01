@@ -13,3 +13,14 @@ export const createPatient = async (data: PatientType, buffer?: Buffer) => {
   }
   return patient;
 };
+
+export const findPatientOrFail = async (patient: string, workspace: string) =>
+  patientSource.findOneOrFail({ workspace, _id: patient });
+
+export const getPatientsByWorkspace = async (
+  workspace: string,
+  pagination: { limit: number; skip: number },
+  filter?: { search?: string },
+) => {
+  return patientSource.findAll({ workspace: { $in: [workspace] } }, pagination, filter);
+};

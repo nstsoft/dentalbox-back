@@ -3,7 +3,9 @@ import { DataSource } from 'typeorm';
 
 import {
   CabinetModel,
+  CardModel,
   ChairModel,
+  DentalMapModel,
   InvitationModel,
   PatientModel,
   SubscriptionModel,
@@ -17,7 +19,9 @@ const url = config.DATABASE_URL.replace('{user}', config.DATABASE_USER)
 
 export {
   CabinetModel,
+  CardModel,
   ChairModel,
+  DentalMapModel,
   InvitationModel,
   PatientModel,
   SubscriptionModel,
@@ -38,5 +42,7 @@ export const MongoSource = new DataSource({
     InvitationModel,
     ChairModel,
     PatientModel,
+    CardModel,
+    DentalMapModel,
   ],
 });

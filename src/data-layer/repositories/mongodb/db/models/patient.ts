@@ -1,9 +1,18 @@
 import type { PatientType } from '@domains';
 import { removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
-import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  Index,
+  ObjectIdColumn,
+  PrimaryColumn,
+} from 'typeorm';
 
 @Entity('patients')
+@Index(['_id', 'workspace'])
 export class PatientModel {
   @PrimaryColumn()
   @ObjectIdColumn()
@@ -25,6 +34,7 @@ export class PatientModel {
   @Column({ type: 'timestamptz', nullable: true })
   dob?: Date;
   @Column({ array: false })
+  @Index({ unique: false })
   workspace: ObjectId;
   @Column()
   createdAt: Date;

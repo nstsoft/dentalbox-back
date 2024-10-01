@@ -2,7 +2,12 @@
 import { ObjectId } from 'mongodb';
 
 const isObjectId = (value: unknown) => {
-  return typeof value === 'object' && value !== null && value.constructor && value.constructor.name === 'ObjectId';
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    value.constructor &&
+    value.constructor.name === 'ObjectId'
+  );
 };
 
 export const removeUndefinedProps = (obj: any) => {
@@ -62,3 +67,21 @@ export const deepParseObjectId = (data: any): any => {
 export const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000);
 };
+
+export function flattenObject(
+  obj: any,
+  parentKey: string = '',
+  result: any = {},
+): { [key: string]: string | number | boolean } {
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const newKey = parentKey ? `${parentKey}.${key}` : key;
+      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+        flattenObject(obj[key], newKey, result);
+      } else {
+        result[newKey] = obj[key];
+      }
+    }
+  }
+  return result;
+}

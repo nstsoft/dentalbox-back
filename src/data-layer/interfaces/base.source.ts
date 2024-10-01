@@ -18,6 +18,7 @@ export interface IDataSource<T, C> {
   updateOne(id: string, data: Partial<C>): Promise<unknown>;
   update(criteria: FindOptionsWhere<T & { _id?: string }>, data: Partial<C>): Promise<unknown>;
   upsert(criteria: Partial<T>, data: Partial<T>): Promise<unknown>;
+  updateOneBy(criteria: Partial<T>, data: Partial<T>): Promise<unknown>;
 }
 
 export interface IRepositorySource<T, C> {
@@ -35,4 +36,5 @@ export interface IRepositorySource<T, C> {
   updateOne(id: string, data: Partial<C>): Promise<unknown>;
   upsert(criteria: Partial<T>, data: Partial<T>): Promise<unknown>;
   update(criteria: FindOptionsWhere<T & { _id?: string }>, data: Partial<C>): Promise<unknown>;
+  updateOneBy(criteria: Partial<T>, data: Partial<T>): Promise<unknown>;
 }

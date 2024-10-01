@@ -1,6 +1,8 @@
 import {
   CabinetRepository,
+  CardRepository,
   ChairRepository,
+  DentalMapRepository,
   InvitationRepository,
   MongoSource,
   PatientRepository,
@@ -10,7 +12,9 @@ import {
 } from './repositories/mongodb';
 import {
   CabinetDataSource,
+  CardDataSource,
   ChairDataSource,
+  DentalMapDataSource,
   InvitationDataSource,
   PatientsDataSource,
   SubscriptionDataSource,
@@ -25,10 +29,14 @@ const cabinetSource = new CabinetDataSource(new CabinetRepository());
 const subscriptionSource = new SubscriptionDataSource(new SubscriptionRepository());
 const chairSource = new ChairDataSource(new ChairRepository());
 const patientSource = new PatientsDataSource(new PatientRepository());
+const cardSource = new CardDataSource(new CardRepository());
+const dentalMapSource = new DentalMapDataSource(new DentalMapRepository());
 
 export {
   cabinetSource,
+  cardSource,
   chairSource,
+  dentalMapSource,
   invitationSource,
   MongoSource,
   patientSource,

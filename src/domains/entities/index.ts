@@ -1,5 +1,7 @@
 export * from './Cabinet';
+export * from './Card';
 export * from './Chair';
+export * from './DentalMap';
 export * from './Invitation';
 export * from './Patient';
 export * from './Subscription';

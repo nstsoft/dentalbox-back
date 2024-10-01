@@ -1,5 +1,11 @@
 import { PatientDto } from '@domains';
-import { createPatient } from '@useCases';
+import {
+  createCard,
+  createDentalMap,
+  createPatient,
+  findPatientOrFail,
+  getPatientsByWorkspace,
+} from '@useCases';
 import { BaseController, Controller, Get, Post, RolesGuard } from '@utils';
 import { plainToClass } from 'class-transformer';
 import { validate, type ValidationError } from 'class-validator';
@@ -14,12 +20,17 @@ const upload = multer({ storage: multer.memoryStorage() });
 export class PatientController extends BaseController {
   @Get('/', [authenticate(false)])
   async list(req: Express.AuthenticatedRequest) {
-    return [];
+    return getPatientsByWorkspace(req.workspace, req.pagination, { search: req.query.search });
+  }
+
+  @Get('/:patient', [authenticate(false)])
+  async getById(req: Express.AuthenticatedRequest) {
+    return findPatientOrFail(req.params.patient, req.workspace);
   }
 
   @RolesGuard('admin', 'owner')
   @Post('/', [authenticate(), upload.single('file')])
-  async inviteUser(req: Express.AuthenticatedRequest, res: Response) {
+  async createPatient(req: Express.AuthenticatedRequest, res: Response) {
     const data = JSON.parse(req.body.data) as PatientDto;
 
     const errors: ValidationError[] = await validate(plainToClass(PatientDto, data) as object, {
@@ -38,6 +49,12 @@ export class PatientController extends BaseController {
 
       return res.status(400).json({ errors: formattedErrors });
     }
-    return createPatient({ ...data, workspace: req.workspace }, req.file?.buffer);
+    const patient = await createPatient({ ...data, workspace: req.workspace }, req.file?.buffer);
+    const [card, dentalMap] = await Promise.all([
+      createCard(patient._id),
+      createDentalMap({ patient: patient._id }),
+    ]);
+
+    return { patient, card, dentalMap };
   }
 }

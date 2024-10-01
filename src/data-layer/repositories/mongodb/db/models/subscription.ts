@@ -20,7 +20,7 @@ export class SubscriptionModel {
   createdAt: Date;
   @Column()
   updatedAt: Date;
-  @Column({ unique: false, type: 'text', nullable: false })
+  @Column({ unique: true, type: 'text', nullable: false })
   stripeSubscription: string;
 
   @BeforeInsert()

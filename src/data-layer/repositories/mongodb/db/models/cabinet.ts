@@ -1,7 +1,15 @@
 import { CabinetType } from '@domains';
 import { removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
-import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  Index,
+  ObjectIdColumn,
+  PrimaryColumn,
+} from 'typeorm';
 
 @Entity('cabinets')
 export class CabinetModel {
@@ -9,6 +17,7 @@ export class CabinetModel {
   @ObjectIdColumn()
   _id: ObjectId = new ObjectId();
   @Column({ unique: true, type: 'text' })
+  @Index({ unique: false })
   name: string;
   @Column({ unique: false, type: 'text' })
   image?: string;
@@ -23,6 +32,7 @@ export class CabinetModel {
   @Column()
   updatedAt: Date;
   @Column({ array: false })
+  @Index({ unique: false })
   workspace?: ObjectId;
 
   @BeforeInsert()

@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   CabinetType,
+  CardType,
   ChairType,
+  DentalMapType,
   InvitationType,
   PatientType,
   SubscriptionType,
@@ -20,7 +22,9 @@ import {
 import { FindAllCriteria } from '../../types';
 import {
   CabinetModel,
+  CardModel,
   ChairModel,
+  DentalMapModel,
   InvitationModel,
   MongoSource,
   PatientModel,
@@ -36,7 +40,10 @@ type Models =
   | InvitationModel
   | CabinetModel
   | ChairModel
-  | PatientModel;
+  | PatientModel
+  | CardModel
+  | DentalMapModel;
+
 type EntityData =
   | UserType
   | WorkspaceType
@@ -44,7 +51,9 @@ type EntityData =
   | InvitationType
   | CabinetType
   | ChairType
-  | PatientType;
+  | PatientType
+  | CardType
+  | DentalMapType;
 
 export abstract class Repository<M extends Models, Domain, Data extends EntityData> {
   repository: MongoRepository<M>;
@@ -105,6 +114,10 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
     const { _id: _, ...parsed } = data;
 
     return this.repository.update(_id, parsed as any);
+  }
+
+  async updateOneBy(criteria: Partial<Data>, data: Partial<Data>) {
+    return this.repository.update(criteria as any, data as any);
   }
 
   async findOneOrFail(criteria: FindOptionsWhere<Data & { _id?: string }>) {

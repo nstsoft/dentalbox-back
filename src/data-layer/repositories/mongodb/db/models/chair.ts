@@ -1,7 +1,15 @@
 import { ChairType } from '@domains';
 import { removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
-import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  Index,
+  ObjectIdColumn,
+  PrimaryColumn,
+} from 'typeorm';
 
 @Entity('chairs')
 export class ChairModel {
@@ -19,6 +27,7 @@ export class ChairModel {
   @Column({ array: false })
   cabinet: ObjectId;
   @Column({ array: false })
+  @Index({ unique: false })
   workspace: ObjectId;
 
   @BeforeInsert()

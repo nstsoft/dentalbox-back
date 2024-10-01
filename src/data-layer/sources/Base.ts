@@ -47,7 +47,11 @@ export abstract class BaseSource<T, C> implements IDataSource<T, C> {
     return this.repository.upsert(criteria, data);
   }
 
-  update(criteria: FindOptionsWhere<T & { _id?: string }>, data: Partial<C>): Promise<unknown> {
+  update(criteria: FindOptionsWhere<T & { _id?: string }>, data: Partial<C>) {
     return this.repository.update(criteria, data);
+  }
+
+  updateOneBy(criteria: Partial<T>, data: Partial<T>) {
+    return this.repository.updateOneBy(criteria, data);
   }
 }

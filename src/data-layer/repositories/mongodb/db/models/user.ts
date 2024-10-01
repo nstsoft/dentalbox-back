@@ -3,16 +3,25 @@ import { removeUndefinedProps } from '@utils';
 import bcryptjs from 'bcryptjs';
 import { config } from 'config';
 import { ObjectId } from 'mongodb';
-import { BeforeInsert, BeforeUpdate, Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  Index,
+  ObjectIdColumn,
+  PrimaryColumn,
+} from 'typeorm';
 
 export class Role {
   @Column()
   workspace: ObjectId;
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.doctor, array: true })
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.doctor, array: false })
   role: UserRole;
 }
 
 @Entity('users')
+@Index(['email', 'workspaces'], { unique: false })
 export class UserModel {
   @PrimaryColumn()
   @ObjectIdColumn()
@@ -28,6 +37,7 @@ export class UserModel {
   @Column({ unique: false, type: 'text' })
   secondName: string;
   @Column({ unique: false, type: 'text' })
+  @Index({ unique: false })
   phone?: string;
   @Column({ unique: false, type: 'text' })
   address?: string;
@@ -40,6 +50,7 @@ export class UserModel {
   @Column({ type: 'timestamptz', nullable: true })
   dob?: Date;
   @Column({ array: true })
+  @Index({ unique: false })
   workspaces?: ObjectId[];
   @Column()
   createdAt: Date;
@@ -52,6 +63,7 @@ export class UserModel {
   @Column({ unique: false, type: 'number' })
   otp: number;
   @Column({ unique: false, type: 'text' })
+  @Index({ unique: false })
   stripeCustomerId?: string;
   @Column({ unique: false, type: 'text' })
   image?: string;

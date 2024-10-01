@@ -32,6 +32,8 @@ export class BaseEntity {
   }
 
   static toBatchDomain<T extends typeof BaseEntity>(this: T, data: any[]) {
-    return data.map((item) => this.toDomain({ ...item, _id: item?._id?.toString() })) as InstanceType<T>[];
+    return data.map((item) =>
+      this.toDomain({ ...item, _id: item?._id?.toString() }),
+    ) as InstanceType<T>[];
   }
 }
