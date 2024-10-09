@@ -1,5 +1,5 @@
-import { phoneNumberRegex } from '@utils';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { phoneNumberRegex, Sex } from '@utils';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 
 export class PatientDto {
   @IsEmail()
@@ -26,4 +26,7 @@ export class PatientDto {
   @IsString()
   @IsOptional()
   notes?: string;
+  @IsString()
+  @IsEnum(Sex)
+  sex: Sex;
 }

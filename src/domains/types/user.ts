@@ -1,4 +1,4 @@
-import { BaseEntity } from '@utils';
+import { BaseEntity, Sex } from '@utils';
 
 export enum UserRole {
   owner = 'owner',
@@ -31,6 +31,7 @@ export type UserType = {
   stripeCustomerId?: string;
   dob?: string;
   image?: string;
+  sex: Sex;
 };
 
 export type RawUser = UserType & { _id: string };

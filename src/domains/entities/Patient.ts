@@ -1,3 +1,5 @@
+import { Sex } from '@utils';
+
 import { RawPatient } from '../types';
 import { BaseEntity } from './Base';
 
@@ -13,6 +15,7 @@ export class Patient extends BaseEntity {
   image?: string;
   dob: string;
   workspace: string;
+  sex: Sex;
 
   constructor(data: RawPatient) {
     super();
@@ -27,5 +30,6 @@ export class Patient extends BaseEntity {
     this.dob = data?.dob;
     this.image = data.image;
     this.workspace = data.workspace;
+    this.sex = data.sex;
   }
 }

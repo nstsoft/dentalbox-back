@@ -1,4 +1,4 @@
-import { phoneNumberRegex } from '@utils';
+import { phoneNumberRegex, Sex } from '@utils';
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 
 import { UserRole, UserStatus } from '../types';
@@ -31,6 +31,9 @@ export class UserDto {
   @IsEnum(UserStatus)
   @IsOptional()
   status?: UserStatus;
+  @IsString()
+  @IsEnum(Sex)
+  sex: Sex;
   @IsString()
   @IsOptional()
   dob?: string;
@@ -68,4 +71,7 @@ export class AcceptInvitationDto {
   token: string;
   @IsString()
   dob: string;
+  @IsString()
+  @IsEnum(Sex)
+  sex: Sex;
 }

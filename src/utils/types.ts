@@ -20,3 +20,8 @@ export enum SEGMENT_COLORS {
   purple = '#c410c7',
   default = '#0000',
 }
+
+export enum Sex {
+  male = 'male',
+  female = 'female',
+}
