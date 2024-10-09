@@ -1,4 +1,4 @@
-import { BaseEntity } from '@utils';
+import { BaseEntity, Sex } from '@utils';
 
 export type PatientType = {
   email: string;
@@ -11,6 +11,7 @@ export type PatientType = {
   phone: string;
   image?: string;
   dob: string;
+  sex: Sex;
 };
 
 export type RawPatient = PatientType & { _id: string };

@@ -1,5 +1,5 @@
 import { UserRole, UserStatus, UserType } from '@domains';
-import { removeUndefinedProps } from '@utils';
+import { removeUndefinedProps, Sex } from '@utils';
 import bcryptjs from 'bcryptjs';
 import { config } from 'config';
 import { ObjectId } from 'mongodb';
@@ -67,6 +67,8 @@ export class UserModel {
   stripeCustomerId?: string;
   @Column({ unique: false, type: 'text' })
   image?: string;
+  @Column({ array: false, enum: Sex, default: Sex.male })
+  sex: Sex;
 
   @BeforeInsert()
   async hashPassword() {
@@ -100,6 +102,7 @@ export class UserModel {
     this.stripeCustomerId = user?.stripeCustomerId;
     this.dob = new Date(user?.dob ?? Date.now());
     this.image = user?.image;
+    this.sex = user?.sex;
     if (user?.workspaces) {
       this.roles = user.roles.map(({ workspace, role }) => ({
         workspace: new ObjectId(workspace),

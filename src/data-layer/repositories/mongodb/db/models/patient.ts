@@ -1,5 +1,5 @@
 import type { PatientType } from '@domains';
-import { removeUndefinedProps } from '@utils';
+import { removeUndefinedProps, Sex } from '@utils';
 import { ObjectId } from 'mongodb';
 import {
   BeforeInsert,
@@ -42,6 +42,8 @@ export class PatientModel {
   updatedAt: Date;
   @Column({ unique: false, type: 'text' })
   image?: string;
+  @Column({ array: false, enum: Sex, default: Sex.male })
+  sex: Sex;
 
   @BeforeInsert()
   setCreatedAt() {
@@ -64,6 +66,7 @@ export class PatientModel {
     this.notes = patient?.notes;
     this.dob = new Date(patient?.dob ?? Date.now());
     this.image = patient?.image;
+    this.sex = patient?.sex;
 
     if (patient?.workspace) {
       this.workspace = new ObjectId(patient.workspace);

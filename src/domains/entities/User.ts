@@ -1,3 +1,4 @@
+import { Sex } from '@src/utils';
 import bcryptjs from 'bcryptjs';
 
 import { RawUser, UserRole, UserStatus } from '../types';
@@ -22,6 +23,7 @@ export class User extends BaseEntity {
   dob?: string;
   stripeCustomerId?: string;
   image?: string;
+  sex: Sex;
 
   constructor(data: RawUser) {
     super();
@@ -40,6 +42,7 @@ export class User extends BaseEntity {
     this.dob = data?.dob;
     this.stripeCustomerId = data.stripeCustomerId;
     this.image = data.image;
+    this.sex = data?.sex;
 
     if (data.workspaces) {
       this.workspaces = data.workspaces;

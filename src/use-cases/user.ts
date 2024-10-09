@@ -145,6 +145,7 @@ export const acceptInvitation = async (data: AcceptInvitationDto) => {
       workspaces: updatedWorkspaces,
       roles: updatedRoles,
       enableNotifications: false,
+      sex: data.sex,
     });
 
     await sentOtp(user, otp);
