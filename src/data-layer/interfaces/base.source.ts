@@ -29,7 +29,7 @@ export interface IRepositorySource<T, C> {
   findAll(
     criteria: FindAllCriteria<C>,
     pagination?: Pagination,
-    filter?: FindManyOptions<T>,
+    filter?: FindManyOptions<unknown>,
     orderBy?: FindOptionsOrder<C>,
   ): Promise<{ count: number; data: T[] }>;
   delete(id: string | string[]): Promise<unknown>;

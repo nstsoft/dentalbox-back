@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
+  AppointmentType,
   CabinetType,
   CardType,
   ChairType,
@@ -21,6 +22,7 @@ import {
 
 import { FindAllCriteria } from '../../types';
 import {
+  AppointmentModel,
   CabinetModel,
   CardModel,
   ChairModel,
@@ -42,7 +44,8 @@ type Models =
   | ChairModel
   | PatientModel
   | CardModel
-  | DentalMapModel;
+  | DentalMapModel
+  | AppointmentModel;
 
 type EntityData =
   | UserType
@@ -53,7 +56,8 @@ type EntityData =
   | ChairType
   | PatientType
   | CardType
-  | DentalMapType;
+  | DentalMapType
+  | AppointmentType;
 
 export abstract class Repository<M extends Models, Domain, Data extends EntityData> {
   repository: MongoRepository<M>;
@@ -79,7 +83,7 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
   async findAll(
     criteria: FindAllCriteria<Data>,
     pagination?: Pagination,
-    filter?: FindManyOptions<Data>,
+    filter?: FindManyOptions<any>,
     orderBy?: FindOptionsOrder<new (...data: unknown[]) => M>,
   ) {
     const plain = deepParseObjectId(removeUndefinedProps(criteria));

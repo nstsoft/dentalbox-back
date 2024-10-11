@@ -1,6 +1,6 @@
-import { AuthError } from '@errors';
+import { AuthError, SubscriptionError } from '@errors';
 import { userSource } from '@src/data-layer';
-import { verifyToken } from '@utils';
+import { ActiveSubscriptionStatuses, type SubscriptionStatus, verifyToken } from '@utils';
 import { NextFunction, Request, Response } from 'express';
 import { Forbidden } from 'http-errors';
 
@@ -15,11 +15,27 @@ export const authenticate =
     if (!token) return next(new Forbidden('Invalid token'));
 
     try {
-      const verified = verifyToken(token) as { _id: string };
+      const verified = verifyToken(token) as {
+        _id: string;
+        subscriptions: { id: string; status: SubscriptionStatus; workspace: string }[];
+      };
       const user = await userSource.findOneOrFail({ _id: verified._id });
 
       if (!user.workspaces.includes(workspace) && checkWorkspace) {
         return next(new AuthError('Forbidden', { message: 'Forbidden resource' }, 403));
+      }
+      const subscription = verified.subscriptions.find((sub) => sub.workspace === workspace);
+      if (
+        checkWorkspace &&
+        (!subscription || !ActiveSubscriptionStatuses.includes(subscription.status))
+      ) {
+        return next(
+          new SubscriptionError(
+            'InactiveSubscription',
+            { message: `Subscription is inactive` },
+            403,
+          ),
+        );
       }
 
       if (checkWorkspace) {

@@ -1,4 +1,5 @@
 import {
+  InactiveSubscription,
   StripeSubscriptionNotFound,
   SubscriptionError500,
   SubscriptionNotFound,
@@ -7,7 +8,8 @@ import {
 type ErrorType =
   | typeof StripeSubscriptionNotFound
   | typeof SubscriptionNotFound
-  | typeof SubscriptionError500;
+  | typeof SubscriptionError500
+  | typeof InactiveSubscription;
 
 export class SubscriptionError extends Error {
   public statusCode: number;

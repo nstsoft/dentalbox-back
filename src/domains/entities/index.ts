@@ -1,3 +1,4 @@
+export * from './Appointment';
 export * from './Cabinet';
 export * from './Card';
 export * from './Chair';

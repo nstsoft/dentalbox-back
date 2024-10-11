@@ -1,3 +1,4 @@
+export * from './appointment';
 export * from './base.source';
 export * from './cabinet';
 export * from './card';

@@ -1,3 +1,5 @@
+import { Stripe } from 'stripe';
+
 export type Pagination = {
   skip: number;
   limit: number;
@@ -25,3 +27,6 @@ export enum Sex {
   male = 'male',
   female = 'female',
 }
+
+export type SubscriptionStatus = Stripe.Subscription['status'];
+export const ActiveSubscriptionStatuses = ['active', 'trialing'];

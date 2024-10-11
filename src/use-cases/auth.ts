@@ -3,16 +3,31 @@ import { InvitationStatus, RegistrationDto, UserEntity, UserRole, UserStatus } f
 import { AuthError } from '@errors';
 import { googleProvider, stripeProvider } from '@providers';
 import { sentOtp, uploadWorkspaceImage } from '@services';
-import { generateOTP, getAuthTokens } from '@utils';
+import { extractIdFromTokens, generateOTP, getAuthTokens, refreshAuthToken } from '@utils';
 import axios, { AxiosError } from 'axios';
 import { config } from 'config';
 import moment from 'moment';
 import querystring from 'querystring';
 import { MoreThan } from 'typeorm';
 
-export const getAuthenticationData = async (user: UserEntity) => {
-  const [tokens] = await Promise.all([getAuthTokens(user._id)]);
+export const getSubscriptionStatuses = async (workspaces: string[]) => {
+  const subscriptions = await subscriptionSource
+    .findAll({ workspace: { $in: workspaces } })
+    .then(({ data }) => data);
 
+  const stripeSubscriptions = await Promise.all(
+    subscriptions.map((s) => stripeProvider.subscription.get(s.stripeSubscription)),
+  );
+
+  return subscriptions.map((s) => {
+    const stripe = stripeSubscriptions.find(({ id }) => id === s.stripeSubscription);
+    return { id: s._id, status: stripe?.status ?? 'unpaid', workspace: s.workspace };
+  });
+};
+
+export const getAuthenticationData = async (user: UserEntity) => {
+  const statuses = await getSubscriptionStatuses(user.workspaces);
+  const [tokens] = await Promise.all([getAuthTokens(user._id, statuses)]);
   return { ...tokens, user: user.toObject() };
 };
 
@@ -27,6 +42,12 @@ export const login = async (login: string, password: string) => {
   } catch (_err) {
     throw new AuthError('Unauthorized', { message: ' Invalid credentials' });
   }
+};
+export const refreshTokens = async (accessToken: string, refreshToken: string) => {
+  const id = await extractIdFromTokens(accessToken, refreshToken);
+  const workspaces = await workspaceSource.getUserWorkspaces(id);
+  const statuses = await getSubscriptionStatuses(workspaces.map(({ _id }) => _id));
+  return refreshAuthToken(accessToken, refreshToken, statuses);
 };
 
 export const register = async (data: RegistrationDto, workspaceImage?: Buffer) => {
@@ -121,7 +142,8 @@ export const authenticateWithGoogle = async (code: string) => {
     );
 
     const user = await userSource.findOneOrFail({ email: userInfo.email });
-    const tokens = await getAuthTokens(user._id);
+    const subscriptions = await getSubscriptionStatuses(user.workspaces);
+    const tokens = await getAuthTokens(user._id, subscriptions);
     Object.assign(query, tokens);
     Object.assign(query, { user: user.toJson() });
   } catch (err: unknown) {

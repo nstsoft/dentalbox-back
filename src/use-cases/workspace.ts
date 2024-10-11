@@ -1,4 +1,4 @@
-import { workspaceSource } from '@src/data-layer';
+import { workspaceSource } from '@data';
 
 export const getWorkspaceById = (id: string) => {
   return workspaceSource.findOneById(id);

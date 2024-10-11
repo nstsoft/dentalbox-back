@@ -1,6 +1,7 @@
 import '@config';
 
 import {
+  AppointmentController,
   AuthenticationController,
   CabinetController,
   DentalMapController,
@@ -49,6 +50,7 @@ apiRouter.use(new PaymentController().route);
 apiRouter.use(new CabinetController().route);
 apiRouter.use(new PatientController().route);
 apiRouter.use(new DentalMapController().route);
+apiRouter.use(new AppointmentController().route);
 
 app.use('/api/v1', apiRouter);
 

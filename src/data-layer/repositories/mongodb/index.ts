@@ -1,3 +1,4 @@
+export * from './appointment.repository';
 export * from './cabinet.repository';
 export * from './card.repository';
 export * from './chair.repository';

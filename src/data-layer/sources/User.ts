@@ -1,4 +1,4 @@
-import { type UserEntity, type UserListFilter, type UserType } from '@domains';
+import type { UserEntity, UserListFilter, UserType } from '@domains';
 import type { Pagination } from '@utils';
 import { ObjectId } from 'mongodb';
 import { FindOptionsOrder } from 'typeorm';

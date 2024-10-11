@@ -5,9 +5,10 @@ import {
   getAuthenticationData,
   getGoogleAuthUrl,
   login,
+  refreshTokens,
   register,
 } from '@useCases';
-import { BaseController, Controller, Get, Post, refreshAuthToken, ValidateBody } from '@utils';
+import { BaseController, Controller, Get, Post, ValidateBody } from '@utils';
 import { plainToClass } from 'class-transformer';
 import { validate, type ValidationError } from 'class-validator';
 import { Request, Response } from 'express';
@@ -31,7 +32,8 @@ export class AuthenticationController extends BaseController {
     if (!authToken || !refreshToken) {
       throw new AuthError('TokenNotProvided', { message: 'Token not provided' }, 403);
     }
-    return refreshAuthToken(authToken, refreshToken);
+
+    return refreshTokens(authToken, refreshToken);
   }
 
   @Post('/register', [upload.single('file')])
