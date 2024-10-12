@@ -1,5 +1,6 @@
-import type { CabinetEntity, CabinetType } from '@domains';
+import type { CabinetEntity, CabinetSummaryListItem, CabinetType } from '@domains';
 import type { Pagination } from '@utils';
+import { ObjectId } from 'mongodb';
 import { FindOptionsOrder } from 'typeorm';
 
 import { ICabinetRepository, ICabinetSource } from '../interfaces';
@@ -41,5 +42,14 @@ export class CabinetDataSource
     matchFilter.where = matchSearch;
 
     return this.repository.findAll(criteria, pagination, matchFilter, orderBy);
+  }
+
+  getSummary(workspace: string): Promise<CabinetSummaryListItem[]> {
+    return this.repository
+      .aggregate<CabinetSummaryListItem>([
+        { $match: { workspace: new ObjectId(workspace) } },
+        { $project: { _id: 1, name: 1, image: 1 } },
+      ])
+      .toArray();
   }
 }

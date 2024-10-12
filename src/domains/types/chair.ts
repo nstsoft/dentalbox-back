@@ -10,3 +10,4 @@ export type ChairType = {
 export type RawChair = ChairType & { _id: string };
 
 export type ChairEntity = BaseEntity<RawChair>;
+export type ChairSummaryListItem = Pick<RawChair, 'name' | '_id' | 'cabinet'>;

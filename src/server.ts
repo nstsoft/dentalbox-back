@@ -4,6 +4,7 @@ import {
   AppointmentController,
   AuthenticationController,
   CabinetController,
+  ChairController,
   DentalMapController,
   PatientController,
   PaymentController,
@@ -51,6 +52,7 @@ apiRouter.use(new CabinetController().route);
 apiRouter.use(new PatientController().route);
 apiRouter.use(new DentalMapController().route);
 apiRouter.use(new AppointmentController().route);
+apiRouter.use(new ChairController().route);
 
 app.use('/api/v1', apiRouter);
 

@@ -36,3 +36,7 @@ export const createCabinet = async (data: CabinetType, buffer?: Buffer) => {
 
   return cabinet;
 };
+
+export const getCabinetsSummary = (workspace: string) => {
+  return cabinetSource.getSummary(workspace);
+};

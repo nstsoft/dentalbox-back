@@ -24,3 +24,7 @@ export const getPatientsByWorkspace = async (
 ) => {
   return patientSource.findAll({ workspace: { $in: [workspace] } }, pagination, filter);
 };
+
+export const getPatientSummary = async (workspace: string) => {
+  return patientSource.getSummary(workspace);
+};

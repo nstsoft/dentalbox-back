@@ -4,7 +4,6 @@ import type {
   AppointmentListFilter,
   AppointmentType,
 } from '@domains';
-import { Pagination } from '@utils';
 import { ObjectId } from 'mongodb';
 
 import { IAppointmentRepository, IAppointmentSource } from '../interfaces';
@@ -20,11 +19,7 @@ export class AppointmentDataSource
     super(repository);
   }
 
-  async getAppointmentList(
-    criteria: AppointmentListCriteria,
-    pagination?: Pagination,
-    filter?: AppointmentListFilter,
-  ) {
+  async getAppointmentList(criteria: AppointmentListCriteria, filter?: AppointmentListFilter) {
     const searchCriteria = { workspace: criteria.workspace };
 
     const $and: unknown[] = [
@@ -45,7 +40,11 @@ export class AppointmentDataSource
       $and.push({ cabinet });
     }
 
-    const { data } = await this.repository.findAll(searchCriteria, pagination, { where: { $and } });
+    const { data } = await this.repository.findAll(
+      searchCriteria,
+      { skip: 0, limit: 0 },
+      { where: { $and } },
+    );
 
     return data;
   }

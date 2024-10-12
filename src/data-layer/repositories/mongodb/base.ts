@@ -14,10 +14,13 @@ import type {
 import { deepParseObjectId, type Pagination, removeUndefinedProps } from '@utils';
 import { ObjectId } from 'mongodb';
 import {
+  type AggregateOptions,
+  type AggregationCursor,
   type FindManyOptions,
   type FindOptionsOrder,
   type FindOptionsWhere,
   MongoRepository,
+  type ObjectLiteral,
 } from 'typeorm';
 
 import { FindAllCriteria } from '../../types';
@@ -71,6 +74,13 @@ export abstract class Repository<M extends Models, Domain, Data extends EntityDa
       toDomain: (model: M) => Domain;
       toBatchDomain: (model: M[]) => Domain[];
     };
+  }
+
+  aggregate<AggregateType = any>(
+    pipeline: ObjectLiteral[],
+    options?: AggregateOptions,
+  ): AggregationCursor {
+    return this.repository.aggregate<AggregateType>(pipeline, options);
   }
 
   async findOneById(id: string) {

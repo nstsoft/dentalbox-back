@@ -153,3 +153,7 @@ export const acceptInvitation = async (data: AcceptInvitationDto) => {
 
   return { user, subscription: await subscriptionSource.findOneByWorkspace(user.workspaces[0]) };
 };
+
+export const getUserSummary = async (workspace: string) => {
+  return userSource.getSummary(workspace);
+};

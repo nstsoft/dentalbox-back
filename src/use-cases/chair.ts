@@ -11,3 +11,6 @@ export const getChairsByCabinet = async (cabinet: string, pagination: Pagination
 export const createChair = async (data: ChairType) => {
   return chairSource.create(data);
 };
+export const getChairsSummary = (workspace: string) => {
+  return chairSource.getSummary(workspace);
+};

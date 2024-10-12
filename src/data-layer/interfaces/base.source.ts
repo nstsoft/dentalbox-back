@@ -1,5 +1,12 @@
 import { Pagination } from '@utils';
-import type { FindManyOptions, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import type {
+  AggregateOptions,
+  AggregationCursor,
+  FindManyOptions,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  ObjectLiteral,
+} from 'typeorm';
 
 import { FindAllCriteria } from '../types';
 
@@ -37,4 +44,8 @@ export interface IRepositorySource<T, C> {
   upsert(criteria: Partial<T>, data: Partial<T>): Promise<unknown>;
   update(criteria: FindOptionsWhere<T & { _id?: string }>, data: Partial<C>): Promise<unknown>;
   updateOneBy(criteria: Partial<T>, data: Partial<T>): Promise<unknown>;
+  aggregate: <A = any>(
+    pipeline: ObjectLiteral[],
+    options?: AggregateOptions,
+  ) => AggregationCursor<A>;
 }

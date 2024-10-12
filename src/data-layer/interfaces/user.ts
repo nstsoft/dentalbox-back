@@ -1,4 +1,4 @@
-import type { UserEntity, UserListFilter, UserType } from '@domains';
+import type { UserEntity, UserListFilter, UserSummaryListItem, UserType } from '@domains';
 import { Pagination } from '@utils';
 import type { FindOptionsOrder } from 'typeorm';
 
@@ -16,4 +16,5 @@ export interface IUserSource extends IDataSource<UserEntity, UserType> {
     filter?: UserListFilter,
     orderBy?: FindOptionsOrder<UserType>,
   ): Promise<{ count: number; data: UserEntity[] }>;
+  getSummary(workspace: string): Promise<UserSummaryListItem[]>;
 }

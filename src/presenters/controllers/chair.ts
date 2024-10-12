@@ -1,5 +1,10 @@
 import { ChairDto, ChairEntity } from '@domains';
-import { createChair, getChairsByCabinet, getChairsByWorkspaceId } from '@useCases';
+import {
+  createChair,
+  getChairsByCabinet,
+  getChairsByWorkspaceId,
+  getChairsSummary,
+} from '@useCases';
 import { BaseController, Controller, Get, Post, RolesGuard, ValidateBody } from '@utils';
 
 import { authenticate } from '../middlewares';
@@ -9,6 +14,11 @@ export class ChairController extends BaseController {
   @Get('/', [authenticate(true, true)])
   async list(req: Express.AuthenticatedRequest) {
     return getChairsByWorkspaceId(req.workspace, { skip: req.query.skip, limit: req.query.limit });
+  }
+
+  @Get('/summary', [authenticate()])
+  async summary(req: Express.AuthenticatedRequest) {
+    return getChairsSummary(req.workspace);
   }
 
   @Get('/:cabinet', [authenticate(true, true)])

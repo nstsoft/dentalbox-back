@@ -17,3 +17,8 @@ export type PatientType = {
 export type RawPatient = PatientType & { _id: string };
 
 export type PatientEntity = BaseEntity<RawPatient> & {};
+
+export type PatientSummaryListItem = Pick<
+  RawPatient,
+  'name' | 'surname' | 'secondName' | 'email' | 'phone' | '_id'
+>;

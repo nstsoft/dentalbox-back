@@ -5,6 +5,7 @@ import {
   createPatient,
   findPatientOrFail,
   getPatientsByWorkspace,
+  getPatientSummary,
 } from '@useCases';
 import { BaseController, Controller, Get, Post, RolesGuard } from '@utils';
 import { plainToClass } from 'class-transformer';
@@ -21,6 +22,11 @@ export class PatientController extends BaseController {
   @Get('/', [authenticate(false)])
   async list(req: Express.AuthenticatedRequest) {
     return getPatientsByWorkspace(req.workspace, req.pagination, { search: req.query.search });
+  }
+
+  @Get('/summary', [authenticate(false)])
+  async summary(req: Express.AuthenticatedRequest) {
+    return getPatientSummary(req.workspace);
   }
 
   @Get('/:patient', [authenticate(false)])

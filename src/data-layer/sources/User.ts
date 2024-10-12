@@ -1,4 +1,4 @@
-import type { UserEntity, UserListFilter, UserType } from '@domains';
+import type { UserEntity, UserListFilter, UserSummaryListItem, UserType } from '@domains';
 import type { Pagination } from '@utils';
 import { ObjectId } from 'mongodb';
 import { FindOptionsOrder } from 'typeorm';
@@ -59,5 +59,15 @@ export class UserDataSource extends BaseSource<UserEntity, UserType> implements 
     }
 
     return this.repository.findAll(criteria, pagination, matchFilter, orderBy);
+  }
+
+  getSummary(workspace: string): Promise<UserSummaryListItem[]> {
+    const $project = { _id: 1, name: 1, surname: 1, secondName: 1, email: 1, phone: 1 };
+    return this.repository
+      .aggregate<UserSummaryListItem>([
+        { $match: { workspaces: new ObjectId(workspace) } },
+        { $project },
+      ])
+      .toArray();
   }
 }

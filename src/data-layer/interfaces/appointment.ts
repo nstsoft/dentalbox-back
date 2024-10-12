@@ -4,7 +4,6 @@ import type {
   AppointmentListFilter,
   AppointmentType,
 } from '@domains';
-import { Pagination } from '@utils';
 
 import { IDataSource, IRepositorySource } from './base.source';
 
@@ -14,7 +13,6 @@ export interface IAppointmentRepository
 export interface IAppointmentSource extends IDataSource<AppointmentEntity, AppointmentType> {
   getAppointmentList(
     criteria: AppointmentListCriteria,
-    pagination: Pagination,
     filter: AppointmentListFilter,
   ): Promise<AppointmentEntity[]>;
 }

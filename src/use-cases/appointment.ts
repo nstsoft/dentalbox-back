@@ -1,14 +1,12 @@
 import { appointmentSource, cabinetSource, patientSource, userSource } from '@data';
 import { type AppointmentListCriteria, AppointmentListFilter, AppointmentType } from '@domains';
 import { AuthError } from '@errors';
-import { Pagination } from '@utils';
 
 export const getAppointmentList = (
   criteria: AppointmentListCriteria,
-  pagination: Pagination,
   filter?: AppointmentListFilter,
 ) => {
-  return appointmentSource.getAppointmentList(criteria, pagination, filter);
+  return appointmentSource.getAppointmentList(criteria, filter);
 };
 
 export const validateAppointment = async (appointment: AppointmentType) => {

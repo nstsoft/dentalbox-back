@@ -7,6 +7,7 @@ import {
   getAuthenticationData,
   getUserInvitations,
   getUsersByWorkspace,
+  getUserSummary,
   getWorkspaceById,
   inviteUser,
 } from '@useCases';
@@ -44,6 +45,11 @@ export class UserController extends BaseController {
       { skip: req.pagination.skip, limit: req.pagination.limit },
       { verified, role, search: req.filter.search },
     );
+  }
+
+  @Get('/summary', [authenticate()])
+  async summary(req: Express.AuthenticatedRequest) {
+    return getUserSummary(req.workspace);
   }
 
   @Get('/invitation', [authenticate()])

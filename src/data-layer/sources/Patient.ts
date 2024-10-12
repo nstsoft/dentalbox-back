@@ -1,5 +1,6 @@
-import type { PatientEntity, PatientType } from '@domains';
+import type { PatientEntity, PatientSummaryListItem, PatientType } from '@domains';
 import type { Pagination } from '@utils';
+import { ObjectId } from 'mongodb';
 import { FindOptionsOrder } from 'typeorm';
 
 import { IPatientRepository, IPatientSource } from '../interfaces';
@@ -40,5 +41,15 @@ export class PatientsDataSource
     matchFilter.where = matchSearch;
 
     return this.repository.findAll(criteria, pagination, matchFilter, orderBy);
+  }
+
+  getSummary(workspace: string): Promise<PatientSummaryListItem[]> {
+    const $project = { _id: 1, name: 1, surname: 1, secondName: 1, email: 1, phone: 1 };
+    return this.repository
+      .aggregate<PatientSummaryListItem>([
+        { $match: { workspace: new ObjectId(workspace) } },
+        { $project },
+      ])
+      .toArray();
   }
 }

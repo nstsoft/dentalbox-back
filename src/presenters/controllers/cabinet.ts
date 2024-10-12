@@ -1,5 +1,10 @@
 import { CreateCabinetDto } from '@domains';
-import { createCabinet, createChair, getCabinetsByWorkspaceId } from '@useCases';
+import {
+  createCabinet,
+  createChair,
+  getCabinetsByWorkspaceId,
+  getCabinetsSummary,
+} from '@useCases';
 import { BaseController, Controller, Get, Post, RolesGuard } from '@utils';
 import { plainToClass } from 'class-transformer';
 import { validate, type ValidationError } from 'class-validator';
@@ -12,8 +17,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 @Controller('/cabinet')
 export class CabinetController extends BaseController {
-  @Get('/', [authenticate(true, true)])
-  async list(req: Express.AuthenticatedRequest) {
+  @Get('/', [authenticate()])
+  list(req: Express.AuthenticatedRequest) {
     return getCabinetsByWorkspaceId(
       req.workspace,
       {
@@ -22,6 +27,11 @@ export class CabinetController extends BaseController {
       },
       req.query.search,
     );
+  }
+
+  @Get('/summary', [authenticate(true, true)])
+  summary(req: Express.AuthenticatedRequest) {
+    return getCabinetsSummary(req.workspace);
   }
 
   @RolesGuard('admin', 'owner')

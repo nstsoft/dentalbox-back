@@ -19,7 +19,7 @@ export class AppointmentController extends BaseController {
       cabinet: typeof req.query?.cabinet === 'string' ? [req.query.cabinet] : req.query.cabinet,
     };
 
-    return getAppointmentList(criteria, req.pagination, filter);
+    return getAppointmentList(criteria, filter);
   }
 
   @Post('/', [authenticate()])

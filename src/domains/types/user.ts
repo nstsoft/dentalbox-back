@@ -48,3 +48,8 @@ export type UserListFilter = {
   search?: string;
   workspace?: string;
 };
+
+export type UserSummaryListItem = Pick<
+  RawUser,
+  'name' | 'surname' | 'secondName' | 'email' | 'phone' | '_id'
+>;
