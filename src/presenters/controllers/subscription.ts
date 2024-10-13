@@ -1,14 +1,13 @@
-import { SetDefaultPaymentMethod } from '@domains';
-import { PaymentError, PaymentNotFoundError } from '@errors';
+import { Subscription } from '@domains';
+import { SubscriptionError, SubscriptionNotFound } from '@errors';
 import {
   getPriceByIdById,
   getProductById,
   getStripeSubscription,
   getSubscriptionByWorkspace,
-  retrievePaymentMethods,
-  setSubscriptionDefaultPaymentMethod,
+  reactivateSubscription,
 } from '@useCases';
-import { BaseController, Controller, Get, Patch, RolesGuard, ValidateBody } from '@utils';
+import { BaseController, Controller, Get, RolesGuard } from '@utils';
 import { NotFound } from 'http-errors';
 
 import { authenticate } from '../middlewares';
@@ -46,23 +45,14 @@ export class SubscriptionController extends BaseController {
     };
   }
 
-  @Patch('/payment-method')
+  @Get('/reactivate', [authenticate(true, true)])
   @RolesGuard('owner', 'admin')
-  @ValidateBody(SetDefaultPaymentMethod)
-  async setDefaultPaymentMethod(
-    req: Express.AuthenticatedRequest<unknown, unknown, SetDefaultPaymentMethod>,
-  ) {
-    const paymentMethod = req.body.payment;
-    const methods = await retrievePaymentMethods(req.user.stripeCustomerId!);
-    if (!methods.find(({ id }) => id === 'paymentMethod')) {
-      throw new PaymentError(PaymentNotFoundError, { message: 'Payment method not found' }, 404);
-    }
-    const subscription = await getSubscriptionByWorkspace(req.workspace);
-    if (!subscription) {
-      throw new NotFound('Subscription not found');
+  async createNew(req: Express.AuthenticatedRequest) {
+    const previousSubscription = await getSubscriptionByWorkspace(req.workspace);
+    if (!previousSubscription) {
+      throw new SubscriptionError(SubscriptionNotFound, { message: 'Subscription not found' }, 404);
     }
 
-    const stripeSubscription = await getStripeSubscription(subscription.stripeSubscription);
-    return setSubscriptionDefaultPaymentMethod(stripeSubscription.id, paymentMethod);
+    return reactivateSubscription(new Subscription(previousSubscription));
   }
 }

@@ -1,15 +1,21 @@
-import { SetDefaultPaymentMethod } from '@domains';
-import { PaymentError, PaymentNotFoundError, SubscriptionError } from '@errors';
+import {
+  CantDeleteDefaultPaymentMethod,
+  PaymentError,
+  PaymentNotFoundError,
+  SubscriptionError,
+  SubscriptionNotFound,
+} from '@errors';
 import {
   createSetupIntent,
+  deletePaymentMethod,
+  geSubscriptionDefaultPaymentMethod,
   getClientSecret,
   getStripeSubscription,
   getSubscriptionByWorkspace,
   retrievePaymentMethods,
   setSubscriptionDefaultPaymentMethod,
 } from '@useCases';
-import { BaseController, Controller, Get, Patch, RolesGuard, ValidateBody } from '@utils';
-import { NotFound } from 'http-errors';
+import { BaseController, Controller, Delete, Get, Patch, RolesGuard } from '@utils';
 
 import { authenticate } from '../middlewares';
 
@@ -41,23 +47,45 @@ export class PaymentController extends BaseController {
     return retrievePaymentMethods(req.user.stripeCustomerId);
   }
 
-  @Patch('/default', [authenticate(false, true)])
+  @Patch('/:payment', [authenticate()])
   @RolesGuard('owner', 'admin')
-  @ValidateBody(SetDefaultPaymentMethod)
-  async setDefaultPaymentMethod(
-    req: Express.AuthenticatedRequest<unknown, unknown, SetDefaultPaymentMethod>,
-  ) {
-    const paymentMethod = req.body.payment;
+  async setDefaultPaymentMethod(req: Express.AuthenticatedRequest<{ payment: string }>) {
+    const paymentMethod = req.params.payment;
     const methods = await retrievePaymentMethods(req.user.stripeCustomerId!);
     if (!methods.find(({ id }) => id === paymentMethod)) {
       throw new PaymentError(PaymentNotFoundError, { message: 'Payment method not found' }, 404);
     }
     const subscription = await getSubscriptionByWorkspace(req.workspace);
     if (!subscription) {
-      throw new NotFound('Subscription not found');
+      throw new SubscriptionError(SubscriptionNotFound, { message: 'Subscription not found' });
     }
 
     const stripeSubscription = await getStripeSubscription(subscription.stripeSubscription);
     return setSubscriptionDefaultPaymentMethod(stripeSubscription.id, paymentMethod);
+  }
+
+  @Delete('/:payment', [authenticate()])
+  @RolesGuard('owner', 'admin')
+  async deletePaymentMethod(req: Express.AuthenticatedRequest<{ payment: string }>) {
+    const paymentMethod = req.params.payment;
+    const methods = await retrievePaymentMethods(req.user.stripeCustomerId!);
+    if (!methods.find(({ id }) => id === paymentMethod)) {
+      throw new PaymentError(PaymentNotFoundError, { message: 'Payment method not found' }, 404);
+    }
+
+    const subscription = await getSubscriptionByWorkspace(req.workspace);
+    if (!subscription) {
+      throw new SubscriptionError(SubscriptionNotFound, { message: 'Subscription not found' });
+    }
+    const defaultPayment = await geSubscriptionDefaultPaymentMethod(
+      subscription.stripeSubscription,
+    );
+    if (paymentMethod === defaultPayment) {
+      throw new PaymentError(CantDeleteDefaultPaymentMethod, {
+        message: 'You can not delete the default payment method',
+      });
+    }
+
+    return deletePaymentMethod(paymentMethod);
   }
 }

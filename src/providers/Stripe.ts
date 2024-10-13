@@ -40,12 +40,12 @@ class StripeProvider {
     return this.stripe.paymentMethods.list({ customer, type: 'card' });
   }
 
-  private createSubscription(customer: string, price: string, quantity = 1) {
+  private createSubscription(customer: string, price: string, quantity = 1, trial = 10) {
     return this.stripe.subscriptions.create({
       customer,
       items: [{ price, quantity }],
       expand: ['latest_invoice.payment_intent', 'pending_setup_intent'],
-      trial_period_days: 10,
+      trial_period_days: trial,
       payment_behavior: 'default_incomplete',
       payment_settings: { save_default_payment_method: 'on_subscription' },
     });
@@ -111,6 +111,7 @@ class StripeProvider {
   get paymentMethod() {
     return {
       list: this.getPaymentMethods.bind(this),
+      delete: this.stripe.paymentMethods.detach.bind(this.stripe.paymentMethods),
     };
   }
 

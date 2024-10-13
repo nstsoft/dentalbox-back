@@ -8,9 +8,14 @@ export function RolesGuard(...roles: string[]) {
   return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     Reflect.defineMetadata(ROLES_KEY, roles, target, propertyKey);
     const originalMethod = descriptor.value;
-    descriptor.value = async function (req: Express.AuthenticatedRequest, res: Response, next: NextFunction) {
+    descriptor.value = async function (
+      req: Express.AuthenticatedRequest,
+      res: Response,
+      next: NextFunction,
+    ) {
       const workspaceId = req.headers.workspace as string;
-      if (!workspaceId || !req.user) return next(new AuthError('Forbidden', { message: 'Invalid role' }));
+      if (!workspaceId || !req.user)
+        return next(new AuthError('Forbidden', { message: 'Invalid role' }));
 
       const workspaceRoles: string[] = req.user.roles
         .filter(({ workspace }) => workspace === workspaceId)

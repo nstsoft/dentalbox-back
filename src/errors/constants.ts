@@ -13,3 +13,4 @@ export const InactiveSubscription = 'InactiveSubscription';
 export const WorkspaceFullError = 'WorkspaceFullError';
 export const PaymentNotFoundError = 'PaymentNotFoundError';
 export const StripePaymentError = 'StripePaymentError';
+export const CantDeleteDefaultPaymentMethod = 'StripePaymentError';
