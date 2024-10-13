@@ -11,13 +11,13 @@ import { validate, type ValidationError } from 'class-validator';
 import { Response } from 'express';
 import multer from 'multer';
 
-import { authenticate } from '../middlewares';
+import { authenticate, verifySubscription } from '../middlewares';
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-@Controller('/cabinet')
+@Controller('/cabinet', [verifySubscription()])
 export class CabinetController extends BaseController {
-  @Get('/', [authenticate()])
+  @Get('/', [authenticate(), verifySubscription()])
   list(req: Express.AuthenticatedRequest) {
     return getCabinetsByWorkspaceId(
       req.workspace,

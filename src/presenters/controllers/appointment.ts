@@ -2,9 +2,9 @@ import { AppointmentListQueryDto, CreateAppointmentDto } from '@src/domains';
 import { createAppointment, getAppointmentList, validateAppointment } from '@useCases';
 import { BaseController, Controller, Get, Post, ValidateBody, ValidateQuery } from '@utils';
 
-import { authenticate } from '../middlewares';
+import { authenticate, verifySubscription } from '../middlewares';
 
-@Controller('/appointment')
+@Controller('/appointment', [verifySubscription()])
 export class AppointmentController extends BaseController {
   @Get('/', [authenticate()])
   @ValidateQuery(AppointmentListQueryDto)

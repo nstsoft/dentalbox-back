@@ -24,19 +24,6 @@ export const authenticate =
       if (!user.workspaces.includes(workspace) && checkWorkspace) {
         return next(new AuthError('Forbidden', { message: 'Forbidden resource' }, 403));
       }
-      const subscription = verified.subscriptions.find((sub) => sub.workspace === workspace);
-      if (
-        checkWorkspace &&
-        (!subscription || !ActiveSubscriptionStatuses.includes(subscription.status))
-      ) {
-        return next(
-          new SubscriptionError(
-            'InactiveSubscription',
-            { message: `Subscription is inactive` },
-            403,
-          ),
-        );
-      }
 
       if (checkWorkspace) {
         role = user.roles.find((role) => role.workspace.toString() === workspace)?.role;
@@ -60,3 +47,34 @@ export const authenticate =
       return next(err);
     }
   };
+
+export const verifySubscription = () => async (req: Request, _: Response, next: NextFunction) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  const workspace = req.headers.workspace as string;
+
+  if (!token) return next(new Forbidden('Invalid token'));
+
+  try {
+    const verified = verifyToken(token) as {
+      _id: string;
+      subscriptions: { id: string; status: SubscriptionStatus; workspace: string }[];
+    };
+
+    const subscription = verified.subscriptions.find((sub) => sub.workspace === workspace);
+    if (!subscription || !ActiveSubscriptionStatuses.includes(subscription.status)) {
+      return next(
+        new SubscriptionError('InactiveSubscription', { message: `Subscription is inactive` }, 403),
+      );
+    }
+
+    return next();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    console.log(err);
+    if (err.name === 'TokenExpiredError') {
+      return next(new AuthError('Expired', { message: 'Invalid token' }, 403));
+    }
+    return next(err);
+  }
+};

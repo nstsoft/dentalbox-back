@@ -22,11 +22,11 @@ import {
   ValidateBody,
 } from '@utils';
 
-import { authenticate } from '../middlewares';
+import { authenticate, verifySubscription } from '../middlewares';
 
 @Controller('/user')
 export class UserController extends BaseController {
-  @Get('/', [authenticate(false)])
+  @Get('/', [authenticate(false), verifySubscription()])
   async list(req: Express.AuthenticatedRequest) {
     let verified;
     if (req.query.verified === 'true') {
@@ -47,12 +47,12 @@ export class UserController extends BaseController {
     );
   }
 
-  @Get('/summary', [authenticate()])
+  @Get('/summary', [authenticate(), verifySubscription()])
   async summary(req: Express.AuthenticatedRequest) {
     return getUserSummary(req.workspace);
   }
 
-  @Get('/invitation', [authenticate()])
+  @Get('/invitation', [authenticate(), verifySubscription()])
   async invitations(req: Express.AuthenticatedRequest) {
     return getUserInvitations(req.workspace, req.pagination);
   }
@@ -78,7 +78,7 @@ export class UserController extends BaseController {
 
   @RolesGuard('admin', 'owner')
   @ValidateBody(InviteUserDto)
-  @Post('/invite', [authenticate()])
+  @Post('/invite', [authenticate(), verifySubscription()])
   async inviteUser(
     req: Express.AuthenticatedRequest<unknown, unknown, { email: string; role: UserRole }>,
   ) {

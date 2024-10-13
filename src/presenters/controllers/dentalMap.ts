@@ -2,9 +2,9 @@ import { DentalMapDto } from '@domains';
 import { findPatientOrFail, getDentalMapByPatient, updateByPatient } from '@useCases';
 import { BaseController, Controller, Get, Put, ValidateBody } from '@utils';
 
-import { authenticate } from '../middlewares';
+import { authenticate, verifySubscription } from '../middlewares';
 
-@Controller('/dental-map', [authenticate()])
+@Controller('/dental-map', [authenticate(), verifySubscription()])
 export class DentalMapController extends BaseController {
   @Get('/:patientId')
   async getByPatient(req: Express.AuthenticatedRequest) {

@@ -41,7 +41,7 @@ export class PaymentController extends BaseController {
     return retrievePaymentMethods(req.user.stripeCustomerId);
   }
 
-  @Patch('/default')
+  @Patch('/default', [authenticate(false, true)])
   @RolesGuard('owner', 'admin')
   @ValidateBody(SetDefaultPaymentMethod)
   async setDefaultPaymentMethod(

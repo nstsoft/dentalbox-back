@@ -13,29 +13,29 @@ import { validate, type ValidationError } from 'class-validator';
 import { Response } from 'express';
 import multer from 'multer';
 
-import { authenticate } from '../middlewares';
+import { authenticate, verifySubscription } from '../middlewares';
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-@Controller('/patient')
+@Controller('/patient', [authenticate(), verifySubscription()])
 export class PatientController extends BaseController {
-  @Get('/', [authenticate(false)])
+  @Get('/')
   async list(req: Express.AuthenticatedRequest) {
     return getPatientsByWorkspace(req.workspace, req.pagination, { search: req.query.search });
   }
 
-  @Get('/summary', [authenticate(false)])
+  @Get('/summary')
   async summary(req: Express.AuthenticatedRequest) {
     return getPatientSummary(req.workspace);
   }
 
-  @Get('/:patient', [authenticate(false)])
+  @Get('/:patient')
   async getById(req: Express.AuthenticatedRequest) {
     return findPatientOrFail(req.params.patient, req.workspace);
   }
 
   @RolesGuard('admin', 'owner')
-  @Post('/', [authenticate(), upload.single('file')])
+  @Post('/', [upload.single('file')])
   async createPatient(req: Express.AuthenticatedRequest, res: Response) {
     const data = JSON.parse(req.body.data) as PatientDto;
 
